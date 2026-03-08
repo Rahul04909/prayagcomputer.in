@@ -3,9 +3,9 @@
 ?>
 <section class="hero-slider">
     <div class="slider-container" id="heroSlider">
-        <div class="slide active" style="background-image: url('assets/images/hero-1.png');"></div>
-        <div class="slide" style="background-image: url('assets/images/hero-2.png');"></div>
-        <div class="slide" style="background-image: url('assets/images/hero-3.png');"></div>
+        <div class="slide active" style="background-image: url('assets/images/hero/banner-1.webp');"></div>
+        <div class="slide" style="background-image: url('assets/images/hero/banner-2.webp');"></div>
+        <div class="slide" style="background-image: url('assets/images/hero/banner-3.webp');"></div>
     </div>
 </section>
 
