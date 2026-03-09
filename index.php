@@ -9,11 +9,13 @@
     <link rel="stylesheet" href="assets/css/hero.css">
     <link rel="stylesheet" href="assets/css/footer.css">
     <link rel="stylesheet" href="assets/css/counters.css">
+    <link rel="stylesheet" href="assets/css/courses.css">
 </head>
 <body>
     <?php include 'includes/header.php'; ?>
     <?php include 'components/hero.php'; ?>
     <?php include 'components/counters.php'; ?>
+    <?php include 'components/courses.php'; ?>
     <?php include 'includes/footer.php'; ?>
 </body>
 </html>
