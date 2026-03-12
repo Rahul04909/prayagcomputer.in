@@ -61,6 +61,97 @@ $active_page = $active_pageInfo['active_page'] ?? null;
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+    <style>
+        :root {
+            --sidebar-bg: #ffffff;
+            --sidebar-color: #2c3e50;
+            --primary-green: #28a745;
+            --accent-yellow: #ffc107;
+            --border-color: #e9ecef;
+        }
+
+        .main-sidebar {
+            background-color: var(--sidebar-bg) !important;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .brand-link {
+            background-color: var(--primary-green) !important;
+            color: #fff !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .brand-link .brand-text {
+            color: #fff !important;
+            font-weight: 600 !important;
+        }
+
+        .sidebar {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .user-panel {
+            border-bottom: 1px solid var(--border-color) !important;
+            margin: 0 !important;
+            padding: 15px !important;
+        }
+
+        .user-panel .info {
+            color: var(--sidebar-color) !important;
+            font-weight: 500;
+        }
+
+        .nav-sidebar > .nav-item {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .nav-sidebar > .nav-item:last-child {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-sidebar .nav-link {
+            color: var(--sidebar-color) !important;
+            padding: 12px 20px !important;
+            border-radius: 0 !important;
+            margin: 0 !important;
+            transition: all 0.3s;
+        }
+
+        .nav-sidebar .nav-link:hover {
+            background-color: rgba(40, 167, 69, 0.05) !important;
+            color: var(--primary-green) !important;
+        }
+
+        .nav-sidebar .nav-link.active {
+            background-color: var(--primary-green) !important;
+            color: var(--accent-yellow) !important;
+            box-shadow: none !important;
+        }
+
+        .nav-sidebar .nav-link.active i {
+            color: var(--accent-yellow) !important;
+        }
+
+        .nav-treeview > .nav-item > .nav-link {
+            padding-left: 30px !important;
+            background-color: #f8f9fa !important;
+            border-top: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .nav-sidebar .nav-icon {
+            color: var(--primary-green);
+        }
+
+        .nav-link.active .nav-icon {
+            color: var(--accent-yellow) !important;
+        }
+
+        /* Adjustments for AdminLTE */
+        .sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active {
+            background-color: var(--primary-green) !important;
+        }
+    </style>
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -123,7 +214,7 @@ $active_page = $active_pageInfo['active_page'] ?? null;
             </div>
         </div>
 
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <aside class="main-sidebar sidebar-light-primary elevation-4">
             <a href="./" class="brand-link">
                 <img src="./src/images/logo.svg" alt="Logo" class="brand-image img-circle bg-white">
                 <span class="brand-text font-weight-light">
