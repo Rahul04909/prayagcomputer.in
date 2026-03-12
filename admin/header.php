@@ -247,11 +247,27 @@ $active_page = $active_pageInfo['active_page'] ?? null;
             padding: 12px 0 !important;
             display: flex !important;
             justify-content: center !important;
+            border-bottom: 1px solid var(--border-color) !important;
+        }
+
+        .sidebar-collapse .user-panel a {
+            display: flex !important;
+            justify-content: center !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
         .sidebar-collapse .user-panel .image {
             padding: 0 !important;
             margin: 0 !important;
+            display: flex !important;
+            justify-content: center !important;
+            width: 100% !important;
+        }
+
+        .sidebar-collapse .user-panel .info {
+            display: none !important;
         }
 
         .sidebar-collapse .nav-sidebar .nav-link {
