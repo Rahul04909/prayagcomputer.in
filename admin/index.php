@@ -1,84 +1,64 @@
-<?php include 'header.php'; ?>
+<?php include './header.php'; ?>
 
-<div class="dashboard-grid">
-    <div class="stat-card">
-        <div class="stat-info">
-            <div class="stat-label">Total Students</div>
-            <div class="stat-value">1,250</div>
-        </div>
-        <div class="stat-icon">
-            <i class="fas fa-users"></i>
-        </div>
-    </div>
-    
-    <div class="stat-card yellow">
-        <div class="stat-info">
-            <div class="stat-label">Active Courses</div>
-            <div class="stat-value">24</div>
-        </div>
-        <div class="stat-icon">
-            <i class="fas fa-book-open"></i>
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>150</h3>
+                <p>New Orders</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-bag"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info
+                <i class="fas fa-arrow-circle-right"></i>
+            </a>
         </div>
     </div>
-    
-    <div class="stat-card">
-        <div class="stat-info">
-            <div class="stat-label">Total Earnings</div>
-            <div class="stat-value">₹ 1,45,000</div>
-        </div>
-        <div class="stat-icon">
-            <i class="fas fa-wallet"></i>
+
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>53<sup style="font-size: 20px">%</sup></h3>
+                <p>Bounce Rate</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info
+                <i class="fas fa-arrow-circle-right"></i>
+            </a>
         </div>
     </div>
-    
-    <div class="stat-card yellow">
-        <div class="stat-info">
-            <div class="stat-label">Pending Exams</div>
-            <div class="stat-value">08</div>
+
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>44</h3>
+                <p>User Registrations</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-person-add"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info
+                <i class="fas fa-arrow-circle-right"></i></a>
         </div>
-        <div class="stat-icon">
-            <i class="fas fa-calendar-alt"></i>
+    </div>
+
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>65</h3>
+                <p>Unique Visitors</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info
+                <i class="fas fa-arrow-circle-right"></i>
+            </a>
         </div>
     </div>
 </div>
 
-<div class="card">
-    <div class="card-header">
-        <h3>Recent Registrations</h3>
-        <a href="manage-students.php" style="color: var(--primary-green); text-decoration: none; font-size: 0.85rem; font-weight: 600;">View All</a>
-    </div>
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Student Name</th>
-                    <th>Course</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Rahul Kumar</td>
-                    <td>ADCA</td>
-                    <td>12 Mar 2026</td>
-                    <td><span class="status-badge status-active">Active</span></td>
-                </tr>
-                <tr>
-                    <td>Priya Singh</td>
-                    <td>DCA</td>
-                    <td>11 Mar 2026</td>
-                    <td><span class="status-badge status-active">Active</span></td>
-                </tr>
-                <tr>
-                    <td>Amit Verma</td>
-                    <td>Python</td>
-                    <td>10 Mar 2026</td>
-                    <td><span class="status-badge status-pending">Pending</span></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<?php include 'footer.php'; ?>
+<?php include './footer.php'; ?>
