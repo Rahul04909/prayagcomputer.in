@@ -27,7 +27,7 @@ function get_current_user_data() {
     global $auth, $pdo;
     if (!is_logged_in()) return null;
     
-    $uid = $auth->getCurrentUID();
+    $uid = $auth->getSessionUID($auth->getSessionHash());
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
     $stmt->execute([$uid]);
     return $stmt->fetch();

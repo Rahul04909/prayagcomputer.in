@@ -71,7 +71,7 @@ if (!$user) {
     if ($result['error']) {
         echo "Error creating admin: " . $result['message'];
     } else {
-        $uid = $result['uid'];
+        $uid = $auth->getUID($email);
         $stmt = $pdo->prepare("UPDATE users SET name = ?, mobile = ?, profile_image = ?, isactive = 1 WHERE id = ?");
         $stmt->execute([$name, $mobile, $profile_image, $uid]);
         echo "Admin created successfully! Email: $email, Password: $password";
