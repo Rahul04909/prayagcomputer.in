@@ -64,6 +64,7 @@ try {
                                         <th class="pl-4">Image</th>
                                         <th>Course Details</th>
                                         <th>Category</th>
+                                        <th>Duration</th>
                                         <th>Pricing</th>
                                         <th>Status</th>
                                         <th class="text-right pr-4">Actions</th>
@@ -91,6 +92,7 @@ try {
                                                     <code class="text-xs text-muted"><?= htmlspecialchars($course['slug']) ?></code>
                                                 </td>
                                                 <td><span class="badge badge-light border"><?= htmlspecialchars($course['category_name'] ?: 'Uncategorized') ?></span></td>
+                                                <td><span class="text-sm"><?= htmlspecialchars($course['duration'] ?: 'N/A') ?></span></td>
                                                 <td>
                                                     <span class="price-text">₹<?= number_format($course['sale_price'], 2) ?></span>
                                                     <?php if ($course['mrp'] > $course['sale_price']): ?>

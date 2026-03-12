@@ -61,6 +61,10 @@ try {
                                         <input type="text" id="title" name="title" class="form-control" value="<?= htmlspecialchars($course['title']) ?>" required>
                                     </div>
                                     <div class="form-group mb-3">
+                                        <label for="duration">Course Duration</label>
+                                        <input type="text" id="duration" name="duration" class="form-control" value="<?= htmlspecialchars($course['duration'] ?? '') ?>" placeholder="e.g. 3 Months / 6 Months">
+                                    </div>
+                                    <div class="form-group mb-3">
                                         <label>Course Slug</label>
                                         <input type="text" class="form-control" value="<?= htmlspecialchars($course['slug']) ?>" readonly style="background:#f8f9fa;">
                                     </div>

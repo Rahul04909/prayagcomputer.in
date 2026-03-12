@@ -161,6 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($action === 'add_course') {
         $category_id = $_POST['category_id'] ?? 0;
         $title = trim($_POST['title'] ?? '');
+        $duration = trim($_POST['duration'] ?? '');
         $slug = trim($_POST['slug'] ?? '');
         $description = $_POST['description'] ?? '';
         $mrp = floatval($_POST['mrp'] ?? 0);
@@ -197,8 +198,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         try {
-            $stmt = $pdo->prepare("INSERT INTO courses (category_id, title, slug, description, featured_image, mrp, sale_price, seo_title, seo_description, seo_keywords, seo_schema) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            if ($stmt->execute([$category_id, $title, $slug, $description, $featured_image, $mrp, $sale_price, $seo_title, $seo_description, $seo_keywords, $seo_schema])) {
+            $stmt = $pdo->prepare("INSERT INTO courses (category_id, title, duration, slug, description, featured_image, mrp, sale_price, seo_title, seo_description, seo_keywords, seo_schema) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            if ($stmt->execute([$category_id, $title, $duration, $slug, $description, $featured_image, $mrp, $sale_price, $seo_title, $seo_description, $seo_keywords, $seo_schema])) {
                 echo json_encode(['status' => 'success', 'message' => 'Course added successfully!']);
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Failed to add course.']);

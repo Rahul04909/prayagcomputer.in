@@ -49,7 +49,11 @@ try {
                                 <div class="col-md-8">
                                     <div class="form-group mb-3">
                                         <label for="title">Course Title</label>
-                                        <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Advanced Web Development Masterclass" required>
+                                        <input type="text" id="title" name="title" class="form-control" value="<?= htmlspecialchars($course['title'] ?? '') ?>" required>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="duration">Course Duration</label>
+                                        <input type="text" id="duration" name="duration" class="form-control" value="<?= htmlspecialchars($course['duration'] ?? '') ?>" placeholder="e.g. 3 Months / 6 Months">
                                     </div>
                                     <div class="form-group mb-3">
                                         <label for="slug">Course Slug (Automatic)</label>
