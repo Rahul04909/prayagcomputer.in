@@ -84,15 +84,19 @@ $active_page = $active_pageInfo['active_page'] ?? null;
             background-color: var(--primary-green) !important;
             color: #fff !important;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-            padding: 15px 15px !important;
+            padding: 15px !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            margin: 0 !important;
         }
 
-        .brand-link .brand-text {
-            color: #fff !important;
-            font-weight: 700 !important;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 0.9rem !important;
+        .brand-link .brand-image {
+            float: none !important;
+            line-height: .8;
+            margin: 0 !important;
+            max-height: 40px;
+            width: auto;
         }
 
         /* User Panel */
@@ -294,9 +298,6 @@ $active_page = $active_pageInfo['active_page'] ?? null;
         <aside class="main-sidebar sidebar-light-primary elevation-4">
             <a href="./" class="brand-link">
                 <img src="./src/images/logo.svg" alt="Logo" class="brand-image img-circle bg-white">
-                <span class="brand-text font-weight-light">
-                    Admin Panel
-                </span>
             </a>
             <div class="sidebar">
                 <div class="user-panel mt-3 pb-3 mb-3">
