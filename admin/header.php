@@ -289,6 +289,51 @@ $active_page = $active_pageInfo['active_page'] ?? null;
         .sidebar-collapse .nav-sidebar .nav-link.active {
             border-left: 3px solid var(--primary-green);
         }
+
+        /* WordPress-style Pop-out Labels on Hover */
+        @media (min-width: 992px) {
+            .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand):hover .nav-sidebar > .nav-item > .nav-link > p,
+            .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand) .nav-sidebar > .nav-item > .nav-link > p {
+                transition: none !important;
+            }
+
+            .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand) .nav-item:hover > .nav-link > p {
+                display: block !important;
+                position: absolute;
+                left: 73px;
+                top: 0;
+                width: 200px;
+                margin: 0 !important;
+                padding: 12px 20px !important;
+                background-color: #2c3338 !important; /* Dark WP style background */
+                color: #fff !important;
+                border-radius: 0 4px 4px 0;
+                box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+                z-index: 1000;
+                pointer-events: none;
+                font-weight: 500;
+                font-size: 0.9rem;
+            }
+
+            /* Submenu hover refinement for collapsed mode */
+            .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand) .nav-item:hover > .nav-treeview {
+                display: block !important;
+                position: absolute;
+                left: 73px;
+                top: 44px; /* Position below the main link p tag */
+                width: 200px;
+                background-color: var(--submenu-bg) !important;
+                box-shadow: 2px 5px 10px rgba(0,0,0,0.1);
+                border: 1px solid #dcdcde;
+                border-left: none;
+                z-index: 999;
+            }
+
+            .sidebar-mini.sidebar-collapse .main-sidebar:not(.sidebar-no-expand) .nav-item:hover > .nav-treeview .nav-link {
+                padding-left: 20px !important;
+                justify-content: flex-start !important;
+            }
+        }
     </style>
 </head>
 
