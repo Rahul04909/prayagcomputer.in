@@ -6,6 +6,10 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../database/db_config.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
+// PHPAuth v1.x manual requires as it doesn't follow PSR-4 naming
+require_once __DIR__ . '/../vendor/phpauth/phpauth/config.class.php';
+require_once __DIR__ . '/../vendor/phpauth/phpauth/auth.class.php';
+
 use PHPAuth\Config as PHPAuthConfig;
 use PHPAuth\Auth as PHPAuth;
 
@@ -29,12 +33,14 @@ try {
     echo "Warning during table creation: " . $e->getMessage() . "<br>";
 }
 
-// Check for PHPAuth existence
-if (!class_exists('PHPAuth\Config') || !class_exists('PHPAuth\Auth')) {
-    echo "Current include path: " . get_include_path() . "<br>";
-    echo "Autoload path: " . realpath(__DIR__ . '/../vendor/autoload.php') . "<br>";
-    die("Error: PHPAuth classes not found. Please check your vendor/autoload.php and composer installation. Make sure you ran 'composer install'.");
-}
+// Initialize PHPAuth
+$config = new PHPAuthConfig($pdo);
+
+// Initialize language (Required by PHPAuth v1)
+$lang = array();
+require_once __DIR__ . '/../vendor/phpauth/phpauth/languages/en_GB.php';
+
+$auth = new PHPAuth($pdo, $config, $lang);
 
 // Alter users table to add extra fields
 $alterSql = "ALTER TABLE `users` 
@@ -48,9 +54,6 @@ try {
 } catch (Exception $e) {
     // Column might already exist, ignore this error
 }
-
-$config = new PHPAuthConfig($pdo);
-$auth = new PHPAuth($pdo, $config);
 
 $email = "admin@prayagcomputer.in";
 $password = "admin123";
