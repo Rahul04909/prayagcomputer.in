@@ -303,10 +303,10 @@ $active_page = $active_pageInfo['active_page'] ?? null;
                 <div class="user-panel mt-3 pb-3 mb-3">
                     <a href="./profile.php" class="d-flex">
                         <div class="image">
-                            <img src="./src/images/profile_picture/default.png" class="img-circle elevation-2 bg-white" alt="User Image">
+                            <img src="./src/images/user-avtar.png" class="img-circle elevation-2 bg-white" alt="User Image">
                         </div>
                         <div class="info">
-                            Ilhomjonov Iqbolshoh
+                            Rahul
                         </div>
                     </a>
                 </div>
