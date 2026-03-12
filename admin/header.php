@@ -33,7 +33,9 @@ $menuItems = [
         "icon" => "fas fa-graduation-cap",
         "pages" => [
             ["title" => "Add Category", "url" => "courses/add-course-category.php"],
-            ["title" => "Manage Categories", "url" => "courses/manage-categories.php"]
+            ["title" => "Manage Categories", "url" => "courses/manage-categories.php"],
+            ["title" => "Add Course", "url" => "courses/add-course.php"],
+            ["title" => "Manage Courses", "url" => "courses/manage-courses.php"]
         ],
     ],
     [

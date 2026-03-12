@@ -158,6 +158,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
         }
         exit();
+    } elseif ($action === 'add_course') {
+        $category_id = $_POST['category_id'] ?? 0;
+        $title = trim($_POST['title'] ?? '');
+        $slug = trim($_POST['slug'] ?? '');
+        $description = $_POST['description'] ?? '';
+        $mrp = floatval($_POST['mrp'] ?? 0);
+        $sale_price = floatval($_POST['sale_price'] ?? 0);
+        
+        // SEO Info
+        $seo_title = trim($_POST['seo_title'] ?? '');
+        $seo_description = trim($_POST['seo_description'] ?? '');
+        $seo_keywords = trim($_POST['seo_keywords'] ?? '');
+        $seo_schema = $_POST['seo_schema'] ?? '';
+
+        if (empty($category_id) || empty($title) || empty($slug)) {
+            echo json_encode(['status' => 'error', 'message' => 'Category, Title and Slug are required.']);
+            exit();
+        }
+
+        // Handle Image Upload
+        $featured_image = '';
+        if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === 0) {
+            $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+            $file_name = $_FILES['featured_image']['name'];
+            $ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+
+            if (in_array($ext, $allowed)) {
+                $new_filename = 'course_' . time() . '.' . $ext;
+                $upload_dir = __DIR__ . '/../src/images/courses/';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+                if (move_uploaded_file($_FILES['featured_image']['tmp_name'], $upload_dir . $new_filename)) {
+                    $featured_image = 'courses/' . $new_filename;
+                }
+            }
+        }
+
+        try {
+            $stmt = $pdo->prepare("INSERT INTO courses (category_id, title, slug, description, featured_image, mrp, sale_price, seo_title, seo_description, seo_keywords, seo_schema) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            if ($stmt->execute([$category_id, $title, $slug, $description, $featured_image, $mrp, $sale_price, $seo_title, $seo_description, $seo_keywords, $seo_schema])) {
+                echo json_encode(['status' => 'success', 'message' => 'Course added successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to add course.']);
+            }
+        } catch (PDOException $e) {
+            if ($e->getCode() == 23000) {
+                echo json_encode(['status' => 'error', 'message' => 'Slug already exists. Please try a different title.']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
+            }
+        }
+        exit();
     }
 }
 
