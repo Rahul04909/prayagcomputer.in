@@ -1,4 +1,12 @@
 <?php
+require_once __DIR__ . '/includes/auth_helper.php';
+
+if (!is_logged_in()) {
+    header("Location: login.php");
+    exit();
+}
+
+$user = get_current_user_data();
 $currentPage = basename($_SERVER['SCRIPT_NAME']);
 
 $menuItems = [
@@ -429,10 +437,10 @@ $active_page = $active_pageInfo['active_page'] ?? null;
                 <div class="user-panel mt-3 pb-3 mb-3">
                     <a href="./profile.php" class="d-flex">
                         <div class="image">
-                            <img src="./src/images/user-avtar.png" class="img-circle elevation-2 bg-white" alt="User Image">
+                            <img src="./src/images/<?= htmlspecialchars($user['profile_image'] ?? 'user-avtar.png') ?>" class="img-circle elevation-2 bg-white" alt="User Image">
                         </div>
                         <div class="info">
-                            Rahul
+                            <?= htmlspecialchars($user['name'] ?? 'Admin') ?>
                         </div>
                     </a>
                 </div>
@@ -462,8 +470,8 @@ $active_page = $active_pageInfo['active_page'] ?? null;
                                 <?php endif; ?>
                             </li>
                         <?php endforeach; ?>
-                        <li class="nav-item" onclick="logout()">
-                            <a href="javascript:void(0);" class="nav-link">
+                        <li class="nav-item">
+                            <a href="logout.php" class="nav-link">
                                 <i class="nav-icon fas fa-sign-out-alt"></i>
                                 <p>Logout</p>
                             </a>
