@@ -229,8 +229,49 @@ $active_page = $active_pageInfo['active_page'] ?? null;
         }
 
         /* Sidebar Mini behavior refinements */
+        .sidebar-collapse .main-sidebar {
+            width: 73px !important;
+        }
+
+        .sidebar-collapse .brand-link {
+            padding: 10px !important;
+            justify-content: center !important;
+        }
+
+        .sidebar-collapse .brand-link .brand-image {
+            margin: 0 !important;
+            max-height: 33px;
+        }
+
+        .sidebar-collapse .user-panel {
+            padding: 12px 0 !important;
+            display: flex !important;
+            justify-content: center !important;
+        }
+
+        .sidebar-collapse .user-panel .image {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .sidebar-collapse .nav-sidebar .nav-link {
+            padding: 12px 15px !important;
+            display: flex !important;
+            justify-content: center !important;
+            width: 100% !important;
+        }
+
+        .sidebar-collapse .nav-sidebar .nav-icon {
+            margin: 0 !important;
+        }
+
         .sidebar-collapse .nav-sidebar .nav-link::before {
             display: none;
+        }
+
+        /* Ensure active indicator works in collapsed mode but is subtle */
+        .sidebar-collapse .nav-sidebar .nav-link.active {
+            border-left: 3px solid var(--primary-green);
         }
     </style>
 </head>
