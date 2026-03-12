@@ -2,6 +2,7 @@
     "require": {
         "phpmailer/phpmailer": "^7.0",
         "mpdf/mpdf": "^8.2",
-        "phpauth/phpauth": "^1.0"
+        "phpauth/phpauth": "^1.0",
+        "summernote/summernote": "^0.8.8"
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5e7aef4aa4bce9987d28903865eaf40b",
+    "content-hash": "6ed70b4a193c9152f3f5b73454230ce1",
     "packages": [
         {
             "name": "mpdf/mpdf",
@@ -570,6 +570,44 @@
                 }
             ],
             "time": "2025-08-05T09:57:14+00:00"
+        },
+        {
+            "name": "summernote/summernote",
+            "version": "v0.8.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/summernote/summernote.git",
+                "reference": "28b5be6cd5e1c422cdb15aae6ef237b6c2f3f16c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/summernote/summernote/zipball/28b5be6cd5e1c422cdb15aae6ef237b6c2f3f16c",
+                "reference": "28b5be6cd5e1c422cdb15aae6ef237b6c2f3f16c",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alan",
+                    "email": "susukang98@gmail.com",
+                    "role": "lead"
+                }
+            ],
+            "description": "Super Simple WYSIWYG Editor on Bootstrap(3.0 and 2.x).",
+            "homepage": "http://summernote.org/",
+            "keywords": [
+                "wysiwyg"
+            ],
+            "support": {
+                "issues": "https://github.com/summernote/summernote/issues",
+                "source": "https://github.com/summernote/summernote/tree/v0.8.8"
+            },
+            "abandoned": true,
+            "time": "2017-09-09T11:08:25+00:00"
         }
     ],
     "packages-dev": [],
