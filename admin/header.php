@@ -1,27 +1,40 @@
-<?php
-// Top Header Bar
-?>
-<header class="top-header">
-    <div class="header-left">
-        <button id="toggle-btn" class="toggle-btn">
-            <i class="fas fa-bars"></i>
-        </button>
-    </div>
-    <div class="header-right d-flex align-items-center gap-3">
-        <div class="dropdown">
-            <a href="#" class="text-decoration-none text-dark d-flex align-items-center gap-2" id="profileDropdown" data-bs-toggle="dropdown">
-                <img src="https://ui-avatars.com/api/?name=Admin&background=1E90FF&color=fff" class="rounded-circle" width="35" height="35" alt="Admin">
-                <div class="d-none d-sm-block">
-                    <span class="d-block fw-bold small">Administrator</span>
-                    <span class="text-muted extra-small" style="font-size: 0.7rem;">Super Admin</span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Prayag Computer Centre</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/admin-style.css">
+</head>
+<body>
+    <div class="admin-container">
+        <?php include 'sidebar.php'; ?>
+        
+        <main class="main-content">
+            <header class="admin-header">
+                <div class="header-left">
+                    <button id="sidebarToggle" class="sidebar-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 class="page-title">Dashboard</h2>
                 </div>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3">
-                <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog me-2"></i> Profile Settings</a></li>
-                <li><a class="dropdown-item" href="#"><i class="fas fa-lock me-2"></i> Change Password</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
-            </ul>
-        </div>
-    </div>
-</header>
+                
+                <div class="header-right">
+                    <div class="header-search">
+                        <!-- Potential search box -->
+                    </div>
+                    <div class="notifications">
+                        <i class="far fa-bell"></i>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-avatar">A</div>
+                        <span class="user-name">Admin</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </header>

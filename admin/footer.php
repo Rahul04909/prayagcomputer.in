@@ -1,11 +1,9 @@
-<footer class="mt-auto py-3 bg-white border-top">
-    <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center small">
-            <div class="text-muted text-uppercase fw-bold">&copy; <?php echo date('Y'); ?> Prayag Computer Center</div>
-            <div>
-                <a href="#" class="text-decoration-none text-muted me-3">Privacy Policy</a>
-                <a href="#" class="text-decoration-none text-muted">Terms of Service</a>
-            </div>
-        </div>
+        </main>
     </div>
-</footer>
+    
+    <!-- jQuery if needed -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Custom JS -->
+    <script src="assets/js/admin-script.js"></script>
+</body>
+</html>

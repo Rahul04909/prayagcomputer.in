@@ -1,164 +1,81 @@
-<?php
-// Session check (Simplified for now)
-session_start();
-// if (!isset($_SESSION['admin_logged_in'])) { header('Location: login.php'); exit(); }
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Prayag Computer Center</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@11/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts - Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/admin-style.css">
-</head>
-<body>
+<?php include 'header.php'; ?>
 
-    <!-- Sidebar -->
-    <?php include 'sidebar.php'; ?>
-
-    <!-- Wrapper -->
-    <div id="wrapper">
-        <!-- Header -->
-        <?php include 'header.php'; ?>
-
-        <!-- Main Content -->
-        <main class="p-4">
-            <div class="row g-4 mb-4">
-                <!-- Stat Cards -->
-                <div class="col-xl-3 col-md-6">
-                    <div class="stats-card">
-                        <div class="stats-icon bg-primary bg-opacity-10 text-primary">
-                            <i class="fas fa-user-graduate"></i>
-                        </div>
-                        <div class="stats-info">
-                            <h3>1,245</h3>
-                            <p>Total Students</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6">
-                    <div class="stats-card">
-                        <div class="stats-icon bg-success bg-opacity-10 text-success">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="stats-info">
-                            <h3>15</h3>
-                            <p>Active Courses</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6">
-                    <div class="stats-card">
-                        <div class="stats-icon bg-info bg-opacity-10 text-info">
-                            <i class="fas fa-wallet"></i>
-                        </div>
-                        <div class="stats-info">
-                            <h3>₹4.2L</h3>
-                            <p>Total Revenue</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6">
-                    <div class="stats-card">
-                        <div class="stats-icon bg-danger bg-opacity-10 text-danger">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="stats-info">
-                            <h3>₹12,400</h3>
-                            <p>Pending Dues</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Charts Row -->
-            <div class="row g-4 mb-4">
-                <div class="col-lg-8">
-                    <div class="content-card">
-                        <h5 class="fw-bold mb-4">Revenue Trend</h5>
-                        <div style="height: 300px;">
-                            <canvas id="revenueChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="content-card">
-                        <h5 class="fw-bold mb-4">Enrollment Distribution</h5>
-                        <div style="height: 300px;">
-                            <canvas id="enrollmentChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activity Table -->
-            <div class="content-card">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="fw-bold m-0">Recent Enrollments</h5>
-                    <button class="btn btn-primary btn-sm px-3 rounded-pill">View All</button>
-                </div>
-                <div class="table-responsive">
-                    <table class="table align-middle">
-                        <thead>
-                            <tr>
-                                <th>Student Name</th>
-                                <th>Course</th>
-                                <th>Date</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <img src="https://ui-avatars.com/api/?name=Rahul+Kumar" class="rounded-circle" width="30" height="30">
-                                        <span>Rahul Kumar</span>
-                                    </div>
-                                </td>
-                                <td>Stenography (Hindi)</td>
-                                <td>Mar 12, 2024</td>
-                                <td>₹5,000</td>
-                                <td><span class="badge bg-success-subtle text-success border-success-subtle px-2">Paid</span></td>
-                                <td><button class="btn btn-link btn-sm text-decoration-none">Edit</button></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <img src="https://ui-avatars.com/api/?name=Priya+Singh" class="rounded-circle" width="30" height="30">
-                                        <span>Priya Singh</span>
-                                    </div>
-                                </td>
-                                <td>ADCA Specialist</td>
-                                <td>Mar 11, 2024</td>
-                                <td>₹12,000</td>
-                                <td><span class="badge bg-warning-subtle text-warning border-warning-subtle px-2">Partially</span></td>
-                                <td><button class="btn btn-link btn-sm text-decoration-none">Edit</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
-
-        <!-- Footer -->
-        <?php include 'footer.php'; ?>
+<div class="dashboard-grid">
+    <div class="stat-card">
+        <div class="stat-info">
+            <h3>Total Students</h3>
+            <div class="value">1,250</div>
+        </div>
+        <div class="stat-icon">
+            <i class="fas fa-users"></i>
+        </div>
     </div>
+    
+    <div class="stat-card yellow">
+        <div class="stat-info">
+            <h3>Active Courses</h3>
+            <div class="value">24</div>
+        </div>
+        <div class="stat-icon" style="color: var(--secondary-yellow);">
+            <i class="fas fa-book-open"></i>
+        </div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-info">
+            <h3>Pending Fees</h3>
+            <div class="value">₹ 45,000</div>
+        </div>
+        <div class="stat-icon">
+            <i class="fas fa-wallet"></i>
+        </div>
+    </div>
+    
+    <div class="stat-card yellow">
+        <div class="stat-info">
+            <h3>Upcoming Exams</h3>
+            <div class="value">08</div>
+        </div>
+        <div class="stat-icon" style="color: var(--secondary-yellow);">
+            <i class="fas fa-calendar-alt"></i>
+        </div>
+    </div>
+</div>
 
-    <!-- Scripts -->
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Custom JS -->
-    <script src="assets/js/admin-script.js"></script>
-</body>
-</html>
+<div style="padding: 0 30px 30px;">
+    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <h3 style="margin-bottom: 20px; color: var(--primary-green);">Recent Registrations</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="text-align: left; border-bottom: 2px solid #eee;">
+                    <th style="padding: 12px 0;">Student Name</th>
+                    <th style="padding: 12px 0;">Course</th>
+                    <th style="padding: 12px 0;">Date</th>
+                    <th style="padding: 12px 0;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid #f9f9f9;">
+                    <td style="padding: 12px 0;">Rahul Kumar</td>
+                    <td style="padding: 12px 0;">ADCA</td>
+                    <td style="padding: 12px 0;">12 Mar 2026</td>
+                    <td style="padding: 12px 0;"><span style="background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Active</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #f9f9f9;">
+                    <td style="padding: 12px 0;">Priya Singh</td>
+                    <td style="padding: 12px 0;">DCA</td>
+                    <td style="padding: 12px 0;">11 Mar 2026</td>
+                    <td style="padding: 12px 0;"><span style="background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Active</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #f9f9f9;">
+                    <td style="padding: 12px 0;">Amit Verma</td>
+                    <td style="padding: 12px 0;">Python</td>
+                    <td style="padding: 12px 0;">10 Mar 2026</td>
+                    <td style="padding: 12px 0;"><span style="background: #fff8e1; color: #f57f17; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Pending</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<?php include 'footer.php'; ?>

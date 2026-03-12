@@ -1,55 +1,67 @@
-<?php
-// Dynamic Sidebar Menu
-$currentPage = basename($_SERVER['PHP_SELF']);
-
-$menuItems = [
-    'Dashboard' => ['link' => 'index.php', 'icon' => 'fas fa-th-large'],
-    'Students' => ['link' => 'students.php', 'icon' => 'fas fa-user-graduate'],
-    'Courses' => ['link' => 'courses.php', 'icon' => 'fas fa-book'],
-    'Payments' => ['link' => 'payments.php', 'icon' => 'fas fa-wallet'],
-    'Employees' => ['link' => 'employees.php', 'icon' => 'fas fa-users-cog'],
-    'Reports' => [
-        'icon' => 'fas fa-chart-line',
-        'sub' => [
-            'Daily' => 'reports_daily.php',
-            'Monthly' => 'reports_monthly.php',
-            'Yearly' => 'reports_yearly.php'
-        ]
-    ],
-    'Settings' => ['link' => 'settings.php', 'icon' => 'fas fa-cog'],
-];
-?>
-<aside id="sidebar">
+<aside class="admin-sidebar" id="sidebar">
     <div class="sidebar-header">
-        <h4>PRAYAG CTRL</h4>
+        <div class="sidebar-logo">PRAYAG ADMIN</div>
     </div>
+    
     <ul class="sidebar-menu">
-        <?php foreach ($menuItems as $label => $data): ?>
-            <?php if (isset($data['sub'])): ?>
-                <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link" data-bs-toggle="collapse" data-bs-target="#sub-<?php echo strtolower($label); ?>">
-                        <i class="<?php echo $data['icon']; ?>"></i>
-                        <span><?php echo $label; ?></span>
-                        <i class="fas fa-chevron-down ms-auto small"></i>
-                    </a>
-                    <ul class="collapse list-unstyled ps-4 py-2" id="sub-<?php echo strtolower($label); ?>">
-                        <?php foreach ($data['sub'] as $subLabel => $subLink): ?>
-                            <li>
-                                <a href="<?php echo $subLink; ?>" class="menu-link py-1 <?php echo ($currentPage == $subLink) ? 'active' : ''; ?>">
-                                    <span style="font-size: 0.9rem;"><?php echo $subLabel; ?></span>
-                                </a>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                </li>
-            <?php else: ?>
-                <li class="menu-item">
-                    <a href="<?php echo $data['link']; ?>" class="menu-link <?php echo ($currentPage == $data['link']) ? 'active' : ''; ?>">
-                        <i class="<?php echo $data['icon']; ?>"></i>
-                        <span><?php echo $label; ?></span>
-                    </a>
-                </li>
-            <?php endif; ?>
-        <?php endforeach; ?>
+        <li class="menu-item active">
+            <a href="index.php" class="menu-link">
+                <i class="fas fa-tachometer-alt"></i>
+                <span class="menu-text">Dashboard</span>
+            </a>
+        </li>
+        
+        <li class="menu-item has-submenu">
+            <a href="#" class="menu-link">
+                <i class="fas fa-user-graduate"></i>
+                <span class="menu-text">Students</span>
+                <i class="fas fa-chevron-right ms-auto" style="font-size: 0.8rem; margin-left: auto;"></i>
+            </a>
+            <ul class="submenu">
+                <li><a href="add-student.php" class="submenu-link">Add New Student</a></li>
+                <li><a href="manage-students.php" class="submenu-link">Manage Students</a></li>
+                <li><a href="student-attendance.php" class="submenu-link">Attendance</a></li>
+            </ul>
+        </li>
+        
+        <li class="menu-item has-submenu">
+            <a href="#" class="menu-link">
+                <i class="fas fa-book"></i>
+                <span class="menu-text">Courses</span>
+                <i class="fas fa-chevron-right ms-auto" style="font-size: 0.8rem; margin-left: auto;"></i>
+            </a>
+            <ul class="submenu">
+                <li><a href="add-course.php" class="submenu-link">Add New Course</a></li>
+                <li><a href="manage-courses.php" class="submenu-link">Manage Courses</a></li>
+            </ul>
+        </li>
+        
+        <li class="menu-item">
+            <a href="exams.php" class="menu-link">
+                <i class="fas fa-file-signature"></i>
+                <span class="menu-text">Exams</span>
+            </a>
+        </li>
+        
+        <li class="menu-item">
+            <a href="fees.php" class="menu-link">
+                <i class="fas fa-receipt"></i>
+                <span class="menu-text">Fee Management</span>
+            </a>
+        </li>
+        
+        <li class="menu-item">
+            <a href="settings.php" class="menu-link">
+                <i class="fas fa-cog"></i>
+                <span class="menu-text">Settings</span>
+            </a>
+        </li>
+        
+        <li class="menu-item">
+            <a href="../logout.php" class="menu-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="menu-text">Logout</span>
+            </a>
+        </li>
     </ul>
 </aside>
