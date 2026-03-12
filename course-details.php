@@ -176,9 +176,51 @@ $seo_keywords = htmlspecialchars($course['seo_keywords']);
     <script>
         $(document).ready(function() {
             $('#courseEnquiryForm').on('submit', function(e) {
-                // You can add AJAX here later if you want a seamless submission
-                // For now, it will use standard form submission to process-enquiry.php
-                // Unless you want me to write the AJAX part too
+                e.preventDefault();
+                
+                const $form = $(this);
+                const $btn = $form.find('.btn-submit');
+                const originalBtnText = $btn.html();
+                
+                // Disable button and show loader
+                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...');
+                
+                $.ajax({
+                    url: 'process-enquiry.php',
+                    type: 'POST',
+                    data: $form.serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: response.message,
+                                confirmButtonColor: '#2563eb'
+                            });
+                            $form[0].reset();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: response.message,
+                                confirmButtonColor: '#2563eb'
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something went wrong. Please try again later.',
+                            confirmButtonColor: '#2563eb'
+                        });
+                    },
+                    complete: function() {
+                        // Re-enable button
+                        $btn.prop('disabled', false).html(originalBtnText);
+                    }
+                });
             });
         });
     </script>
