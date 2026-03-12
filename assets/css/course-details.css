@@ -1,0 +1,221 @@
+/* Course Details Page Styles */
+.course-details-section {
+    padding: 100px 0 60px;
+    background-color: #f8fafc;
+}
+
+/* Page Header / Hero Area */
+.course-single-header {
+    background: #0f172a;
+    padding: 60px 0;
+    color: white;
+    margin-bottom: 40px;
+}
+
+.course-single-header .category-badge {
+    background: #bfdbfe;
+    color: #1e40af;
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    display: inline-block;
+}
+
+.course-single-header h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.header-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+}
+
+.header-meta span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #94a3b8;
+}
+
+.header-meta span i {
+    color: #fbbf24;
+}
+
+/* Main Content Area */
+.course-main-img {
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    margin-bottom: 35px;
+    overflow: hidden;
+}
+
+.course-main-img img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.course-description {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    line-height: 1.8;
+    color: #334155;
+}
+
+.course-description h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.course-description h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: #2563eb;
+}
+
+/* Sidebar & Enquiry Form */
+.sticky-top {
+    top: 100px;
+}
+
+.course-sidebar-card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+}
+
+.price-container {
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: center;
+}
+
+.price-container .sale-price {
+    font-size: 36px;
+    font-weight: 800;
+    color: #2563eb;
+    display: block;
+}
+
+.price-container .mrp-price {
+    font-size: 18px;
+    color: #94a3b8;
+    text-decoration: line-through;
+    font-weight: 500;
+}
+
+.discount-tag {
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+/* Enquiry Form Styling */
+.enquiry-form h4 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #0f172a;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    outline: none;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 15px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background: #1e40af;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px rgba(37,99,235,0.2);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+    .course-details-section {
+        padding-top: 60px;
+    }
+    
+    .course-single-header {
+        padding: 40px 20px;
+    }
+    
+    .sticky-top {
+        position: static !important;
+        margin-top: 40px;
+    }
+}
+
+@media (max-width: 576px) {
+    .course-description {
+        padding: 25px;
+    }
+    
+    .header-meta {
+        gap: 15px;
+    }
+}
