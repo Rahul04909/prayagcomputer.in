@@ -15,7 +15,7 @@ if ($progressPercent < 0) $progressPercent = 0;
 ?>
 
 <style>
-    .info-widget { border: none; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: white; margin-bottom: 25px; border-left: 5px solid #28a745; }
+    .info-widget { border: none; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: white; margin-bottom: 25px; }
     .info-field { padding: 10px 15px; border-right: 1px solid #f1f1f1; }
     .info-field:last-child { border-right: none; }
     .info-label { font-size: 11px; text-transform: uppercase; color: #888; letter-spacing: 0.5px; margin-bottom: 3px; font-weight: 600; }
