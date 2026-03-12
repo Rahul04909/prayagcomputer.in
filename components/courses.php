@@ -36,12 +36,11 @@ try {
                         // Random Admissions (120 to 2500)
                         $admissions = mt_rand(12, 250) * 10 . "+";
                         
-                        $imagePath = !empty($course['featured_image']) ? 'src/images/' . $course['featured_image'] : 'src/images/course-placeholder.jpg';
+                        $imagePath = !empty($course['featured_image']) ? 'admin/src/images/' . $course['featured_image'] : 'admin/assets/img/course-placeholder.jpg';
                         $duration = htmlspecialchars($course['duration'] . ' ' . $course['duration_type']);
                     ?>
                         <div class="swiper-slide">
                             <div class="course-card">
-                                <span class="course-badge"><?= htmlspecialchars($course['category_name']) ?></span>
                                 <div class="course-image">
                                     <img src="<?= $imagePath ?>" alt="<?= htmlspecialchars($course['title']) ?>" loading="lazy">
                                     <div class="course-overlay">
@@ -51,6 +50,7 @@ try {
                                     </div>
                                 </div>
                                 <div class="course-content">
+                                    <span class="course-category-label"><?= htmlspecialchars($course['category_name']) ?></span>
                                     <h3><?= htmlspecialchars($course['title']) ?></h3>
                                     
                                     <div class="course-meta mb-3">
