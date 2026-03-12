@@ -9,9 +9,32 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use PHPAuth\Config as PHPAuthConfig;
 use PHPAuth\Auth as PHPAuth;
 
+// Verify SQL file existence
+$sqlPath = __DIR__ . '/../vendor/phpauth/phpauth/database.sql';
+if (!file_exists($sqlPath)) {
+    die("Error: SQL file not found at $sqlPath. Please ensure PHPAuth is correctly installed in vendor.");
+}
+
 // Create tables if they don't exist
-$sql = file_get_contents(__DIR__ . '/../vendor/phpauth/phpauth/database.sql');
-$pdo->exec($sql);
+$sql = file_get_contents($sqlPath);
+try {
+    // Split SQL into individual statements
+    $statements = array_filter(array_map('trim', explode(';', $sql)));
+    foreach ($statements as $statement) {
+        if (!empty($statement)) {
+            $pdo->exec($statement);
+        }
+    }
+} catch (PDOException $e) {
+    echo "Warning during table creation: " . $e->getMessage() . "<br>";
+}
+
+// Check for PHPAuth existence
+if (!class_exists('PHPAuth\Config') || !class_exists('PHPAuth\Auth')) {
+    echo "Current include path: " . get_include_path() . "<br>";
+    echo "Autoload path: " . realpath(__DIR__ . '/../vendor/autoload.php') . "<br>";
+    die("Error: PHPAuth classes not found. Please check your vendor/autoload.php and composer installation. Make sure you ran 'composer install'.");
+}
 
 // Alter users table to add extra fields
 $alterSql = "ALTER TABLE `users` 
@@ -20,9 +43,10 @@ $alterSql = "ALTER TABLE `users`
     ADD COLUMN `profile_image` varchar(255) DEFAULT NULL AFTER `password`
 ";
 try {
+    // Only alter if the columns don't exist
     $pdo->exec($alterSql);
 } catch (Exception $e) {
-    // Column might already exist
+    // Column might already exist, ignore this error
 }
 
 $config = new PHPAuthConfig($pdo);
