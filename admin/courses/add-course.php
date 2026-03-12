@@ -52,8 +52,19 @@ try {
                                         <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Advanced Web Development Masterclass" required>
                                     </div>
                                     <div class="form-group mb-3">
-                                        <label for="duration">Course Duration</label>
-                                        <input type="text" id="duration" name="duration" class="form-control" placeholder="e.g. 3 Months / 6 Months">
+                                        <label>Course Duration</label>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input type="number" id="duration" name="duration" class="form-control" placeholder="Value (e.g. 3)" required>
+                                            </div>
+                                            <div class="col-6">
+                                                <select name="duration_type" id="duration_type" class="form-control" required>
+                                                    <option value="Days">Days</option>
+                                                    <option value="Months" selected>Months</option>
+                                                    <option value="Years">Years</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-group mb-3">
                                         <label for="slug">Course Slug (Automatic)</label>

@@ -61,8 +61,19 @@ try {
                                         <input type="text" id="title" name="title" class="form-control" value="<?= htmlspecialchars($course['title']) ?>" required>
                                     </div>
                                     <div class="form-group mb-3">
-                                        <label for="duration">Course Duration</label>
-                                        <input type="text" id="duration" name="duration" class="form-control" value="<?= htmlspecialchars($course['duration'] ?? '') ?>" placeholder="e.g. 3 Months / 6 Months">
+                                        <label>Course Duration</label>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input type="number" id="duration" name="duration" class="form-control" value="<?= htmlspecialchars($course['duration'] ?? '') ?>" required>
+                                            </div>
+                                            <div class="col-6">
+                                                <select name="duration_type" id="duration_type" class="form-control" required>
+                                                    <option value="Days" <?= ($course['duration_type'] ?? '') == 'Days' ? 'selected' : '' ?>>Days</option>
+                                                    <option value="Months" <?= ($course['duration_type'] ?? '') == 'Months' || empty($course['duration_type']) ? 'selected' : '' ?>>Months</option>
+                                                    <option value="Years" <?= ($course['duration_type'] ?? '') == 'Years' ? 'selected' : '' ?>>Years</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-group mb-3">
                                         <label>Course Slug</label>
