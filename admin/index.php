@@ -1,4 +1,4 @@
-
+<?php include './header.php'; ?>
 <?php
 // Website Plan Calculation
 $startDate = "2026-03-08";
