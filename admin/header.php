@@ -18,6 +18,14 @@ $menuItems = [
         ],
     ],
     [
+        "menuTitle" => "Courses",
+        "icon" => "fas fa-graduation-cap",
+        "pages" => [
+            ["title" => "Add Category", "url" => "courses/add-course-category.php"],
+            ["title" => "Manage Categories", "url" => "courses/manage-categories.php"]
+        ],
+    ],
+    [
         "menuTitle" => "Settings",
         "icon" => "fas fa-cog",
         "pages" => [
