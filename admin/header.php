@@ -35,7 +35,8 @@ $menuItems = [
             ["title" => "Add Category", "url" => "courses/add-course-category.php"],
             ["title" => "Manage Categories", "url" => "courses/manage-categories.php"],
             ["title" => "Add Course", "url" => "courses/add-course.php"],
-            ["title" => "Manage Courses", "url" => "courses/manage-courses.php"]
+            ["title" => "Manage Courses", "url" => "courses/manage-courses.php"],
+            ["title" => "Course Enquiries", "url" => "courses/course-enquiries.php"]
         ],
     ],
     [
@@ -487,13 +488,7 @@ $active_page = $active_pageInfo['active_page'] ?? null;
                                                 </a>
                                             </li>
                                         <?php endforeach; ?>
-                                        <li class="nav-item">
-                                <a href="<?= $admin_base_url ?>courses/course-enquiries.php" class="nav-link <?= strpos($current_page, 'course-enquiries.php') !== false ? 'active' : '' ?>">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Course Enquiries</p>
-                                </a>
-                            </li>
-                        </ul>
+                                    </ul>
                                 <?php endif; ?>
                             </li>
                         <?php endforeach; ?>
