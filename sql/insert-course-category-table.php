@@ -1,5 +1,15 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+echo "Debug: Running from " . __DIR__ . "<br>";
+
 require_once __DIR__ . '/../database/db_config.php';
+
+if (!isset($pdo)) {
+    die("Error: Database connection variable \$pdo is not defined.");
+}
 
 $sql = "CREATE TABLE IF NOT EXISTS `course_categories` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
