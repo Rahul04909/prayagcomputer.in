@@ -48,28 +48,17 @@
     <div class="loader"></div>
 </div>
 
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0 text-dark">Add New Category</h1>
-            </div>
-            <div class="col-sm-6 text-right">
-                <a href="manage-categories.php" class="btn btn-outline-success">
-                    <i class="fas fa-list mr-1"></i> View All Categories
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <section class="content">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-10 mx-auto">
                 <div class="card category-card">
-                    <div class="card-header">
-                        Course Category Details
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>Course Category Details</span>
+                        <a href="manage-categories.php" class="btn btn-sm btn-light border text-success">
+                            <i class="fas fa-list mr-1"></i> View All Categories
+                        </a>
                     </div>
                     <form id="categoryForm" enctype="multipart/form-data">
                         <div class="card-body">

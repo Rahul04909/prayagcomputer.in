@@ -51,20 +51,6 @@
     <div class="loader"></div>
 </div>
 
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0 text-dark">Manage Course Categories</h1>
-            </div>
-            <div class="col-sm-6 text-right">
-                <a href="add-course-category.php" class="btn btn-success shadow-sm">
-                    <i class="fas fa-plus mr-1"></i> Add New Category
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <?php
 // Pagination logic
@@ -95,6 +81,9 @@ try {
                 <div class="card cat-table-card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h3 class="card-title" style="font-weight:700; color:#343a40;">Registered Categories (<?= $total_results ?>)</h3>
+                        <a href="add-course-category.php" class="btn btn-sm btn-success shadow-sm">
+                            <i class="fas fa-plus mr-1"></i> Add New Category
+                        </a>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">

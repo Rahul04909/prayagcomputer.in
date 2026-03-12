@@ -33,23 +33,18 @@ try {
     <div class="loader"></div>
 </div>
 
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6"><h1 class="m-0 text-dark">Edit Category</h1></div>
-            <div class="col-sm-6 text-right">
-                <a href="manage-categories.php" class="btn btn-outline-success"><i class="fas fa-arrow-left mr-1"></i> Back to List</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <section class="content">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-10 mx-auto">
                 <div class="card category-card">
-                    <div class="card-header">Modify Category: <?= htmlspecialchars($cat['name']) ?></div>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>Modify Category: <?= htmlspecialchars($cat['name']) ?></span>
+                        <a href="manage-categories.php" class="btn btn-sm btn-light border text-success">
+                            <i class="fas fa-arrow-left mr-1"></i> Back to List
+                        </a>
+                    </div>
                     <form id="editCategoryForm" enctype="multipart/form-data">
                         <input type="hidden" name="id" value="<?= $cat['id'] ?>">
                         <div class="card-body">
