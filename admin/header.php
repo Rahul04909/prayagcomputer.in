@@ -297,7 +297,7 @@ $active_page = $active_pageInfo['active_page'] ?? null;
 
         <aside class="main-sidebar sidebar-light-primary elevation-4">
             <a href="./" class="brand-link">
-                <img src="./src/images/logo.svg" alt="Logo" class="brand-image img-circle bg-white">
+                <img src="./src/images/prayag-computer-logo.png" alt="Logo" class="brand-image img-circle bg-white">
             </a>
             <div class="sidebar">
                 <div class="user-panel mt-3 pb-3 mb-3">
