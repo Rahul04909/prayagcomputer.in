@@ -96,6 +96,7 @@
 /* Sidebar & Enquiry Form */
 .sticky-top {
     top: 100px;
+    z-index: 10; /* Lower than header's 1000 */
 }
 
 .course-sidebar-card {
