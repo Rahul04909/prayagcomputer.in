@@ -215,16 +215,40 @@ $active_page = $active_pageInfo['active_page'] ?? null;
             border-radius: 2px 0 0 2px;
         }
 
-        /* Expand/Collapse Arrow Rotation */
+        /* Expand/Collapse Toggle Icons (+/-) */
         .nav-sidebar .right {
-            font-size: 0.7rem !important;
+            font-size: 0.8rem !important;
             top: 1.1rem !important;
             color: #8c8f94 !important;
-            transition: transform 0.2s ease-in-out;
+            transition: all 0.2s ease-in-out;
+            margin-top: -2px;
+        }
+
+        .nav-sidebar .right::before {
+            content: "\f067"; /* plus */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+        }
+
+        .menu-open > .nav-link .right::before {
+            content: "\f068"; /* minus */
         }
 
         .menu-open > .nav-link .right {
-            transform: rotate(-180deg) !important;
+            transform: none !important; /* No rotation needed for +/- */
+            color: var(--primary-green) !important;
+        }
+
+        /* Submenu Prefix Redesign */
+        .submenu-icon {
+            font-size: 0.6rem !important;
+            opacity: 0.4;
+            margin-right: 15px !important;
+            width: auto !important;
+        }
+
+        .nav-link.active .submenu-icon {
+            opacity: 1;
             color: var(--primary-green) !important;
         }
 
@@ -420,7 +444,7 @@ $active_page = $active_pageInfo['active_page'] ?? null;
                                     <i class="nav-icon <?= $menuItem['icon'] ?>"></i>
                                     <p>
                                         <?= $menuItem['menuTitle'] ?>
-                                        <?= !empty($menuItem['pages']) ? '<i class="right fas fa-angle-left"></i>' : '' ?>
+                                        <?= !empty($menuItem['pages']) ? '<i class="right fas toggle-icon"></i>' : '' ?>
                                     </p>
                                 </a>
                                 <?php if (!empty($menuItem['pages'])): ?>
@@ -429,7 +453,7 @@ $active_page = $active_pageInfo['active_page'] ?? null;
                                             <li class="nav-item">
                                                 <a href="<?= $page['url'] ?>"
                                                     class="nav-link <?= $page === $active_page ? 'active' : '' ?>">
-                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <i class="fas fa-minus nav-icon submenu-icon"></i>
                                                     <p><?= $page['title'] ?></p>
                                                 </a>
                                             </li>

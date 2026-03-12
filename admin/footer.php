@@ -7,7 +7,7 @@
 
         <footer class="main-footer">
             <div class="float-right d-none d-sm-inline">
-                Admin Panel <strong><a target="_blank" href="https://iqbolshoh.uz/">Iqbolshoh.uz</a></strong>
+                Admin Panel Designed By <strong><a target="_blank" href="https://www.prayagcomputer.in">Rahul Dhiman / +91-8059982049</a></strong>
             </div>
             <strong> &copy;<?php echo date('Y'); ?></strong> All rights reserved.
         </footer>
