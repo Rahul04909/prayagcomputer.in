@@ -67,89 +67,166 @@ $active_page = $active_pageInfo['active_page'] ?? null;
             --sidebar-color: #2c3e50;
             --primary-green: #28a745;
             --accent-yellow: #ffc107;
-            --border-color: #e9ecef;
+            --border-color: #f0f0f1;
+            --submenu-bg: #f6f7f7;
+            --indicator-width: 4px;
         }
 
+        /* Sidebar Container */
         .main-sidebar {
             background-color: var(--sidebar-bg) !important;
-            border-right: 1px solid var(--border-color);
+            border-right: 1px solid #dcdcde;
+            box-shadow: none !important;
         }
 
+        /* Brand Logo Area */
         .brand-link {
             background-color: var(--primary-green) !important;
             color: #fff !important;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+            padding: 15px 15px !important;
         }
 
         .brand-link .brand-text {
             color: #fff !important;
-            font-weight: 600 !important;
+            font-weight: 700 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem !important;
         }
 
-        .sidebar {
-            padding-left: 0;
-            padding-right: 0;
-        }
-
+        /* User Panel */
         .user-panel {
             border-bottom: 1px solid var(--border-color) !important;
             margin: 0 !important;
-            padding: 15px !important;
+            padding: 12px 15px !important;
         }
 
         .user-panel .info {
             color: var(--sidebar-color) !important;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 0.85rem;
         }
 
+        /* Navigation Items */
         .nav-sidebar > .nav-item {
-            border-top: 1px solid var(--border-color);
+            margin-bottom: 0 !important;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .nav-sidebar > .nav-item:last-child {
-            border-bottom: 1px solid var(--border-color);
+        .nav-sidebar > .nav-item:first-child {
+            border-top: 1px solid var(--border-color);
         }
 
         .nav-sidebar .nav-link {
             color: var(--sidebar-color) !important;
-            padding: 12px 20px !important;
+            padding: 12px 15px !important;
             border-radius: 0 !important;
             margin: 0 !important;
-            transition: all 0.3s;
+            position: relative;
+            transition: background-color 0.1s ease-in-out;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
+        /* WordPress Style Left Indicator */
+        .nav-sidebar .nav-link.active::before,
+        .nav-item.menu-open > .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: var(--indicator-width);
+            background-color: var(--primary-green);
+        }
+
+        /* Hover State */
         .nav-sidebar .nav-link:hover {
-            background-color: rgba(40, 167, 69, 0.05) !important;
+            background-color: var(--submenu-bg) !important;
             color: var(--primary-green) !important;
         }
 
+        /* Active State */
         .nav-sidebar .nav-link.active {
-            background-color: var(--primary-green) !important;
-            color: var(--accent-yellow) !important;
+            background-color: var(--submenu-bg) !important;
+            color: var(--primary-green) !important;
             box-shadow: none !important;
         }
 
         .nav-sidebar .nav-link.active i {
-            color: var(--accent-yellow) !important;
+            color: var(--primary-green) !important;
+        }
+
+        /* Icon Styling */
+        .nav-sidebar .nav-icon {
+            color: #8c8f94;
+            margin-right: 10px !important;
+            width: 20px;
+            text-align: center;
+            font-size: 0.95rem;
+            transition: color 0.1s ease-in-out;
+        }
+
+        .nav-link:hover .nav-icon,
+        .nav-link.active .nav-icon,
+        .menu-open > .nav-link .nav-icon {
+            color: var(--primary-green) !important;
+        }
+
+        /* Submenu (Treeview) Styling */
+        .nav-treeview {
+            background-color: var(--submenu-bg) !important;
+            padding: 0 !important;
         }
 
         .nav-treeview > .nav-item > .nav-link {
-            padding-left: 30px !important;
-            background-color: #f8f9fa !important;
-            border-top: 1px solid rgba(0,0,0,0.02);
+            padding-left: 45px !important; /* Indent submenus like WP */
+            font-size: 0.85rem;
+            color: #50575e !important;
+            border-bottom: none !important;
+            border-top: none !important;
         }
 
-        .nav-sidebar .nav-icon {
-            color: var(--primary-green);
+        .nav-treeview > .nav-item > .nav-link:hover {
+            color: var(--primary-green) !important;
+            background-color: #fff !important;
         }
 
-        .nav-link.active .nav-icon {
-            color: var(--accent-yellow) !important;
+        .nav-treeview > .nav-item > .nav-link.active {
+            color: var(--primary-green) !important;
+            background-color: #fff !important;
+            font-weight: 600;
         }
 
-        /* Adjustments for AdminLTE */
-        .sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active {
-            background-color: var(--primary-green) !important;
+        /* Active highlight for submenu text in WP is often Yellow or lighter Green in our case */
+        .nav-treeview > .nav-item > .nav-link.active::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 10px;
+            bottom: 10px;
+            width: 3px;
+            background-color: var(--accent-yellow);
+            border-radius: 2px 0 0 2px;
+        }
+
+        /* Expand/Collapse Arrow Rotation */
+        .nav-sidebar .right {
+            font-size: 0.7rem !important;
+            top: 1.1rem !important;
+            color: #8c8f94 !important;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .menu-open > .nav-link .right {
+            transform: rotate(-180deg) !important;
+            color: var(--primary-green) !important;
+        }
+
+        /* Sidebar Mini behavior refinements */
+        .sidebar-collapse .nav-sidebar .nav-link::before {
+            display: none;
         }
     </style>
 </head>
