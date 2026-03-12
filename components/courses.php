@@ -85,9 +85,6 @@ try {
     </div>
 </section>
 
-<!-- Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 <!-- Swiper JS -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
@@ -126,92 +123,3 @@ try {
         });
     });
 </script>
-
-<style>
-/* Additional Inline Styles for Course Card Enhancements */
-.course-overlay {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 4px 10px;
-    border-radius: 5px;
-    font-size: 13px;
-    font-weight: 700;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    z-index: 2;
-}
-
-.course-meta {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.meta-item {
-    font-size: 13px;
-    color: #64748b;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.meta-item i {
-    color: #2563eb;
-}
-
-.pricing-box {
-    display: flex;
-    flex-direction: column;
-}
-
-.sale-price {
-    font-size: 22px;
-    font-weight: 800;
-    color: #0f172a;
-    line-height: 1;
-}
-
-.mrp-price {
-    font-size: 13px;
-    color: #94a3b8;
-    text-decoration: line-through;
-    margin-top: 2px;
-}
-
-.btn-enroll {
-    background: #2563eb;
-    color: white !important;
-    padding: 10px 18px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 14px;
-    transition: all 0.3s ease;
-    border: none;
-    display: inline-flex;
-    align-items: center;
-}
-
-.btn-enroll:hover {
-    background: #1e40af;
-    transform: translateX(3px);
-    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
-}
-
-.course-badge {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background: #0f172a;
-    color: #fbbf24;
-    padding: 5px 15px;
-    border-radius: 50px;
-    font-weight: 800;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    z-index: 5;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-</style>
