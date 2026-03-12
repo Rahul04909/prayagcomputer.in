@@ -7,7 +7,18 @@ if (!is_logged_in()) {
 }
 
 $user = get_current_user_data();
-$currentPage = basename($_SERVER['SCRIPT_NAME']);
+$script_path = str_replace('\\', '/', $_SERVER['SCRIPT_NAME']);
+$admin_pos = strpos($script_path, '/admin/');
+
+if ($admin_pos !== false) {
+    $after_admin = substr($script_path, $admin_pos + 7); // Length of '/admin/'
+    $depth = substr_count($after_admin, '/');
+    $baseUrl = str_repeat('../', $depth);
+    $currentPage = $after_admin;
+} else {
+    $baseUrl = './';
+    $currentPage = basename($_SERVER['SCRIPT_NAME']);
+}
 
 $menuItems = [
     [
@@ -438,14 +449,14 @@ $active_page = $active_pageInfo['active_page'] ?? null;
         </div>
 
         <aside class="main-sidebar sidebar-light-primary elevation-4">
-            <a href="./" class="brand-link">
-                <img src="./src/images/prayag-computer-logo.png" alt="Logo" class="brand-image img-circle bg-white">
+            <a href="<?= $baseUrl ?>" class="brand-link">
+                <img src="<?= $baseUrl ?>src/images/prayag-computer-logo.png" alt="Logo" class="brand-image img-circle bg-white">
             </a>
             <div class="sidebar">
                 <div class="user-panel mt-3 pb-3 mb-3">
-                    <a href="./profile.php" class="d-flex">
+                    <a href="<?= $baseUrl ?>profile.php" class="d-flex">
                         <div class="image">
-                            <img src="./src/images/<?= htmlspecialchars($user['profile_image'] ?? 'user-avtar.png') ?>" class="img-circle elevation-2 bg-white" alt="User Image">
+                            <img src="<?= $baseUrl ?>src/images/<?= htmlspecialchars($user['profile_image'] ?? 'user-avtar.png') ?>" class="img-circle elevation-2 bg-white" alt="User Image">
                         </div>
                         <div class="info">
                             <?= htmlspecialchars($user['name'] ?? 'Admin') ?>
@@ -467,7 +478,7 @@ $active_page = $active_pageInfo['active_page'] ?? null;
                                     <ul class="nav nav-treeview">
                                         <?php foreach ($menuItem['pages'] as $page): ?>
                                             <li class="nav-item">
-                                                <a href="<?= $page['url'] ?>"
+                                                <a href="<?= $baseUrl . $page['url'] ?>"
                                                     class="nav-link <?= $page === $active_page ? 'active' : '' ?>">
                                                     <i class="fas fa-minus nav-icon submenu-icon"></i>
                                                     <p><?= $page['title'] ?></p>
@@ -479,7 +490,7 @@ $active_page = $active_pageInfo['active_page'] ?? null;
                             </li>
                         <?php endforeach; ?>
                         <li class="nav-item">
-                            <a href="logout.php" class="nav-link">
+                            <a href="<?= $baseUrl ?>logout.php" class="nav-link">
                                 <i class="nav-icon fas fa-sign-out-alt"></i>
                                 <p>Logout</p>
                             </a>
