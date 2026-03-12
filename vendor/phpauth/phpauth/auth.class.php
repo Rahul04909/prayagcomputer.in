@@ -496,7 +496,7 @@ class Auth
 	* @return int $uid
 	*/
 
-	private function addUser($email, $password, $params = array(), &$sendmail)
+	private function addUser($email, $password, $params, &$sendmail)
 	{
 		$return['error'] = true;
 

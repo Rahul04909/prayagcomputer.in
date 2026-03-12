@@ -56,7 +56,7 @@ try {
 }
 
 $email = "admin@prayagcomputer.in";
-$password = "admin123";
+$password = "Admin@123";
 $name = "Rahul";
 $mobile = "8059982049";
 $profile_image = "user-avtar.png";
