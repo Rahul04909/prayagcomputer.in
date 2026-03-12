@@ -487,7 +487,13 @@ $active_page = $active_pageInfo['active_page'] ?? null;
                                                 </a>
                                             </li>
                                         <?php endforeach; ?>
-                                    </ul>
+                                        <li class="nav-item">
+                                <a href="<?= $admin_base_url ?>courses/course-enquiries.php" class="nav-link <?= strpos($current_page, 'course-enquiries.php') !== false ? 'active' : '' ?>">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Course Enquiries</p>
+                                </a>
+                            </li>
+                        </ul>
                                 <?php endif; ?>
                             </li>
                         <?php endforeach; ?>

@@ -290,6 +290,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
         }
         exit();
+    } elseif ($action === 'delete_enquiry') {
+        $id = $_POST['id'] ?? 0;
+        try {
+            $stmt = $pdo->prepare("DELETE FROM enquiries WHERE id = ?");
+            if ($stmt->execute([$id])) {
+                echo json_encode(['status' => 'success', 'message' => 'Enquiry deleted successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to delete enquiry.']);
+            }
+        } catch (PDOException $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
+        }
+        exit();
+    } elseif ($action === 'update_enquiry_status') {
+        $id = $_POST['id'] ?? 0;
+        $status = $_POST['status'] ?? 'Pending';
+        try {
+            $stmt = $pdo->prepare("UPDATE enquiries SET status = ? WHERE id = ?");
+            if ($stmt->execute([$status, $id])) {
+                echo json_encode(['status' => 'success', 'message' => 'Status updated successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to update status.']);
+            }
+        } catch (PDOException $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
+        }
+        exit();
     }
 }
 
