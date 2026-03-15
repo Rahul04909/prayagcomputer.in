@@ -49,6 +49,13 @@ $menuItems = [
         ],
     ],
     [
+        "menuTitle" => "Typing Master",
+        "icon" => "fas fa-keyboard",
+        "pages" => [
+            ["title" => "Manage Categories", "url" => "typing-master/manage-exam-category.php"]
+        ],
+    ],
+    [
         "menuTitle" => "Settings",
         "icon" => "fas fa-cog",
         "pages" => [
