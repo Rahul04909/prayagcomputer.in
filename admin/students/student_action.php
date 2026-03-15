@@ -105,17 +105,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $aadhar_card_file = uploadStudentFile('aadhar_card_file', 'stu_aadhar', $upload_dir);
 
         try {
+            // Get course fees
+            $course_stmt = $pdo->prepare("SELECT sale_price FROM courses WHERE id = ?");
+            $course_stmt->execute([$course_id]);
+            $total_fees = $course_stmt->fetchColumn() ?: 0;
+
             $sql = "INSERT INTO students (
-                enrollment_no, course_id, student_name, email, image, mobile, father_name, mother_name, 
+                enrollment_no, course_id, total_fees, student_name, email, image, mobile, father_name, mother_name, 
                 pincode, country, state, city, full_address, 
                 qualification, school_university, qualification_cert, 
                 aadhar_number, aadhar_card_file, password,
                 typing_access, steno_access, punjabi_lms_access
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
-                $enrollment_no, $course_id, $student_name, $email, $image, $mobile, $father_name, $mother_name,
+                $enrollment_no, $course_id, $total_fees, $student_name, $email, $image, $mobile, $father_name, $mother_name,
                 $pincode, $country, $state, $city, $full_address,
                 $qualification, $school_university, $qualification_cert,
                 $aadhar_number, $aadhar_card_file, $hashed_password,

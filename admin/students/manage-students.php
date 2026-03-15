@@ -181,6 +181,9 @@ try {
                                                             <?php endif; ?>
                                                         </div>
 
+                                                        <a href="collect-fees.php?student_id=<?= $student['id'] ?>" class="btn btn-sm btn-outline-success mr-2" title="Collect Fees" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                                                            <i class="fas fa-money-bill-wave"></i>
+                                                        </a>
                                                         <button onclick="Swal.fire('Info', 'Edit functionality coming soon!', 'info')" class="btn btn-sm btn-outline-primary mr-2" title="Edit Profile" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
                                                             <i class="fas fa-user-edit"></i>
                                                         </button>
