@@ -43,11 +43,17 @@ try {
         <div class="row">
             <div class="col-12">
                 <div class="card cat-card">
-                    <div class="card-header d-flex justify-content-between align-items-center bg-white p-3">
-                        <h3 class="card-title" style="font-weight:700; color:#343a40; margin:0;">Typing Exam Categories (<?= $total_results ?>)</h3>
-                        <button class="btn btn-sm btn-success shadow-sm" onclick="openModal()">
-                            <i class="fas fa-plus mr-1"></i> Add Category
-                        </button>
+                    <div class="card-header bg-white p-3">
+                        <div class="row align-items-center">
+                            <div class="col-6">
+                                <h3 class="card-title" style="font-weight:700; color:#343a40; margin:0;">Typing Exam Categories (<?= $total_results ?>)</h3>
+                            </div>
+                            <div class="col-6 text-end">
+                                <button class="btn btn-sm btn-success shadow-sm" onclick="openModal()">
+                                    <i class="fas fa-plus mr-1"></i> Add Category
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
