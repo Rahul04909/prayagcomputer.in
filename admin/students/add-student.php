@@ -13,6 +13,8 @@
     .form-control:focus, .form-select:focus { border-color: #28a745; background: #fff; box-shadow: 0 0 0 3px rgba(40,167,69,0.1); }
     .img-preview { width: 120px; height: 120px; object-fit: cover; border-radius: 15px; border: 2px dashed #ddd; padding: 5px; margin-top: 10px; }
     .software-access-box { background: #f8f9fa; border-radius: 12px; padding: 20px; border: 1px solid #eee; }
+    .password-toggle { cursor: pointer; color: #666; transition: color 0.2s; }
+    .password-toggle:hover { color: #28a745; }
     #loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
 </style>
 
@@ -95,6 +97,31 @@ try {
                                 <label class="form-label">Student Photo</label>
                                 <input type="file" name="image" class="form-control" accept="image/*" onchange="previewImg(this, 'stuPreview')">
                                 <img id="stuPreview" src="../src/images/placeholder-user.png" class="img-preview" alt="Preview">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Details -->
+                    <div class="section-title mt-4">
+                        <i class="fas fa-lock"></i> Security Details
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-4">
+                                <label class="form-label">Create Password <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required>
+                                    <span class="input-group-text toggle-password" style="cursor:pointer;"><i class="fas fa-eye"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-4">
+                                <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Confirm password" required>
+                                    <span class="input-group-text toggle-password" style="cursor:pointer;"><i class="fas fa-eye"></i></span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -190,9 +217,9 @@ try {
                         <i class="fas fa-laptop-code"></i> Software & Course Access
                     </div>
                     <div class="software-access-box">
-                        <div class="row align-items-center">
-                            <div class="col-md-4 mb-3 mb-md-0">
-                                <label class="form-label d-block">Typing Master Access</label>
+                        <div class="row justify-content-center">
+                            <div class="col-md-5 mb-4 mb-md-0">
+                                <label class="form-label d-block text-center">Typing Master Access</label>
                                 <div class="btn-group w-100" role="group">
                                     <input type="radio" class="btn-check" name="typing_access" id="t_none" value="None" checked>
                                     <label class="btn btn-outline-secondary" for="t_none">None</label>
@@ -204,26 +231,23 @@ try {
                                     <label class="btn btn-outline-success" for="t_english">English</label>
                                 </div>
                             </div>
-                            <div class="col-md-8">
-                                <div class="row text-center">
-                                    <div class="col-4">
-                                        <div class="custom-control custom-checkbox">
-                                            <input class="custom-control-input" type="checkbox" id="steno_hindi" name="steno_hindi_access">
-                                            <label for="steno_hindi" class="custom-control-label">Steno Hindi</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="custom-control custom-checkbox">
-                                            <input class="custom-control-input" type="checkbox" id="steno_english" name="steno_english_access">
-                                            <label for="steno_english" class="custom-control-label">Steno English</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="custom-control custom-checkbox">
-                                            <input class="custom-control-input" type="checkbox" id="punjabi_lms" name="punjabi_lms_access">
-                                            <label for="punjabi_lms" class="custom-control-label">Punjabi LMS</label>
-                                        </div>
-                                    </div>
+                            <div class="col-md-5">
+                                <label class="form-label d-block text-center">Steno Software Access</label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="steno_access" id="s_none" value="None" checked>
+                                    <label class="btn btn-outline-secondary" for="s_none">None</label>
+                                    
+                                    <input type="radio" class="btn-check" name="steno_access" id="s_hindi" value="Hindi">
+                                    <label class="btn btn-outline-success" for="s_hindi">Hindi</label>
+                                    
+                                    <input type="radio" class="btn-check" name="steno_access" id="s_english" value="English">
+                                    <label class="btn btn-outline-success" for="s_english">English</label>
+                                </div>
+                            </div>
+                            <div class="col-md-10 mt-4 text-center">
+                                <div class="custom-control custom-checkbox d-inline-block">
+                                    <input class="custom-control-input" type="checkbox" id="punjabi_lms" name="punjabi_lms_access">
+                                    <label for="punjabi_lms" class="custom-control-label font-weight-bold">Punjabi LMS Access</label>
                                 </div>
                             </div>
                         </div>
@@ -255,6 +279,19 @@ try {
     }
 
     $(document).ready(function() {
+        // Password Visibility Toggle
+        $('.toggle-password').click(function() {
+            const input = $(this).siblings('input');
+            const icon = $(this).find('i');
+            if (input.attr('type') === 'password') {
+                input.attr('type', 'text');
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                input.attr('type', 'password');
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        });
+
         // Aadhar Formatting (0000 0000 0000)
         $('#aadhar_number').on('input', function() {
             let val = $(this).val().replace(/\D/g, '');
@@ -299,6 +336,13 @@ try {
         // Form Submission
         $('#studentAdmissionForm').on('submit', function(e) {
             e.preventDefault();
+            
+            // Basic Frontend Validation
+            if($('#password').val() !== $('#confirm_password').val()) {
+                Swal.fire('Error', 'Passwords do not match!', 'error');
+                return;
+            }
+
             const formData = new FormData(this);
             formData.append('action', 'add_student');
 

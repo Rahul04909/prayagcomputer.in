@@ -8,6 +8,26 @@ if (!is_logged_in()) {
 
 require_once __DIR__ . '/../../database/db_config.php';
 
+// Helper to generate enrollment number
+function generateEnrollmentNumber($pdo) {
+    $prefix = "PRC";
+    $year = date("Y");
+    
+    // Find the last serial number for the current year
+    $stmt = $pdo->prepare("SELECT enrollment_no FROM students WHERE enrollment_no LIKE ? ORDER BY id DESC LIMIT 1");
+    $stmt->execute([$prefix . $year . "%"]);
+    $last_enrollment = $stmt->fetchColumn();
+    
+    $serial = 1;
+    if ($last_enrollment) {
+        // Extract serial from PRC2026001
+        $last_serial = (int)substr($last_enrollment, 7);
+        $serial = $last_serial + 1;
+    }
+    
+    return $prefix . $year . str_pad($serial, 3, '0', STR_PAD_LEFT);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
@@ -19,6 +39,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mobile = trim($_POST['mobile'] ?? '');
         $father_name = trim($_POST['father_name'] ?? '');
         $mother_name = trim($_POST['mother_name'] ?? '');
+        
+        // Password
+        $password = $_POST['password'] ?? '';
+        $confirm_password = $_POST['confirm_password'] ?? '';
         
         // Address
         $pincode = trim($_POST['pincode'] ?? '');
@@ -36,14 +60,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Access
         $typing_access = $_POST['typing_access'] ?? 'None';
-        $steno_hindi_access = isset($_POST['steno_hindi_access']) ? 1 : 0;
-        $steno_english_access = isset($_POST['steno_english_access']) ? 1 : 0;
+        $steno_access = $_POST['steno_access'] ?? 'None';
         $punjabi_lms_access = isset($_POST['punjabi_lms_access']) ? 1 : 0;
         
         if (empty($student_name) || empty($mobile)) {
             echo json_encode(['status' => 'error', 'message' => 'Student name and mobile are required.']);
             exit();
         }
+        
+        if (empty($password)) {
+            echo json_encode(['status' => 'error', 'message' => 'Password is required.']);
+            exit();
+        }
+        
+        if ($password !== $confirm_password) {
+            echo json_encode(['status' => 'error', 'message' => 'Passwords do not match.']);
+            exit();
+        }
+
+        $enrollment_no = generateEnrollmentNumber($pdo);
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         $image = '';
         $qualification_cert = '';
@@ -70,23 +106,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         try {
             $sql = "INSERT INTO students (
-                course_id, student_name, email, image, mobile, father_name, mother_name, 
+                enrollment_no, course_id, student_name, email, image, mobile, father_name, mother_name, 
                 pincode, country, state, city, full_address, 
                 qualification, school_university, qualification_cert, 
-                aadhar_number, aadhar_card_file, 
-                typing_access, steno_hindi_access, steno_english_access, punjabi_lms_access
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                aadhar_number, aadhar_card_file, password,
+                typing_access, steno_access, punjabi_lms_access
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
-                $course_id, $student_name, $email, $image, $mobile, $father_name, $mother_name,
+                $enrollment_no, $course_id, $student_name, $email, $image, $mobile, $father_name, $mother_name,
                 $pincode, $country, $state, $city, $full_address,
                 $qualification, $school_university, $qualification_cert,
-                $aadhar_number, $aadhar_card_file,
-                $typing_access, $steno_hindi_access, $steno_english_access, $punjabi_lms_access
+                $aadhar_number, $aadhar_card_file, $hashed_password,
+                $typing_access, $steno_access, $punjabi_lms_access
             ]);
             
-            echo json_encode(['status' => 'success', 'message' => 'Student admitited successfully!']);
+            echo json_encode(['status' => 'success', 'message' => 'Student admitted with Enrollment No: ' . $enrollment_no]);
         } catch (PDOException $e) {
             echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
         }
