@@ -133,7 +133,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } catch (PDOException $e) {
             echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
+            // Delete Typing Test
+    if ($action === 'delete_typing_test') {
+        $id = $_POST['id'] ?? 0;
+
+        if (!$id) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid Test ID.']);
+            exit();
         }
+
+        try {
+            $stmt = $pdo->prepare("DELETE FROM typing_tests WHERE id = ?");
+            if ($stmt->execute([$id])) {
+                echo json_encode(['status' => 'success', 'message' => 'Typing Test deleted successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to delete Typing Test.']);
+            }
+        } catch (PDOException $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
+        }
+        exit();
+    }
+}
         exit();
     }
 }
