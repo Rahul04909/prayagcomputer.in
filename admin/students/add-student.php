@@ -34,7 +34,7 @@ try {
 
 <div class="content-header p-0"></div>
 
-<section class="content">
+<section class="content mb-5">
     <div class="container-fluid">
         <form id="studentAdmissionForm" enctype="multipart/form-data">
             <div class="card admission-card">

@@ -79,7 +79,7 @@ try {
 }
 ?>
 
-<section class="content">
+<section class="content mb-5">
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
