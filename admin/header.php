@@ -415,6 +415,25 @@ $active_page = $active_pageInfo['active_page'] ?? null;
                 justify-content: flex-start !important;
             }
         }
+
+        /* Navbar Quick Actions */
+        .header-btn {
+            border-radius: 20px !important;
+            padding: 5px 15px !important;
+            font-size: 0.85rem !important;
+            font-weight: 600 !important;
+            margin-right: 10px !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+            transition: all 0.2s !important;
+            border: none !important;
+            display: inline-flex;
+            align-items: center;
+        }
+        .header-btn:hover {
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+        }
+        .header-btn i { font-size: 0.8rem; }
     </style>
 </head>
 
@@ -434,26 +453,20 @@ $active_page = $active_pageInfo['active_page'] ?? null;
                     <a href="./" class="nav-link">Home</a>
                 </li>
             </ul>
-            <form class="form-inline ml-3">
-                <div class="input-group input-group-sm">
-                    <input class="form-control form-control-navbar" type="search" placeholder="Search" name="search">
-                    <div class="input-group-append">
-                        <button class="btn btn-navbar" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link" href="#messages">
-                        <i class="far fa-comments"></i>
-                        <span class="badge badge-danger navbar-badge">2</span>
+            <ul class="navbar-nav ml-auto align-items-center">
+                <li class="nav-item">
+                    <a href="<?= $baseUrl ?>students/add-student.php" class="btn btn-success header-btn text-white">
+                        <i class="fas fa-user-plus mr-1"></i> Add Student
                     </a>
                 </li>
-                <li class="nav-item dropdown"><a class="nav-link" href="#notifications">
-                        <i class="far fa-bell"></i>
-                        <span class="badge badge-warning navbar-badge">5</span>
+                <li class="nav-item">
+                    <a href="<?= $baseUrl ?>students/collect-fees.php" class="btn btn-primary header-btn text-white">
+                        <i class="fas fa-rupee-sign mr-1"></i> Collect Fees
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="<?= $baseUrl ?>courses/add-course.php" class="btn btn-warning header-btn text-dark">
+                        <i class="fas fa-graduation-cap mr-1"></i> New Course
                     </a>
                 </li>
             </ul>
