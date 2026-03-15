@@ -176,13 +176,15 @@ try {
                                                         <?php endif; ?>
                                                     </div>
                                                 </td>
-                                                <td class="text-right pr-4">
-                                                    <button onclick="Swal.fire('Info', 'Edit functionality coming soon!', 'info')" class="btn btn-sm btn-outline-primary mr-1" title="Edit Profile">
-                                                        <i class="fas fa-user-edit"></i>
-                                                    </button>
-                                                    <button onclick="deleteStudent(<?= $student['id'] ?>, '<?= htmlspecialchars(addslashes($student['student_name'])) ?>')" class="btn btn-sm btn-outline-danger" title="Delete Admission">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
+                                                <td class="pr-4">
+                                                    <div class="d-flex justify-content-end align-items-center">
+                                                        <button onclick="Swal.fire('Info', 'Edit functionality coming soon!', 'info')" class="btn btn-sm btn-outline-primary mr-2" title="Edit Profile" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                                                            <i class="fas fa-user-edit"></i>
+                                                        </button>
+                                                        <button onclick="deleteStudent(<?= $student['id'] ?>, '<?= htmlspecialchars(addslashes($student['student_name'])) ?>')" class="btn btn-sm btn-outline-danger" title="Delete Admission" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
