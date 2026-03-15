@@ -1,4 +1,12 @@
 <?php
+require_once __DIR__ . '/includes/auth_helper.php';
+
+if (!is_student_logged_in()) {
+    header("Location: login.php");
+    exit();
+}
+
+$student = get_current_student_data();
 $currentPage = basename($_SERVER['SCRIPT_NAME']);
 
 $menuItems = [
@@ -37,9 +45,13 @@ foreach ($menuItems as $menuItem) {
 }
 
 $breadcrumb_Items = $active_pageInfo['breadcrumb_Items'] ?? [];
-$page_title = $active_pageInfo['page_title'] ?? '';
+$page_title = $active_pageInfo['page_title'] ?? 'Student Dashboard';
 $active_menu = $active_pageInfo['active_menu'] ?? null;
 $active_page = $active_pageInfo['active_page'] ?? null;
+
+// Profile Variables
+$student_name = $student['student_name'] ?? 'Student';
+$student_image = !empty($student['image']) ? '../' . $student['image'] : './src/images/user-avtar.png';
 ?>
 
 <!DOCTYPE html>
@@ -429,10 +441,10 @@ $active_page = $active_pageInfo['active_page'] ?? null;
                 <div class="user-panel mt-3 pb-3 mb-3">
                     <a href="./profile.php" class="d-flex">
                         <div class="image">
-                            <img src="./src/images/user-avtar.png" class="img-circle elevation-2 bg-white" alt="User Image">
+                            <img src="<?= $student_image ?>" class="img-circle elevation-2 bg-white" alt="User Image" style="width: 33px; height: 33px; object-fit: cover;">
                         </div>
                         <div class="info">
-                            Rahul
+                            <?= htmlspecialchars($student_name) ?>
                         </div>
                     </a>
                 </div>
@@ -462,8 +474,8 @@ $active_page = $active_pageInfo['active_page'] ?? null;
                                 <?php endif; ?>
                             </li>
                         <?php endforeach; ?>
-                        <li class="nav-item" onclick="logout()">
-                            <a href="javascript:void(0);" class="nav-link">
+                        <li class="nav-item">
+                            <a href="logout.php" class="nav-link">
                                 <i class="nav-icon fas fa-sign-out-alt"></i>
                                 <p>Logout</p>
                             </a>
