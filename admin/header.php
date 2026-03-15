@@ -43,7 +43,9 @@ $menuItems = [
         "menuTitle" => "Steno Exam",
         "icon" => "fas fa-keyboard",
         "pages" => [
-            ["title" => "Manage Categories", "url" => "steno/manage-exam-category.php"]
+            ["title" => "Manage Categories", "url" => "steno/manage-exam-category.php"],
+            ["title" => "Add Test", "url" => "steno/add-steno-test.php"],
+            ["title" => "Manage Tests", "url" => "steno/manage-steno-tests.php"]
         ],
     ],
     [
