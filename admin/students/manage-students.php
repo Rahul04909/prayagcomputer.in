@@ -134,7 +134,6 @@ try {
                                         <th>Course</th>
                                         <th>Contact</th>
                                         <th>Software Access</th>
-                                        <th>Status</th>
                                         <th class="text-right pr-4">Actions</th>
                                     </tr>
                                 </thead>
@@ -158,8 +157,12 @@ try {
                                                 <td><span class="enroll-badge"><?= $student['enrollment_no'] ?></span></td>
                                                 <td><small class="badge badge-light border shadow-none" style="font-weight:600;"><?= htmlspecialchars($student['course_title'] ?: 'N/A') ?></small></td>
                                                 <td>
-                                                    <small><i class="fas fa-phone-alt text-success mr-1"></i> <?= $student['mobile'] ?></small><br>
-                                                    <small><i class="fas fa-envelope text-primary mr-1"></i> <?= htmlspecialchars($student['email'] ?: 'N/A') ?></small>
+                                                    <div style="max-width: 180px;">
+                                                        <small class="d-block"><i class="fas fa-phone-alt text-success mr-1"></i> <?= $student['mobile'] ?></small>
+                                                        <small class="d-block text-truncate" title="<?= htmlspecialchars($student['email']) ?>">
+                                                            <i class="fas fa-envelope text-primary mr-1"></i> <?= htmlspecialchars($student['email'] ?: 'N/A') ?>
+                                                        </small>
+                                                    </div>
                                                 </td>
                                                 <td>
                                                     <div class="text-xs">
@@ -167,17 +170,17 @@ try {
                                                         <span class="badge <?= $student['steno_access'] !== 'None' ? 'badge-info' : 'badge-light' ?> p-1">Steno: <?= $student['steno_access'] ?></span>
                                                     </div>
                                                 </td>
-                                                <td>
-                                                    <div onclick="toggleStatus(<?= $student['id'] ?>, <?= $student['status'] ?>)">
-                                                        <?php if ($student['status']): ?>
-                                                            <span class="status-badge shadow-sm" style="background:#e8f5e9; color:#2e7d32;"><i class="fas fa-check-circle mr-1"></i> Active</span>
-                                                        <?php else: ?>
-                                                            <span class="status-badge shadow-sm" style="background:#ffebee; color:#c62828;"><i class="fas fa-times-circle mr-1"></i> Inactive</span>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                </td>
                                                 <td class="pr-4">
                                                     <div class="d-flex justify-content-end align-items-center">
+                                                        <!-- Status Toggle in Actions -->
+                                                        <div onclick="toggleStatus(<?= $student['id'] ?>, <?= $student['status'] ?>)" class="mr-2" style="cursor:pointer;">
+                                                            <?php if ($student['status']): ?>
+                                                                <span class="badge badge-success" title="Click to Deactivate"><i class="fas fa-check-circle"></i></span>
+                                                            <?php else: ?>
+                                                                <span class="badge badge-danger" title="Click to Activate"><i class="fas fa-times-circle"></i></span>
+                                                            <?php endif; ?>
+                                                        </div>
+
                                                         <button onclick="Swal.fire('Info', 'Edit functionality coming soon!', 'info')" class="btn btn-sm btn-outline-primary mr-2" title="Edit Profile" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
                                                             <i class="fas fa-user-edit"></i>
                                                         </button>
