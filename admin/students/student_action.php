@@ -128,6 +128,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         exit();
     }
+
+    // Delete Student
+    if ($action === 'delete_student') {
+        $id = $_POST['id'] ?? 0;
+        try {
+            // Delete files first
+            $stmt = $pdo->prepare("SELECT image, qualification_cert, aadhar_card_file FROM students WHERE id = ?");
+            $stmt->execute([$id]);
+            $files = $stmt->fetch();
+            
+            if ($files) {
+                foreach ($files as $file) {
+                    if ($file && file_exists(__DIR__ . '/../' . $file)) {
+                        @unlink(__DIR__ . '/../' . $file);
+                    }
+                }
+            }
+
+            $stmt = $pdo->prepare("DELETE FROM students WHERE id = ?");
+            if ($stmt->execute([$id])) {
+                echo json_encode(['status' => 'success', 'message' => 'Student record deleted successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to delete student.']);
+            }
+        } catch (PDOException $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+        exit();
+    }
+
+    // Toggle Status
+    if ($action === 'toggle_student_status') {
+        $id = $_POST['id'] ?? 0;
+        $status = $_POST['status'] ?? 0;
+        try {
+            $stmt = $pdo->prepare("UPDATE students SET status = ? WHERE id = ?");
+            if ($stmt->execute([$status, $id])) {
+                echo json_encode(['status' => 'success', 'message' => 'Status updated!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to update status.']);
+            }
+        } catch (PDOException $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+        exit();
+    }
 }
 
 echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);
