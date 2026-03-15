@@ -62,7 +62,8 @@ $menuItems = [
         "icon" => "fas fa-user-graduate",
         "pages" => [
             ["title" => "New Admission", "url" => "students/add-student.php"],
-            ["title" => "Manage Students", "url" => "students/manage-students.php"]
+            ["title" => "Manage Students", "url" => "students/manage-students.php"],
+            ["title" => "Fees Monitoring", "url" => "students/fees-list.php"]
         ],
     ],
     [
