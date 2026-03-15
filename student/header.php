@@ -51,7 +51,7 @@ $active_page = $active_pageInfo['active_page'] ?? null;
 
 // Profile Variables
 $student_name = $student['student_name'] ?? 'Student';
-$student_image = !empty($student['image']) ? '../' . $student['image'] : './src/images/user-avtar.png';
+$student_image = !empty($student['image']) ? '../admin/' . $student['image'] : './src/images/user-avtar.png';
 ?>
 
 <!DOCTYPE html>
