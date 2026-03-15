@@ -72,65 +72,79 @@ if ($progressPercent < 0) $progressPercent = 0;
     </div>
 </div>
 
+<?php
+// Statistics Calculation
+try {
+    // Total Students
+    $totalStudents = $pdo->query("SELECT COUNT(*) FROM students WHERE status = 1")->fetchColumn();
+    // Total Courses
+    $totalCourses = $pdo->query("SELECT COUNT(*) FROM courses WHERE status = 1")->fetchColumn();
+    // Total Enquiries
+    $totalEnquiries = $pdo->query("SELECT COUNT(*) FROM course_enquiries")->fetchColumn();
+    // Fees Received
+    $totalFeesReceived = $pdo->query("SELECT SUM(amount_paid) FROM student_fees")->fetchColumn() ?: 0;
+} catch (PDOException $e) {
+    $totalStudents = $totalCourses = $totalEnquiries = $totalFeesReceived = 0;
+}
+?>
+
 <div class="row">
     <div class="col-lg-3 col-6">
-        <div class="small-box bg-info">
+        <!-- small box -->
+        <div class="small-box bg-info shadow-sm" style="border-radius: 12px;">
             <div class="inner">
-                <h3>150</h3>
-                <p>New Orders</p>
+                <h3><?= $totalStudents ?></h3>
+                <p>Total Students</p>
             </div>
             <div class="icon">
-                <i class="ion ion-bag"></i>
+                <i class="fas fa-user-graduate"></i>
             </div>
-            <a href="#" class="small-box-footer">More info
-                <i class="fas fa-arrow-circle-right"></i>
-            </a>
+            <a href="students/manage-students.php" class="small-box-footer">View Students <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-
+    <!-- ./col -->
     <div class="col-lg-3 col-6">
-        <div class="small-box bg-success">
+        <!-- small box -->
+        <div class="small-box bg-success shadow-sm" style="border-radius: 12px;">
             <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
-                <p>Bounce Rate</p>
+                <h3><?= $totalCourses ?></h3>
+                <p>Total Courses</p>
             </div>
             <div class="icon">
-                <i class="ion ion-stats-bars"></i>
+                <i class="fas fa-graduation-cap"></i>
             </div>
-            <a href="#" class="small-box-footer">More info
-                <i class="fas fa-arrow-circle-right"></i>
-            </a>
+            <a href="courses/manage-courses.php" class="small-box-footer">View Courses <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-
+    <!-- ./col -->
     <div class="col-lg-3 col-6">
-        <div class="small-box bg-warning">
+        <!-- small box -->
+        <div class="small-box bg-warning shadow-sm" style="border-radius: 12px;">
             <div class="inner">
-                <h3>44</h3>
-                <p>User Registrations</p>
+                <h3><?= $totalEnquiries ?></h3>
+                <p>Total Enquiries</p>
             </div>
             <div class="icon">
-                <i class="ion ion-person-add"></i>
+                <i class="fas fa-envelope-open-text"></i>
             </div>
-            <a href="#" class="small-box-footer">More info
-                <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="courses/course-enquiries.php" class="small-box-footer">View Enquiries <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-
+    <!-- ./col -->
     <div class="col-lg-3 col-6">
-        <div class="small-box bg-danger">
+        <!-- small box -->
+        <div class="small-box bg-danger shadow-sm" style="border-radius: 12px;">
             <div class="inner">
-                <h3>65</h3>
-                <p>Unique Visitors</p>
+                <h3>₹<?= number_format($totalFeesReceived, 0) ?></h3>
+                <p>Fees Received</p>
             </div>
             <div class="icon">
-                <i class="ion ion-pie-graph"></i>
+                <i class="fas fa-money-bill-wave"></i>
             </div>
-            <a href="#" class="small-box-footer">More info
-                <i class="fas fa-arrow-circle-right"></i>
-            </a>
+            <a href="students/fees-list.php" class="small-box-footer">Fees Monitoring <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
+    <!-- ./col -->
 </div>
 
 <?php include './footer.php'; ?>
