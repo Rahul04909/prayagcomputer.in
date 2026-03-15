@@ -12,6 +12,43 @@
     .pagination .page-link { color: #28a745; border-radius: 5px; margin: 0 2px; }
     .pagination .page-item.active .page-link { background-color: #28a745; border-color: #28a745; }
     #loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
+    
+    /* Professional Search Bar */
+    .search-input-group { position: relative; display: flex; align-items: center; }
+    .search-input-group i.search-icon { position: absolute; left: 15px; color: #999; z-index: 5; }
+    .search-input-group .form-control { 
+        padding-left: 40px; 
+        border-radius: 30px !important; 
+        border: 1px solid #e0e0e0;
+        height: 38px;
+        transition: all 0.3s;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .search-input-group .form-control:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.1);
+    }
+    .search-input-group .btn-clear {
+        position: absolute;
+        right: 45px;
+        background: none;
+        border: none;
+        color: #ccc;
+        z-index: 5;
+    }
+    .search-input-group .btn-clear:hover { color: #dc3545; }
+    .search-input-group .btn-search {
+        position: absolute;
+        right: 5px;
+        height: 30px;
+        width: 30px;
+        border-radius: 50% !important;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+    }
 </style>
 
 <div id="loader-overlay">
@@ -100,12 +137,13 @@ try {
                                         </select>
                                     </div>
                                     <div class="col-md-7">
-                                        <div class="input-group input-group-sm">
-                                            <input type="text" name="search" class="form-control" placeholder="Search name, enrollment..." value="<?= htmlspecialchars($search_filter) ?>">
-                                            <button class="btn btn-success" type="submit"><i class="fas fa-search"></i></button>
-                                            <?php if ($course_filter || $search_filter): ?>
-                                                <a href="fees-list.php" class="btn btn-outline-secondary" title="Clear Filters"><i class="fas fa-times"></i></a>
+                                        <div class="search-input-group">
+                                            <i class="fas fa-search search-icon"></i>
+                                            <input type="text" name="search" class="form-control" placeholder="Search name, enrollment, mobile..." value="<?= htmlspecialchars($search_filter) ?>">
+                                            <?php if ($search_filter): ?>
+                                                <a href="fees-list.php?course=<?= $course_filter ?>" class="btn-clear" title="Clear Search"><i class="fas fa-times-circle"></i></a>
                                             <?php endif; ?>
+                                            <button class="btn btn-success btn-search shadow-sm" type="submit"><i class="fas fa-arrow-right font-size-xs"></i></button>
                                         </div>
                                     </div>
                                 </form>

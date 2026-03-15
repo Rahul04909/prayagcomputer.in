@@ -12,6 +12,28 @@
     .bg-pending h3 { color: #d32f2f; }
     .transaction-table { border-radius: 10px; overflow: hidden; }
     #loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
+
+    /* Professional Select2 Styling */
+    .select2-container--bootstrap4 .select2-selection--single {
+        border-radius: 30px !important;
+        border: 1px solid #e0e0e0 !important;
+        height: 42px !important;
+        padding-top: 6px !important;
+        padding-left: 15px !important;
+        transition: all 0.3s;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .select2-container--bootstrap4.select2-container--focus .select2-selection--single {
+        border-color: #28a745 !important;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.1) !important;
+    }
+    .select2-container--bootstrap4 .select2-selection__placeholder {
+        color: #999 !important;
+    }
+    .select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow {
+        top: 8px !important;
+        right: 12px !important;
+    }
 </style>
 
 <div id="loader-overlay">
