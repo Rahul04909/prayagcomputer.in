@@ -76,15 +76,19 @@ if ($progressPercent < 0) $progressPercent = 0;
 // Statistics Calculation
 try {
     // Total Students
-    $totalStudents = $pdo->query("SELECT COUNT(*) FROM students WHERE status = 1")->fetchColumn();
+    $totalStudents = $pdo->query("SELECT COUNT(*) FROM students")->fetchColumn() ?: 0;
     // Total Courses
-    $totalCourses = $pdo->query("SELECT COUNT(*) FROM courses WHERE status = 1")->fetchColumn();
+    $totalCourses = $pdo->query("SELECT COUNT(*) FROM courses")->fetchColumn() ?: 0;
     // Total Enquiries
-    $totalEnquiries = $pdo->query("SELECT COUNT(*) FROM course_enquiries")->fetchColumn();
+    $totalEnquiries = $pdo->query("SELECT COUNT(*) FROM enquiries")->fetchColumn() ?: 0;
     // Fees Received
     $totalFeesReceived = $pdo->query("SELECT SUM(amount_paid) FROM student_fees")->fetchColumn() ?: 0;
 } catch (PDOException $e) {
-    $totalStudents = $totalCourses = $totalEnquiries = $totalFeesReceived = 0;
+    // Fallback if any query fails while debugging
+    $totalStudents = $totalStudents ?? 0;
+    $totalCourses = $totalCourses ?? 0;
+    $totalEnquiries = $totalEnquiries ?? 0;
+    $totalFeesReceived = $totalFeesReceived ?? 0;
 }
 ?>
 
