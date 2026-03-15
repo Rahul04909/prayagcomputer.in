@@ -40,6 +40,13 @@ $menuItems = [
         ],
     ],
     [
+        "menuTitle" => "Steno Exam",
+        "icon" => "fas fa-keyboard",
+        "pages" => [
+            ["title" => "Manage Categories", "url" => "steno/manage-exam-category.php"]
+        ],
+    ],
+    [
         "menuTitle" => "Settings",
         "icon" => "fas fa-cog",
         "pages" => [
