@@ -107,6 +107,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         exit();
     }
+    // Add Typing Test
+    if ($action === 'add_typing_test') {
+        $category_id = $_POST['category_id'] ?? 0;
+        $title = trim($_POST['title'] ?? '');
+        $short_description = trim($_POST['short_description'] ?? '');
+        $content = $_POST['content'] ?? '';
+        $language = $_POST['language'] ?? 'English';
+        $test_type = $_POST['test_type'] ?? 'Typing Test';
+        $level = $_POST['level'] ?? 'Medium';
+        $test_time = (int)($_POST['test_time'] ?? 5);
+        $status = $_POST['status'] ?? 1;
+
+        if (empty($category_id) || empty($title) || empty($content)) {
+            echo json_encode(['status' => 'error', 'message' => 'Required fields are missing (Category, Title, Content).']);
+            exit();
+        }
+
+        try {
+            $stmt = $pdo->prepare("INSERT INTO typing_tests (category_id, title, language, test_type, short_description, content, test_time, level, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            if ($stmt->execute([$category_id, $title, $language, $test_type, $short_description, $content, $test_time, $level, $status])) {
+                echo json_encode(['status' => 'success', 'message' => 'Typing Test added successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to add Typing Test.']);
+            }
+        } catch (PDOException $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
+        }
+        exit();
+    }
 }
 
 echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);

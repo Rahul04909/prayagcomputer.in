@@ -52,7 +52,9 @@ $menuItems = [
         "menuTitle" => "Typing Master",
         "icon" => "fas fa-keyboard",
         "pages" => [
-            ["title" => "Manage Categories", "url" => "typing-master/manage-exam-category.php"]
+            ["title" => "Manage Categories", "url" => "typing-master/manage-exam-category.php"],
+            ["title" => "Add Test", "url" => "typing-master/add-typing-test.php"],
+            ["title" => "Manage Tests", "url" => "typing-master/manage-typing-tests.php"]
         ],
     ],
     [
