@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="../assets/css/loader.css">
 
 <style>
-    .student-table-card { border: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+    .student-table-card { border: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 60px; }
     .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; }
     .student-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #eee; }
     .enroll-badge { background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
@@ -223,6 +223,7 @@ try {
 
             </div>
         </div>
+        <div class="pb-5"></div>
     </div>
 </section>
 

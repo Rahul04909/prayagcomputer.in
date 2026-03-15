@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="../assets/css/loader.css">
 
 <style>
-    .admission-card { border: none; border-radius: 15px; box-shadow: 0 4px 25px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 30px; }
+    .admission-card { border: none; border-radius: 15px; box-shadow: 0 4px 25px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 60px; }
     .admission-header { background: #fff; border-bottom: 1px solid #f1f1f1; padding: 25px; }
     .admission-body { padding: 30px; background: #fff; }
     .section-title { font-weight: 700; color: #28a745; margin-bottom: 25px; display: flex; align-items: center; font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
@@ -262,6 +262,7 @@ try {
                 </div>
             </div>
         </form>
+        <div class="pb-5"></div>
     </div>
 </section>
 
