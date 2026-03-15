@@ -13,6 +13,7 @@
     .form-control:focus, .form-select:focus { border-color: #28a745; background: #fff; box-shadow: 0 0 0 3px rgba(40,167,69,0.1); }
     .btn-save { border-radius: 10px; padding: 12px 30px; font-weight: 600; }
     .note-editor { border-radius: 10px !important; border: 1px solid #e0e0e0 !important; overflow: hidden; }
+    #loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
 </style>
 
 <div id="loader-overlay">
