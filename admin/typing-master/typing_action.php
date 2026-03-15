@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Update Status
+    // Update Category Status
     if ($action === 'toggle_typing_status') {
         $id = $_POST['id'] ?? 0;
         $status = $_POST['status'] ?? 0;
@@ -107,6 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         exit();
     }
+
     // Add Typing Test
     if ($action === 'add_typing_test') {
         $category_id = $_POST['category_id'] ?? 0;
@@ -133,7 +134,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } catch (PDOException $e) {
             echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
-            // Delete Typing Test
+        }
+        exit();
+    }
+
+    // Delete Typing Test
     if ($action === 'delete_typing_test') {
         $id = $_POST['id'] ?? 0;
 
@@ -152,9 +157,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $e) {
             echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
         }
-        exit();
-    }
-}
         exit();
     }
 }
