@@ -444,9 +444,7 @@ $active_page = $active_pageInfo['active_page'] ?? null;
 
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-                </li>
+                <!-- No items here for an ultra-clean look -->
             </ul>
             <ul class="navbar-nav ml-auto align-items-center">
                 <li class="nav-item">
