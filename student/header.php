@@ -1,8 +1,14 @@
 <?php
 require_once __DIR__ . '/includes/auth_helper.php';
 
+// ── Path resolution ────────────────────────────────────────────────────────
+$current_path = str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME']));
+$header_path  = str_replace('\\', '/', __DIR__);
+$depth_diff   = max(0, substr_count($current_path, '/') - substr_count($header_path, '/'));
+$base_url     = str_repeat('../', $depth_diff);
+
 if (!is_student_logged_in()) {
-    header("Location: login.php");
+    header("Location: " . $base_url . "login.php");
     exit();
 }
 
@@ -20,7 +26,7 @@ $menuItems = [
         "menuTitle" => "Dashboard",
         "icon"      => "fas fa-tachometer-alt",
         "pages"     => [
-            ["title" => "Home", "url" => "index.php"]
+            ["title" => "Home", "url" => $base_url . "index.php"]
         ],
     ],
 ];
@@ -29,20 +35,20 @@ $menuItems = [
 if ($typing_access !== 'None') {
     $typingPages = [];
     if ($typing_access === 'Hindi' || $typing_access === 'All' || $typing_access === 'Both') {
-        $typingPages[] = ["title" => "Hindi Typing",   "url" => "typing/hindi.php",   "icon" => "fas fa-keyboard"];
+        $typingPages[] = ["title" => "Hindi Typing",   "url" => $base_url . "typing/hindi.php",   "icon" => "fas fa-keyboard"];
     }
     if ($typing_access === 'English' || $typing_access === 'All' || $typing_access === 'Both') {
-        $typingPages[] = ["title" => "English Typing", "url" => "typing/english.php", "icon" => "fas fa-keyboard"];
+        $typingPages[] = ["title" => "English Typing", "url" => $base_url . "typing/english.php", "icon" => "fas fa-keyboard"];
     }
     if ($typing_access === 'Punjabi' || $typing_access === 'All') {
-        $typingPages[] = ["title" => "Punjabi Typing", "url" => "typing/punjabi.php", "icon" => "fas fa-keyboard"];
+        $typingPages[] = ["title" => "Punjabi Typing", "url" => $base_url . "typing/punjabi.php", "icon" => "fas fa-keyboard"];
     }
     // Fallback: if somehow the value is unexpected but not None, show all
     if (empty($typingPages)) {
         $typingPages = [
-            ["title" => "Hindi Typing",   "url" => "typing/hindi.php",   "icon" => "fas fa-keyboard"],
-            ["title" => "English Typing", "url" => "typing/english.php", "icon" => "fas fa-keyboard"],
-            ["title" => "Punjabi Typing", "url" => "typing/punjabi.php", "icon" => "fas fa-keyboard"],
+            ["title" => "Hindi Typing",   "url" => $base_url . "typing/hindi.php",   "icon" => "fas fa-keyboard"],
+            ["title" => "English Typing", "url" => $base_url . "typing/english.php", "icon" => "fas fa-keyboard"],
+            ["title" => "Punjabi Typing", "url" => $base_url . "typing/punjabi.php", "icon" => "fas fa-keyboard"],
         ];
     }
     $menuItems[] = [
@@ -56,15 +62,15 @@ if ($typing_access !== 'None') {
 if ($steno_access !== 'None') {
     $stenoPages = [];
     if ($steno_access === 'Hindi' || $steno_access === 'Both') {
-        $stenoPages[] = ["title" => "Hindi Steno",   "url" => "steno/hindi.php",   "icon" => "fas fa-pen-nib"];
+        $stenoPages[] = ["title" => "Hindi Steno",   "url" => $base_url . "steno/hindi.php",   "icon" => "fas fa-pen-nib"];
     }
     if ($steno_access === 'English' || $steno_access === 'Both') {
-        $stenoPages[] = ["title" => "English Steno", "url" => "steno/english.php", "icon" => "fas fa-pen-nib"];
+        $stenoPages[] = ["title" => "English Steno", "url" => $base_url . "steno/english.php", "icon" => "fas fa-pen-nib"];
     }
     if (empty($stenoPages)) {
         $stenoPages = [
-            ["title" => "Hindi Steno",   "url" => "steno/hindi.php",   "icon" => "fas fa-pen-nib"],
-            ["title" => "English Steno", "url" => "steno/english.php", "icon" => "fas fa-pen-nib"],
+            ["title" => "Hindi Steno",   "url" => $base_url . "steno/hindi.php",   "icon" => "fas fa-pen-nib"],
+            ["title" => "English Steno", "url" => $base_url . "steno/english.php", "icon" => "fas fa-pen-nib"],
         ];
     }
     $menuItems[] = [
@@ -80,7 +86,7 @@ if ($punjabi_lms) {
         "menuTitle" => "Punjabi LMS",
         "icon"      => "fas fa-book-open",
         "pages"     => [
-            ["title" => "Punjabi Learning", "url" => "punjabi-lms/index.php", "icon" => "fas fa-language"],
+            ["title" => "Punjabi Learning", "url" => $base_url . "punjabi-lms/index.php", "icon" => "fas fa-language"],
         ],
     ];
 }
@@ -90,7 +96,7 @@ $menuItems[] = [
     "menuTitle" => "My Account",
     "icon"      => "fas fa-user-circle",
     "pages"     => [
-        ["title" => "Profile & Password", "url" => "profile.php"],
+        ["title" => "Profile & Password", "url" => $base_url . "profile.php"],
     ],
 ];
 
@@ -120,7 +126,7 @@ $active_page      = $active_pageInfo['active_page']      ?? null;
 
 // ── Profile Variables ────────────────────────────────────────────────────────
 $student_name  = $student['student_name'] ?? 'Student';
-$student_image = !empty($student['image']) ? '../admin/' . $student['image'] : './src/images/user-avtar.png';
+$student_image = !empty($student['image']) ? $base_url . '../admin/' . $student['image'] : $base_url . 'src/images/user-avtar.png';
 ?>
 
 <!DOCTYPE html>
@@ -131,7 +137,7 @@ $student_image = !empty($student['image']) ? '../admin/' . $student['image'] : '
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
     <title><?= htmlspecialchars($page_title) ?></title>
-    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="icon" href="<?= $base_url ?>../favicon.ico" type="image/x-icon">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css" rel="stylesheet">
@@ -455,7 +461,7 @@ $student_image = !empty($student['image']) ? '../admin/' . $student['image'] : '
                     </div>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="./" class="nav-link">Home</a>
+                    <a href="<?= $base_url ?>index.php" class="nav-link">Home</a>
                 </li>
             </ul>
             <form class="form-inline ml-3">
@@ -503,12 +509,12 @@ $student_image = !empty($student['image']) ? '../admin/' . $student['image'] : '
         </div>
 
         <aside class="main-sidebar sidebar-light-primary elevation-4">
-            <a href="./" class="brand-link">
-                <img src="./src/images/prayag-computer-logo.png" alt="Logo" class="brand-image img-circle bg-white">
+            <a href="<?= $base_url ?>index.php" class="brand-link">
+                <img src="<?= $base_url ?>src/images/prayag-computer-logo.png" alt="Logo" class="brand-image img-circle bg-white">
             </a>
             <div class="sidebar">
                 <div class="user-panel mt-3 pb-3 mb-3">
-                    <a href="./profile.php" class="d-flex">
+                    <a href="<?= $base_url ?>profile.php" class="d-flex">
                         <div class="image">
                             <img src="<?= $student_image ?>" class="img-circle elevation-2 bg-white" alt="User Image" style="width: 33px; height: 33px; object-fit: cover;">
                         </div>
@@ -544,7 +550,7 @@ $student_image = !empty($student['image']) ? '../admin/' . $student['image'] : '
                             </li>
                         <?php endforeach; ?>
                         <li class="nav-item">
-                            <a href="logout.php" class="nav-link">
+                            <a href="<?= $base_url ?>logout.php" class="nav-link">
                                 <i class="nav-icon fas fa-sign-out-alt"></i>
                                 <p>Logout</p>
                             </a>
