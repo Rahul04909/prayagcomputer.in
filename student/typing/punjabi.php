@@ -2,10 +2,10 @@
 
 <?php
 // ── Access Guard ─────────────────────────────────────────────────────────────
-if ($typing_access === 'None') {
+if (!in_array($typing_access, ['Punjabi', 'All'])) {
     echo '<div class="container-fluid py-5 text-center">
         <i class="fas fa-lock fa-4x text-warning mb-3"></i>
-        <h4 class="text-muted">You do not have access to Punjabi Typing.</h4>
+        <h4 class="text-muted">You are not a registered candidate for this module.</h4>
         <p class="text-muted">Please contact the admin to enable this module.</p>
     </div>';
     include '../footer.php';

@@ -30,6 +30,26 @@ try {
 // Student name for session/results
 $student_data = get_current_student_data();
 $student_name = $student_data['name'] ?? 'Student';
+$typing_access = $student_data['typing_access'] ?? 'None';
+
+$access_granted = false;
+if ($typing_access === 'All') {
+    $access_granted = true;
+} else if ($test['language'] === 'English' && in_array($typing_access, ['English', 'Both', 'All'])) {
+    $access_granted = true;
+} else if ($test['language'] === 'Hindi' && in_array($typing_access, ['Hindi', 'Both', 'All'])) {
+    $access_granted = true;
+} else if ($test['language'] === 'Punjabi' && in_array($typing_access, ['Punjabi', 'All'])) {
+    $access_granted = true;
+}
+
+if (!$access_granted) {
+    die("<div style='text-align:center; padding:50px; font-family:sans-serif;'>
+            <h2 style='color:#c62828;'>Access Denied</h2>
+            <p>You are not a registered candidate for this module. Please contact your administrator.</p>
+            <a href='../dashboard.php' style='display:inline-block; margin-top:20px; padding:10px 20px; background:#28a745; color:#fff; text-decoration:none; border-radius:5px;'>Return to Dashboard</a>
+         </div>");
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
