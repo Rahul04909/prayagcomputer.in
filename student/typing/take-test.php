@@ -65,7 +65,7 @@ $student_name = $student_data['name'] ?? 'Student';
         /* Content Areas */
         .text-display-box { 
             flex: 1.2; background: #fff; margin: 10px 15px; border-radius: 6px; border: 1px solid #ced4da;
-            padding: 20px 25px; font-family: 'Consolas', 'Roboto Mono', monospace; font-size: <?= $test['language'] === 'Hindi' ? '24' : '14' ?>px; line-height: 1.8;
+            padding: 20px 25px; font-family: 'Consolas', 'Roboto Mono', monospace; font-size: <?= $test['language'] === 'Hindi' ? '' : '14' ?>px; line-height: 1.8;
             overflow-y: auto; color: #212529; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
             min-height: 150px; letter-spacing: 0.5px; scroll-behavior: smooth;
         }
@@ -317,7 +317,8 @@ $student_name = $student_data['name'] ?? 'Student';
                 textDisplay.append(`<span class="word" id="word-${idx}">${word}</span> `);
             });
             updateHighlight();
-            typingInput.prop('disabled', false).val('').attr('placeholder', 'Start typing the text shown above...');
+            var placeholderText = <?= $test['language'] === 'Hindi' ? "'ऊपर दिखाए गए पाठ को टाइप करना शुरू करें...'" : "'Start typing the text shown above...'" ?>;
+            typingInput.prop('disabled', false).val('').attr('placeholder', placeholderText);
             timeLeft = $('#durationSelect').val() * 60;
             updateTimerDisplay();
         } catch (e) {
