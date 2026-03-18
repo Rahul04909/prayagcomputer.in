@@ -156,7 +156,7 @@ $student_name = $student_data['name'] ?? 'Student';
     <!-- Right Sidebar: Settings & Live Stats -->
     <div class="sidebar-right">
         <div class="settings-section" style="background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <div class="row text-center">
+            <div class="row text-center" id="statPanel">
                 <div class="col-6 mb-3">
                     <div id="liveWpm" class="stat-val">0</div>
                     <div class="stat-lbl">WPM</div>
@@ -170,9 +170,21 @@ $student_name = $student_data['name'] ?? 'Student';
                     <div class="stat-lbl">Errors</div>
                 </div>
                 <div class="col-6">
-                    <div id="timerDisplay" class="stat-val" style="color:#accent-blue">00:00</div>
-                    <div class="stat-lbl">Time Left</div>
+                    <div id="liveWords" class="stat-val" style="color:#007bff">0</div>
+                    <div class="stat-lbl">Words</div>
                 </div>
+            </div>
+            <div class="text-center border-top pt-2 mt-2">
+                <div id="timerDisplay" class="stat-val" style="color:#accent-blue; font-size: 32px;">00:00</div>
+                <div class="stat-lbl">Time Left</div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-title">General Settings</div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="examMode">
+                <label class="form-check-label" for="examMode"><b>Strict Exam Mode</b> (Hide Live Stats)</label>
             </div>
         </div>
 
@@ -325,6 +337,7 @@ $student_name = $student_data['name'] ?? 'Student';
         $('#liveWpm').text(grossWpm);
         $('#liveAccuracy').text(accuracy + '%');
         $('#liveErrors').text(errors);
+        $('#liveWords').text(typedWords.length);
     }
 
     function finishTest() {
@@ -435,6 +448,28 @@ $student_name = $student_data['name'] ?? 'Student';
 
     // Settings listeners
     $('#durationSelect').change(() => initTest());
+    $('#examMode').change(function() {
+        if (this.checked) $('#statPanel').css('visibility', 'hidden');
+        else $('#statPanel').css('visibility', 'visible');
+    });
+
+    $('.mode-btn:contains("Go Exam Mode")').click(() => {
+        $('#examMode').prop('checked', true).trigger('change');
+    });
+
+    $('div:contains("Add New Exercise")').css('cursor', 'pointer').click(() => {
+        Swal.fire({
+            title: 'Restart Test?',
+            text: "All current progress will be lost.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            confirmButtonText: 'Yes, Restart'
+        }).then((result) => {
+            if (result.isConfirmed) window.location.reload();
+        });
+    });
+
     $('#fontInc').click(() => {
         let size = parseInt($('#fontSizeDisplay').text());
         size = Math.min(32, size + 2);
