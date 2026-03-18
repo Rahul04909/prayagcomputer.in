@@ -252,14 +252,15 @@ $student_name = $student_data['name'] ?? 'Student';
 </div>
 
 <!-- Scripts -->
-<script src="../../admin/assets/plugins/jquery/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    const testContent = `<?= addslashes(str_replace(["\r", "\n"], ' ', strip_tags($test['content']))) ?>`;
+    const testContent = <?= json_encode(str_replace(["\r", "\n", "\t"], ' ', strip_tags($test['content']))) ?>;
     const defaultTime = <?= (int)$test['test_time'] ?>;
     
-    let words = testContent.split(/\s+/).filter(w => w.length > 0);
+    let words = (testContent || '').split(/\s+/).filter(w => w.length > 0);
     let currentWordIdx = 0;
     let typedWords = [];
     let startTime = null;
