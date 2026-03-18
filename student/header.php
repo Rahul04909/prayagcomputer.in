@@ -546,6 +546,28 @@ $student_image = !empty($student['image']) ? '../admin/' . $student['image'] : '
                             </a>
                         </li>
                     </ul>
+
+                    <?php
+                    // ── Locked modules notice ────────────────────────────────
+                    $locked = [];
+                    if ($typing_access === 'None')  $locked[] = ['icon' => 'fa-keyboard',  'label' => 'Typing Master'];
+                    if ($steno_access  === 'None')  $locked[] = ['icon' => 'fa-pen-nib',   'label' => 'Steno Software'];
+                    if (!$punjabi_lms)              $locked[] = ['icon' => 'fa-book-open',  'label' => 'Punjabi LMS'];
+                    if (!empty($locked)):
+                    ?>
+                    <div style="margin: 10px 12px; border-radius: 10px; background: #fff8e1; border: 1px dashed #ffc107; padding: 10px;">
+                        <p style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: #856404; margin-bottom: 7px; letter-spacing: 0.5px;">
+                            <i class="fas fa-lock mr-1"></i> Locked Modules
+                        </p>
+                        <?php foreach ($locked as $mod): ?>
+                        <div style="font-size: 11px; color: #6c757d; padding: 3px 0; display: flex; align-items: center;">
+                            <i class="fas <?= $mod['icon'] ?> mr-2" style="width:14px; opacity:.5;"></i>
+                            <span><?= $mod['label'] ?></span>
+                        </div>
+                        <?php endforeach; ?>
+                        <p style="font-size: 10px; color: #adb5bd; margin-top: 7px; margin-bottom: 0;">Contact admin to unlock</p>
+                    </div>
+                    <?php endif; ?>
                 </nav>
             </div>
         </aside>
