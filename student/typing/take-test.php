@@ -332,14 +332,59 @@ $student_name = $student_data['name'] ?? 'Student';
         isFinished = true;
         clearInterval(timerInterval);
         typingInput.prop('disabled', true);
+
+        const durSec = ($('#durationSelect').val() * 60) - timeLeft;
+        const wpm = $('#liveWpm').text();
+        const accuracy = $('#liveAccuracy').text().replace('%', '');
+        const errors = $('#liveErrors').text();
+        const totalWords = typedWords.length;
+        const correctWords = typedWords.filter((tw, i) => tw === words[i]).length;
+
         Swal.fire({
-            title: 'Test Completed!',
-            html: `Results: <b>${$('#liveWpm').text()} WPM</b> | Accuracy: <b>${$('#liveAccuracy').text()}</b>`,
-            icon: 'success',
-            confirmButtonText: 'Back to Dashboard'
-        }).then(() => {
-            window.location.href = 'english.php';
+            title: 'Processing Results...',
+            didOpen: () => { Swal.showLoading(); },
+            allowOutsideClick: false
         });
+
+        fetch('ajax_save_result.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                test_id: <?= $id ?>,
+                wpm: wpm,
+                accuracy: accuracy,
+                errors: errors,
+                total_words: totalWords,
+                correct_words: correctWords,
+                test_time: durSec
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: '<span style="color:#28a745">Test Completed!</span>',
+                    html: `
+                        <div class="row pt-3">
+                            <div class="col-4"><h5>${wpm}</h5><p class="small text-muted">GROSS WPM</p></div>
+                            <div class="col-4"><h5>${data.net_wpm}</h5><p class="small text-muted">NET WPM</p></div>
+                            <div class="col-4"><h5>${accuracy}%</h5><p class="small text-muted">ACCURACY</p></div>
+                        </div>
+                        <div class="alert alert-light border mt-2">
+                            Errors: <b>${errors}</b> | Time Spent: <b>${Math.floor(durSec/60)}m ${durSec%60}s</b>
+                        </div>
+                    `,
+                    icon: 'success',
+                    confirmButtonText: 'Back to Dashboard',
+                    allowOutsideClick: false
+                }).then(() => {
+                    window.location.href = 'english.php';
+                });
+            } else {
+                Swal.fire('Error', data.message || 'Failed to save result', 'error');
+            }
+        })
+        .catch(err => Swal.fire('Error', 'Connection error' + err, 'error'));
     }
 
     typingInput.on('input', function() {
