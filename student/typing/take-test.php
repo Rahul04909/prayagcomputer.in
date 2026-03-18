@@ -293,6 +293,14 @@ $student_name = $student_data['name'] ?? 'Student';
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<?php if ($test['language'] === 'Punjabi'): ?>
+<script src="../assets/js/punjabi_inscript.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        enablePunjabiInscript('typingInput');
+    });
+</script>
+<?php endif; ?>
 
 <script>
     const testContent = <?= json_encode(str_replace(["\r", "\n", "\t", "&nbsp;", "\xc2\xa0"], ' ', html_entity_decode(strip_tags($test['content'])))) ?>;
