@@ -28,7 +28,7 @@ try {
 }
 
 // Student name for session/results
-$student_data = $auth->getCurrentUser();
+$student_data = get_current_student_data();
 $student_name = $student_data['name'] ?? 'Student';
 ?>
 <!DOCTYPE html>
@@ -79,6 +79,7 @@ $student_name = $student_data['name'] ?? 'Student';
         /* Words & Highlighting */
         .word { display: inline-block; margin-right: 8px; border-bottom: 2px solid transparent; }
         .word.current { background: #fff59d; border-radius: 3px; }
+        .word.error-input { background: #ffcdd2 !important; color: #c62828 !important; }
         .word.correct { color: #2e7d32; }
         .word.incorrect { color: #c62828; border-bottom: 2px solid #c62828; }
 
@@ -268,13 +269,11 @@ $student_name = $student_data['name'] ?? 'Student';
             const currentWordEl = $(`#word-${currentWordIdx}`);
             currentWordEl.addClass('current');
             
-            // Auto scroll logic
             if ($('#autoScroll').is(':checked')) {
                 const wordEl = currentWordEl[0];
                 if (wordEl) {
                     const box = textDisplay[0];
                     const offset = wordEl.offsetTop - box.offsetTop;
-                    // If word is below the middle of the box, scroll it into view
                     if (offset > box.clientHeight / 2) {
                         box.scrollTop = offset - box.clientHeight / 2;
                     }
@@ -283,7 +282,66 @@ $student_name = $student_data['name'] ?? 'Student';
         }
     }
 
-    // Input monitoring for "Word + Error" Highlight
+    function updateTimerDisplay() {
+        const m = Math.floor(timeLeft / 60);
+        const s = timeLeft % 60;
+        timerDisplay.text(`${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`);
+    }
+
+    function startTimer() {
+        if (startTime) return;
+        startTime = new Date();
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay();
+            calculateStats();
+            if (timeLeft <= 0) finishTest();
+        }, 1000);
+    }
+
+    function calculateStats() {
+        const timeSpentMin = (new Date() - startTime) / 60000;
+        if (timeSpentMin <= 0) return;
+
+        let totalChars = 0;
+        let errors = 0;
+        let correctWords = 0;
+
+        typedWords.forEach((typed, idx) => {
+            if (typed === words[idx]) {
+                correctWords++;
+                totalChars += words[idx].length + 1;
+            } else {
+                errors++;
+            }
+        });
+
+        const currentTyped = typingInput.val().trim();
+        totalChars += currentTyped.length;
+
+        const grossWpm = Math.round((totalChars / 5) / timeSpentMin);
+        const accuracy = typedWords.length > 0 ? Math.round((correctWords / typedWords.length) * 100) : 100;
+
+        $('#liveWpm').text(grossWpm);
+        $('#liveAccuracy').text(accuracy + '%');
+        $('#liveErrors').text(errors);
+    }
+
+    function finishTest() {
+        if (isFinished) return;
+        isFinished = true;
+        clearInterval(timerInterval);
+        typingInput.prop('disabled', true);
+        Swal.fire({
+            title: 'Test Completed!',
+            html: `Results: <b>${$('#liveWpm').text()} WPM</b> | Accuracy: <b>${$('#liveAccuracy').text()}</b>`,
+            icon: 'success',
+            confirmButtonText: 'Back to Dashboard'
+        }).then(() => {
+            window.location.href = 'english.php';
+        });
+    }
+
     typingInput.on('input', function() {
         if (isFinished) return;
         const hlMode = $('input[name="highlightOpt"]:checked').val();
@@ -291,7 +349,6 @@ $student_name = $student_data['name'] ?? 'Student';
             const typedVal = $(this).val();
             const targetWord = words[currentWordIdx];
             const currentWordEl = $(`#word-${currentWordIdx}`);
-            
             if (!targetWord.startsWith(typedVal)) {
                 currentWordEl.addClass('error-input');
             } else {
@@ -305,36 +362,24 @@ $student_name = $student_data['name'] ?? 'Student';
         if (isFinished) return;
         startTimer();
 
-        // Handle Backspace Rules
         const bsMode = $('input[name="backspaceOpt"]:checked').val();
         if (e.key === 'Backspace') {
-            if (bsMode === 'none') {
-                e.preventDefault();
-                return;
-            }
-            if (bsMode === 'one' && typingInput.val() === '') {
-                // Prevent going back to previous word
-                e.preventDefault();
-                return;
-            }
+            if (bsMode === 'none') { e.preventDefault(); return; }
+            if (bsMode === 'one' && typingInput.val() === '') { e.preventDefault(); return; }
         }
 
-        // Handle Space / Enter (Move to next word)
         if (e.key === ' ' || e.key === 'Enter') {
             e.preventDefault();
             const typed = typingInput.val().trim();
-            if (typed.length > 0 || e.key === ' ') { // Allow empty space if user just hits space
+            if (typed.length > 0 || e.key === ' ') {
                 typedWords[currentWordIdx] = typed;
-                
                 const wordEl = $(`#word-${currentWordIdx}`);
                 wordEl.removeClass('error-input');
-                
                 if (typed === words[currentWordIdx]) {
                     wordEl.addClass('correct').removeClass('incorrect');
                 } else {
                     wordEl.addClass('incorrect').removeClass('correct');
                 }
-
                 currentWordIdx++;
                 typingInput.val('');
                 updateHighlight();
