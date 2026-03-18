@@ -59,7 +59,7 @@ $student_name = $student_data['name'] ?? 'Student';
         .main-container { flex: 1; display: flex; flex-direction: column; background: #cbd5e1; height: 100vh; min-width: 0; }
 
         /* Top Nav */
-        .top-nav { height: 45px; background: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid #28a745; flex-shrink: 0; }
+        .top-nav { height: 45px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 0 15px; border-bottom: 2px solid #28a745; flex-shrink: 0; }
         .top-nav .mode-btn { border: 1px solid #c62828; color: #c62828; font-size: 11px; padding: 3px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
 
         /* Content Areas */
@@ -124,9 +124,7 @@ $student_name = $student_data['name'] ?? 'Student';
     <!-- Main Section -->
     <div class="main-container">
         <div class="top-nav">
-            <div class="mode-btn" title="Switch to print layout">Print Mode</div>
             <div style="font-size:14px; color:#28a745; font-weight:800; letter-spacing:1px;"><?= htmlspecialchars($test['title']) ?></div>
-            <div class="mode-btn" title="Strict exam simulation">Exam Mode</div>
         </div>
 
         <!-- Reference Text Box -->
