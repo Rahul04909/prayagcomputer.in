@@ -47,152 +47,154 @@ $student_name = $student_data['name'] ?? 'Student';
             --bg-main: #f4f6f9;
             --primary-green: #28a745;
             --accent-blue: #007bff;
+            --header-bg: #8e9dbf;
         }
-        body { font-family: 'Inter', sans-serif; background: #e0e4ef; height: 100vh; overflow: hidden; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #e0e4ef; height: 100vh; margin: 0; overflow: hidden; }
         
-        /* Layout */
+        /* Layout Structure */
         .test-wrapper { display: flex; height: 100vh; width: 100vw; }
-        .sidebar-left { width: 80px; background: #fff; border-right: 1px solid #d1d5db; display: flex; flex-direction: column; align-items: center; padding: 20px 0; }
-        .sidebar-right { width: 300px; background: #eaedf4; border-left: 1px solid #c8ced9; padding: 15px; overflow-y: auto; }
-        .main-container { flex: 1; display: flex; flex-direction: column; background: #cbd5e1; padding: 0; }
+        .sidebar-left { width: 70px; background: #fff; border-right: 1px solid #d1d5db; display: flex; flex-direction: column; align-items: center; padding: 15px 5px; flex-shrink: 0; }
+        .sidebar-right { width: 300px; background: #eaedf4; border-left: 1px solid #c8ced9; padding: 10px; overflow-y: auto; flex-shrink: 0; }
+        .main-container { flex: 1; display: flex; flex-direction: column; background: #cbd5e1; height: 100vh; min-width: 0; }
 
-        /* Top Bar */
-        .top-nav { height: 40px; background: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid #28a745; }
-        .top-nav .mode-btn { border: 1px solid #c62828; color: #c62828; font-size: 11px; padding: 2px 8px; border-radius: 3px; font-weight: bold; cursor: pointer; }
+        /* Top Nav */
+        .top-nav { height: 45px; background: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 2px solid #28a745; flex-shrink: 0; }
+        .top-nav .mode-btn { border: 1px solid #c62828; color: #c62828; font-size: 11px; padding: 3px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
 
         /* Content Areas */
         .text-display-box { 
             flex: 1; background: #fff; margin: 10px 15px; border-radius: 4px; border: 1px solid #999;
-            padding: 15px; font-family: 'Roboto Mono', monospace; font-size: 20px; line-height: 1.6;
-            overflow-y: auto; color: #333; position: relative;
+            padding: 20px; font-family: 'Roboto Mono', monospace; font-size: 20px; line-height: 1.6;
+            overflow-y: auto; color: #333; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
         }
+        .info-bar { height: 40px; background: var(--header-bg); display: flex; align-items: center; padding: 0 15px; color: #fff; font-size: 13px; font-weight: 600; gap: 20px; flex-shrink: 0; border-top: 2px solid #7a89a8; }
         .typing-input-box {
-            height: 250px; background: #fff; margin: 0 15px 10px; border-radius: 4px; border: 1px solid #999;
+            height: 220px; background: #fff; margin: 0 15px 10px; border-radius: 4px; border: 1px solid #999;
             padding: 15px; font-family: 'Roboto Mono', monospace; font-size: 20px; width: calc(100% - 30px);
-            resize: none; outline: none; border-top: 5px solid #8e9dbf;
+            resize: none; outline: none; border-top: 5px solid var(--header-bg); flex-shrink: 0;
         }
 
-        /* Stats Bar */
-        .info-bar { height: 45px; background: #8e9dbf; display: flex; align-items: center; padding: 0 15px; color: #fff; font-size: 14px; font-weight: 600; gap: 20px; }
-        .info-bar select { border: none; border-radius: 3px; font-size: 12px; padding: 2px 5px; }
+        /* Sidebar Styling */
+        .settings-section { background: #fff; border: 1px solid #d1d5db; border-radius: 6px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .settings-title { font-size: 11px; font-weight: 800; color: #555; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-check-label { font-size: 13px; color: #444; }
+        .stat-val { font-size: 22px; font-weight: 700; color: #28a745; line-height: 1; }
+        .stat-lbl { font-size: 10px; text-transform: uppercase; color: #777; font-weight: 600; margin-top: 4px; }
+        .timer-val { font-size: 36px; font-weight: 800; color: #c62828; font-family: 'Roboto Mono', monospace; }
 
         /* Words & Highlighting */
-        .word { display: inline-block; margin-right: 8px; border-bottom: 2px solid transparent; }
-        .word.current { background: #fff59d; border-radius: 3px; }
+        .word { display: inline-block; padding: 0 2px; border-radius: 2px; margin-bottom: 4px; }
+        .word.current { background: #fff59d; }
         .word.error-input { background: #ffcdd2 !important; color: #c62828 !important; }
         .word.correct { color: #2e7d32; }
-        .word.incorrect { color: #c62828; border-bottom: 2px solid #c62828; }
-
-        /* Sidebar Settings */
-        .settings-section { background: #ffffff55; border: 1px solid #ffffffaa; border-radius: 5px; padding: 10px; margin-bottom: 15px; }
-        .settings-title { font-size: 12px; font-weight: 700; color: #444; margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
-        .form-check-label { font-size: 13px; color: #555; }
-        .form-check { margin-bottom: 5px; }
-
-        /* Stats Display */
-        .stat-item { margin-bottom: 10px; }
-        .stat-val { font-size: 24px; font-weight: bold; color: #28a745; }
-        .stat-lbl { font-size: 11px; text-transform: uppercase; color: #666; }
-
-        /* Overlay */
-        #resultOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 9999;
-        }
+        .word.incorrect { color: #c62828; text-decoration: underline; }
     </style>
 </head>
 <body>
 
 <div class="test-wrapper">
-    <!-- Left Sidebar: Font Options -->
+    <!-- Left Sidebar: Controls -->
     <div class="sidebar-left">
-        <label style="font-size:10px; font-weight:bold;">Select Font</label>
-        <div class="mt-2">
-            <input type="checkbox" id="boldToggle"> <span style="font-size:11px;">Bold</span>
+        <div class="mb-4 text-center">
+            <i class="fas fa-font text-muted mb-2"></i>
+            <div style="font-size:9px; font-weight:bold; text-transform:uppercase;">Size</div>
+            <div class="d-flex flex-column gap-2 mt-2">
+                <button class="btn btn-xs btn-outline-secondary" id="fontInc"><i class="fas fa-plus"></i></button>
+                <span id="fontSizeDisplay" class="font-weight-bold">20</span>
+                <button class="btn btn-xs btn-outline-secondary" id="fontDec"><i class="fas fa-minus"></i></button>
+            </div>
+        </div>
+        <div class="text-center mt-3">
+             <input type="checkbox" id="boldToggle">
+             <div style="font-size:9px; font-weight:bold; margin-top:3px;">BOLD</div>
         </div>
     </div>
 
     <!-- Main Section -->
     <div class="main-container">
         <div class="top-nav">
-            <div class="mode-btn">Go Printout Mode</div>
-            <div style="font-size:12px; color:#28a745; font-weight:bold;">Add New Exercise</div>
-            <div class="mode-btn">Go Exam Mode</div>
+            <div class="mode-btn" title="Switch to print layout">Print Mode</div>
+            <div style="font-size:14px; color:#28a745; font-weight:800; letter-spacing:1px;"><?= htmlspecialchars($test['title']) ?></div>
+            <div class="mode-btn" title="Strict exam simulation">Exam Mode</div>
         </div>
 
         <!-- Reference Text Box -->
         <div id="textDisplay" class="text-display-box">
-            <!-- Content will be injected by JS -->
-            Loading test content...
+             <div class="text-center py-5 text-muted">
+                <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                <p>Initializing typing engine...</p>
+             </div>
         </div>
 
         <!-- Info Bar -->
         <div class="info-bar">
             <div>Duration: 
-                <select id="durationSelect">
-                    <option value="1">1 Minute</option>
-                    <option value="2">2 Minutes</option>
-                    <option value="5">5 Minutes</option>
-                    <option value="10" selected>10 Minutes</option>
-                    <option value="15">15 Minutes</option>
+                <select id="durationSelect" style="background:transparent; color:#fff; border:1px solid #ffffff55; border-radius:3px;">
+                    <option value="1">1 Min</option>
+                    <option value="2">2 Min</option>
+                    <option value="5">5 Min</option>
+                    <option value="10" selected>10 Min</option>
+                    <option value="15">15 Min</option>
                 </select>
             </div>
-            <div class="flex-grow-1 text-center">Exercise : <span id="exerciseIdx">1/1</span></div>
-            <div class="d-flex align-items-center gap-2">
-                <button class="btn btn-xs btn-light" id="fontDec"><i class="fas fa-minus"></i></button>
-                <span id="fontSizeDisplay">20</span>
-                <button class="btn btn-xs btn-light" id="fontInc"><i class="fas fa-plus"></i></button>
+            <div class="flex-grow-1 text-center" style="letter-spacing:1px;">EXERCISE : <span id="exerciseIdx">1/1</span></div>
+            <div class="text-right">
+                <span class="badge badge-light px-3 py-2" style="font-size:11px;">ENGLISH TYPING</span>
             </div>
         </div>
 
         <!-- Typing Input Area -->
         <textarea id="typingInput" class="typing-input-box" placeholder="Loading typing engine..." disabled></textarea>
         
-        <div class="text-center pb-2" style="font-size:10px; color:#555;">
-            Select test duration and start typing. Timer will start automatically.
+        <div class="text-center pb-2" style="font-size:11px; color:#666; font-style:italic;">
+            <i class="fas fa-info-circle mr-1"></i> Timer will start automatically when you begin typing.
         </div>
     </div>
 
     <!-- Right Sidebar: Settings & Live Stats -->
     <div class="sidebar-right">
-        <div class="settings-section" style="background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <div class="row text-center" id="statPanel">
-                <div class="col-6 mb-3">
+        <!-- Timer Section -->
+        <div class="settings-section text-center py-3" style="border: 2px solid #c62828;">
+            <div class="stat-lbl mb-1">Time Remaining</div>
+            <div id="timerDisplay" class="timer-val">00:00</div>
+        </div>
+
+        <!-- Stats Panel -->
+        <div class="settings-section" id="statPanel">
+            <div class="row no-gutters text-center">
+                <div class="col-6 border-right border-bottom py-2">
                     <div id="liveWpm" class="stat-val">0</div>
-                    <div class="stat-lbl">WPM</div>
+                    <div class="stat-lbl">Gross WPM</div>
                 </div>
-                <div class="col-6 mb-3">
+                <div class="col-6 border-bottom py-2">
                     <div id="liveAccuracy" class="stat-val">0%</div>
                     <div class="stat-lbl">Accuracy</div>
                 </div>
-                <div class="col-6">
-                    <div id="liveErrors" class="stat-val" style="color:#c62828">0</div>
-                    <div class="stat-lbl">Errors</div>
+                <div class="col-6 border-right py-2">
+                    <div id="liveErrors" class="stat-val text-danger">0</div>
+                    <div class="stat-lbl">Mistakes</div>
                 </div>
-                <div class="col-6">
-                    <div id="liveWords" class="stat-val" style="color:#007bff">0</div>
-                    <div class="stat-lbl">Words</div>
+                <div class="col-6 py-2">
+                    <div id="liveWords" class="stat-val text-primary">0</div>
+                    <div class="stat-lbl">Words Typed</div>
                 </div>
-            </div>
-            <div class="text-center border-top pt-2 mt-2">
-                <div id="timerDisplay" class="stat-val" style="color:#accent-blue; font-size: 32px;">00:00</div>
-                <div class="stat-lbl">Time Left</div>
             </div>
         </div>
 
         <div class="settings-section">
-            <div class="settings-title">General Settings</div>
+            <div class="settings-title">Typing Mode</div>
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="examMode">
-                <label class="form-check-label" for="examMode"><b>Strict Exam Mode</b> (Hide Live Stats)</label>
+                <label class="form-check-label" for="examMode"><b>Strict Exam Mode</b><br><small class="text-muted">Hides all live performance stats</small></label>
             </div>
         </div>
 
         <div class="settings-section">
-            <div class="settings-title">Backspace Options</div>
+            <div class="settings-title">Backspace Rules</div>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="backspaceOpt" id="bsFull" value="full" checked>
-                <label class="form-check-label" for="bsFull">Full Backspace</label>
+                <label class="form-check-label" for="bsFull">Allow Full Backspace</label>
             </div>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="backspaceOpt" id="bsOne" value="one">
@@ -200,46 +202,43 @@ $student_name = $student_data['name'] ?? 'Student';
             </div>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="backspaceOpt" id="bsNone" value="none">
-                <label class="form-check-label" for="bsNone">Deactivate Backspace</label>
+                <label class="form-check-label" for="bsNone">Disable Backspace</label>
             </div>
         </div>
 
         <div class="settings-section">
-            <div class="settings-title">Highlight Options</div>
-            <div class="form-check">
+            <div class="settings-title">Visual Aids</div>
+            <div class="form-check mb-1">
                 <input class="form-check-input" type="radio" name="highlightOpt" id="hlWord" value="word" checked>
                 <label class="form-check-label" for="hlWord">Word Highlight</label>
             </div>
-            <div class="form-check">
+            <div class="form-check mb-1">
                 <input class="form-check-input" type="radio" name="highlightOpt" id="hlWordErr" value="wordErr">
-                <label class="form-check-label" for="hlWordErr">Word + Error Highlight</label>
+                <label class="form-check-label" for="hlWordErr">Word + Error (CPCT)</label>
             </div>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="highlightOpt" id="hlNone" value="none">
-                <label class="form-check-label" for="hlNone">No Highlight</label>
+                <label class="form-check-label" for="hlNone">No Highlighting</label>
             </div>
         </div>
 
         <div class="settings-section">
-            <div class="settings-title">Scrollbar Options</div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="showScroll" checked>
-                <label class="form-check-label" for="showScroll">Show Scrollbar</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="autoScroll" checked>
-                <label class="form-check-label" for="autoScroll">Auto Scroll</label>
+            <div class="settings-title">Scroll & View</div>
+            <div class="d-flex justify-content-between">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="showScroll" checked>
+                    <label class="form-check-label" for="showScroll">Scrollbar</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="autoScroll" checked>
+                    <label class="form-check-label" for="autoScroll">Auto Scroll</label>
+                </div>
             </div>
         </div>
 
-        <div class="settings-section">
-            <div class="settings-title">Paragraph Settings</div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="applyWordLimit">
-                <label class="form-check-label" for="applyWordLimit">Apply Word Limit</label>
-            </div>
-            <input type="number" id="wordLimitVal" class="form-control form-control-sm mt-2" value="500" disabled>
-        </div>
+        <button class="btn btn-block btn-outline-danger btn-sm font-weight-bold" onclick="window.location.reload();">
+            <i class="fas fa-sync-alt mr-1"></i> RESTART EXERCISE
+        </button>
     </div>
 </div>
 
