@@ -65,25 +65,19 @@ $student_name = $student_data['name'] ?? 'Student';
         /* Content Areas */
         .text-display-box { 
             flex: 1.2; background: #fff; margin: 10px 15px; border-radius: 6px; border: 1px solid #ced4da;
-            padding: 20px 25px; font-family: 'Consolas', 'Roboto Mono', monospace; font-size: 22px; line-height: 1.8;
+            padding: 20px 25px; font-family: 'Consolas', 'Roboto Mono', monospace; font-size: 14px; line-height: 1.8;
             overflow-y: auto; color: #212529; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
             min-height: 150px; letter-spacing: 0.5px;
         }
-        .info-bar { height: 40px; background: var(--header-bg); display: flex; align-items: center; padding: 0 15px; color: #fff; font-size: 13px; font-weight: 600; gap: 20px; flex-shrink: 0; border-top: 2px solid #7a89a8; border-bottom: 2px solid #7a89a8; }
+        .info-bar { height: 40px; background: var(--header-bg); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; color: #fff; font-size: 13px; font-weight: 600; flex-shrink: 0; border-top: 2px solid #7a89a8; border-bottom: 2px solid #7a89a8; }
         .typing-input-box {
             flex: 1; min-height: 120px; background: #fff; margin: 10px 15px; border-radius: 6px; border: 1px solid #ced4da;
-            padding: 20px 25px; font-family: 'Consolas', 'Roboto Mono', monospace; font-size: 22px; width: calc(100% - 30px);
+            padding: 20px 25px; font-family: 'Consolas', 'Roboto Mono', monospace; font-size: 14px; width: calc(100% - 30px);
             resize: none; outline: none; border-top: 4px solid var(--header-bg); flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
             letter-spacing: 0.5px; line-height: 1.8; color: #0d6efd;
         }
 
         /* Sidebar Styling */
-        .sidebar-left { width: 65px; background: #f8f9fa; border-right: 1px solid #e9ecef; display: flex; flex-direction: column; align-items: center; padding: 20px 0; flex-shrink: 0; z-index: 10; }
-        .font-ctrl-btn { width: 34px; height: 34px; border-radius: 6px; border: 1px solid #ddd; background: #fff; color: #555; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-size: 16px; margin: 3px 0; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .font-ctrl-btn:hover { background: #e9ecef; color: #333; }
-        .font-val { font-size: 18px; font-weight: 800; color: #333; margin: 8px 0; }
-        .font-label { font-size: 10px; font-weight: 800; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
-
         .settings-section { background: #fff; border: 1px solid #d1d5db; border-radius: 6px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .settings-title { font-size: 11px; font-weight: 800; color: #555; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
         .form-check-label { font-size: 13px; color: #444; }
@@ -102,24 +96,7 @@ $student_name = $student_data['name'] ?? 'Student';
 <body>
 
 <div class="test-wrapper">
-    <!-- Left Sidebar: Controls -->
-    <div class="sidebar-left">
-        <div class="mb-4 text-center w-100 px-2">
-            <div class="font-label">SIZE</div>
-            <div class="d-flex flex-column align-items-center mt-2">
-                <div class="font-ctrl-btn" id="fontInc" title="Increase Font"><i class="fas fa-plus"></i></div>
-                <div id="fontSizeDisplay" class="font-val">20</div>
-                <div class="font-ctrl-btn" id="fontDec" title="Decrease Font"><i class="fas fa-minus"></i></div>
-            </div>
-        </div>
-        <div class="text-center mt-4 w-100 px-2 border-top pt-3" style="border-color: #e9ecef !important;">
-            <div class="font-label mb-2">BOLD</div>
-            <div class="form-check form-switch d-flex justify-content-center p-0 m-0">
-                <input class="form-check-input m-0" type="checkbox" role="switch" id="boldToggle" style="width: 36px; height: 18px; cursor: pointer;">
-            </div>
-        </div>
-    </div>
-
+    <!-- Left Sidebar: Eliminated in favor of a full-width experience -->
     <!-- Main Section -->
     <div class="main-container">
         <div class="top-nav">
@@ -139,17 +116,30 @@ $student_name = $student_data['name'] ?? 'Student';
         <!-- Info Bar -->
         <div class="info-bar">
             <div>Duration: 
-                <select id="durationSelect" style="background:transparent; color:#fff; border:1px solid #ffffff55; border-radius:3px;">
-                    <option value="1">1 Min</option>
-                    <option value="2">2 Min</option>
-                    <option value="5">5 Min</option>
-                    <option value="10" selected>10 Min</option>
-                    <option value="15">15 Min</option>
+                <select id="durationSelect" style="background:transparent; color:#fff; border:1px solid #ffffff55; border-radius:3px; outline:none; padding: 2px 5px;">
+                    <option value="1" style="color:#000;">1 Min</option>
+                    <option value="2" style="color:#000;">2 Min</option>
+                    <option value="5" style="color:#000;">5 Min</option>
+                    <option value="10" selected style="color:#000;">10 Min</option>
+                    <option value="15" style="color:#000;">15 Min</option>
                 </select>
             </div>
-            <div class="flex-grow-1 text-center" style="letter-spacing:1px;">EXERCISE : <span id="exerciseIdx">1/1</span></div>
-            <div class="text-right">
-                <span class="badge badge-light px-3 py-2" style="font-size:11px;">ENGLISH TYPING</span>
+            
+            <div class="d-flex align-items-center" style="gap: 30px;">
+                <!-- Font Size Controls -->
+                <div class="d-flex align-items-center">
+                    <span class="mr-2" style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">Size:</span>
+                    <button class="btn btn-sm text-white px-2 py-0 border" style="border-color:#ffffff55; background: rgba(255,255,255,0.1);" id="fontDec"><i class="fas fa-minus" style="font-size:10px;"></i></button>
+                    <span id="fontSizeDisplay" class="px-3" style="font-size:15px; font-weight:700;">14</span>
+                    <button class="btn btn-sm text-white px-2 py-0 border" style="border-color:#ffffff55; background: rgba(255,255,255,0.1);" id="fontInc"><i class="fas fa-plus" style="font-size:10px;"></i></button>
+                </div>
+                <!-- Bold Toggle -->
+                <div class="d-flex align-items-center">
+                    <span class="mr-2" style="font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">Bold:</span>
+                    <div class="form-check form-switch m-0 p-0" style="height: 18px; margin-top:2px !important;">
+                        <input class="form-check-input m-0" type="checkbox" role="switch" id="boldToggle" style="width: 32px; height: 16px; cursor: pointer;">
+                    </div>
+                </div>
             </div>
         </div>
 
