@@ -496,14 +496,28 @@ $student_name = $student_data['name'] ?? 'Student';
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                Swal.fire({
-                    title: '<span style="color:#28a745">Test Completed!</span>',
-                    html: `
+                let statsHtml = '';
+                if (hlMode === 'wordErr') {
+                    statsHtml = `
+                        <div class="row pt-3">
+                            <div class="col-4"><h5>${wpm}</h5><p class="small text-muted">CPCT SPEED<br><small>(CPM)</small></p></div>
+                            <div class="col-4"><h5>${totalCorrectChars}</h5><p class="small text-muted">CORRECT<br>CHARS</p></div>
+                            <div class="col-4"><h5>${accuracy}%</h5><p class="small text-muted">ACCURACY</p></div>
+                        </div>
+                    `;
+                } else {
+                    statsHtml = `
                         <div class="row pt-3">
                             <div class="col-4"><h5>${wpm}</h5><p class="small text-muted">GROSS WPM</p></div>
                             <div class="col-4"><h5>${data.net_wpm}</h5><p class="small text-muted">NET WPM</p></div>
                             <div class="col-4"><h5>${accuracy}%</h5><p class="small text-muted">ACCURACY</p></div>
                         </div>
+                    `;
+                }
+
+                Swal.fire({
+                    title: '<span style="color:#28a745">Test Completed!</span>',
+                    html: statsHtml + `
                         <div class="alert alert-light border mt-2">
                             Errors: <b>${errors}</b> | Time Spent: <b>${Math.floor(durSec/60)}m ${durSec%60}s</b>
                         </div>
