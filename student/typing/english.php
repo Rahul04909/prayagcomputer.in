@@ -107,205 +107,183 @@ function pageUrl($p, $extra = []) {
 ?>
 
 <style>
-.cat-strip { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
-.cat-chip {
-    display: flex; align-items: center; gap: 8px;
-    padding: 8px 16px; border-radius: 30px;
-    border: 1.5px solid #e2e8f0; background: #fff;
-    cursor: pointer; font-size: 0.82rem; font-weight: 600;
-    color: #4a5568; transition: all 0.2s ease;
-    text-decoration: none;
-}
-.cat-chip:hover { border-color: #28a745; color: #28a745; text-decoration: none; background: #f0fff4; }
-.cat-chip.active { background: #28a745; color: #fff; border-color: #28a745; }
-.cat-chip img { width: 22px; height: 22px; object-fit: contain; border-radius: 4px; }
-.cat-chip .cnt { font-size: 10px; background: rgba(255,255,255,0.3); padding: 1px 6px; border-radius: 10px; }
-.cat-chip.active .cnt { background: rgba(255,255,255,0.3); }
-.cat-chip:not(.active) .cnt { background: #f1f5f9; color: #64748b; }
-
-.test-card {
-    border: none; border-radius: 14px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    transition: all 0.25s ease; height: 100%;
-    overflow: hidden; background: #fff;
-}
-.test-card:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-.test-card .card-top { background: linear-gradient(135deg,#f0fff4,#e6ffed); padding: 20px; }
-.test-card .type-badge { font-size: 10px; text-transform: uppercase; font-weight: 700; letter-spacing: .5px; }
-.test-card .title { font-size: 0.95rem; font-weight: 700; color: #1a202c; margin: 10px 0 6px; line-height: 1.4; }
-.test-card .desc { font-size: 0.8rem; color: #64748b; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.test-card .meta { font-size: 0.78rem; color: #64748b; padding: 14px 18px; border-top: 1px solid #f1f5f9; display: flex; gap: 14px; align-items: center; }
-.test-card .meta i { color: #28a745; }
-.start-btn {
-    display: block; text-align: center; padding: 10px;
-    background: #28a745; color: #fff; font-weight: 600; font-size: 0.85rem;
-    border-radius: 0 0 14px 14px; transition: background .2s;
-    text-decoration: none;
-}
-.start-btn:hover { background: #218838; color: #fff; text-decoration: none; }
-
-.filter-bar { background: #fff; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 16px 20px; margin-bottom: 24px; }
-.filter-bar .form-select, .filter-bar .form-control { border-radius: 8px; font-size: 0.85rem; border: 1.5px solid #e2e8f0; }
-.filter-bar .form-select:focus, .filter-bar .form-control:focus { border-color: #28a745; box-shadow: none; }
-
-.pagination .page-link { color: #28a745; border-radius: 6px; margin: 0 2px; }
-.pagination .page-item.active .page-link { background: #28a745; border-color: #28a745; }
-.empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
+    .cat-card { border: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+    .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .level-badge { font-size: 10px; text-transform: uppercase; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+    .cat-logo { width: 30px; height: 30px; object-fit: contain; border-radius: 4px; background: #f8f9fa; padding: 2px; border: 1px solid #eee; }
+    .pagination .page-link { color: #28a745; border-radius: 5px; margin: 0 2px; }
+    .pagination .page-item.active .page-link { background-color: #28a745; border-color: #28a745; }
+    #loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
+    .btn-start { border-radius: 8px; font-weight: 600; font-size: 12px; padding: 6px 15px; transition: all 0.3s; }
+    .btn-start:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2); }
+    .category-strip { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 15px; margin-bottom: 20px; scrollbar-width: thin; }
+    .category-strip::-webkit-scrollbar { height: 4px; }
+    .category-strip::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+    .cat-chip { 
+        white-space: nowrap; padding: 8px 16px; border-radius: 20px; background: #fff; border: 1px solid #e0e0e0;
+        color: #666; font-size: 13px; font-weight: 600; transition: all 0.2s; cursor: pointer; text-decoration: none !important;
+    }
+    .cat-chip:hover, .cat-chip.active { background: #28a745; color: #fff; border-color: #28a745; }
+    .cat-chip i { margin-right: 6px; }
 </style>
 
-<section class="content">
-<div class="container-fluid py-3">
-
-    <!-- Header -->
-    <div class="d-flex align-items-center mb-4">
-        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#28a745,#218838);display:flex;align-items:center;justify-content:center;margin-right:14px;">
-            <i class="fas fa-keyboard text-white" style="font-size:1.1rem;"></i>
-        </div>
-        <div>
-            <h4 class="mb-0" style="font-weight:800;color:#1a202c;">English Typing Tests</h4>
-            <p class="mb-0 text-muted" style="font-size:0.83rem;"><?= $total_results ?> test<?= $total_results != 1 ? 's' : '' ?> available</p>
-        </div>
-    </div>
-
-    <!-- Exam Category Chips -->
-    <?php if (!empty($cats)): ?>
-    <div class="cat-strip">
-        <a href="<?= pageUrl(1, ['category' => '', 'page' => 1]) ?>" class="cat-chip <?= !$cat_filter ? 'active' : '' ?>">
-            <i class="fas fa-th-large" style="font-size:14px;"></i> All Categories
-            <span class="cnt"><?= array_sum(array_column($cats, 'test_count')) ?></span>
-        </a>
-        <?php foreach ($cats as $cat): ?>
-        <a href="<?= pageUrl(1, ['category' => $cat['id'], 'page' => 1]) ?>" class="cat-chip <?= $cat_filter == $cat['id'] ? 'active' : '' ?>">
-            <?php if ($cat['logo']): ?>
-                <img src="../../admin/<?= htmlspecialchars($cat['logo']) ?>" alt="">
-            <?php else: ?>
-                <i class="fas fa-layer-group" style="font-size:13px;"></i>
-            <?php endif; ?>
-            <?= htmlspecialchars($cat['name']) ?>
-            <span class="cnt"><?= $cat['test_count'] ?></span>
-        </a>
-        <?php endforeach; ?>
-    </div>
-    <?php endif; ?>
-
-    <!-- Filter Bar -->
-    <form method="GET" class="filter-bar">
-        <div class="row g-2 align-items-center">
-            <div class="col-md-4">
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0" style="border-radius:8px 0 0 8px; border:1.5px solid #e2e8f0;">
-                        <i class="fas fa-search text-muted" style="font-size:.8rem;"></i>
-                    </span>
-                    <input type="text" name="search" class="form-control border-start-0" placeholder="Search tests..." value="<?= htmlspecialchars($search_filter) ?>" style="border-radius:0 8px 8px 0; border:1.5px solid #e2e8f0; border-left:none;">
-                </div>
-            </div>
-            <div class="col-md-2">
-                <select name="level" class="form-select">
-                    <option value="">All Levels</option>
-                    <?php foreach (['Easy','Medium','Hard'] as $l): ?>
-                    <option value="<?= $l ?>" <?= $level_filter === $l ? 'selected' : '' ?>><?= $l ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <select name="type" class="form-select">
-                    <option value="">All Types</option>
-                    <?php foreach (['Typing Test','Practice Test','Lesson'] as $t): ?>
-                    <option value="<?= $t ?>" <?= $type_filter === $t ? 'selected' : '' ?>><?= $t ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <?php if ($cat_filter): ?>
-            <input type="hidden" name="category" value="<?= $cat_filter ?>">
-            <?php endif; ?>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-success w-100" style="border-radius:8px; font-weight:600; font-size:.85rem;">
-                    <i class="fas fa-filter mr-1"></i> Apply
-                </button>
-            </div>
-            <div class="col-md-2">
-                <a href="english.php" class="btn btn-light w-100" style="border-radius:8px; font-size:.85rem;">
-                    <i class="fas fa-times mr-1"></i> Clear
-                </a>
-            </div>
-        </div>
-    </form>
-
-    <!-- Test Cards Grid -->
-    <?php if (empty($tests)): ?>
-    <div class="empty-state">
-        <i class="fas fa-inbox fa-3x mb-3" style="color:#cbd5e1;"></i>
-        <h5 style="color:#94a3b8;">No English typing tests found</h5>
-        <p style="font-size:.85rem;">Try adjusting your filters or check back later.</p>
-    </div>
-    <?php else: ?>
-    <div class="row" id="testsGrid">
-        <?php foreach ($tests as $t):
-            $lvl = levelColor($t['level']);
-            $ico = typeIcon($t['test_type']);
-            $catLogo = $t['category_logo'] ? '../../admin/' . $t['category_logo'] : null;
-        ?>
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="test-card card">
-                <div class="card-top">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <span class="type-badge" style="background:<?= $lvl['bg'] ?>;color:<?= $lvl['c'] ?>;padding:4px 10px;border-radius:20px;">
-                            <?= htmlspecialchars($t['level']) ?>
-                        </span>
-                        <span class="type-badge text-muted" style="background:#f8fafc;padding:4px 10px;border-radius:20px;">
-                            <i class="fas <?= $ico ?> mr-1"></i><?= htmlspecialchars($t['test_type']) ?>
-                        </span>
-                    </div>
-                    <p class="title"><?= htmlspecialchars($t['title']) ?></p>
-                    <p class="desc mb-0"><?= htmlspecialchars(strip_tags($t['short_description'] ?? '')) ?></p>
-                </div>
-                <div class="meta">
-                    <?php if ($catLogo): ?>
-                    <img src="<?= htmlspecialchars($catLogo) ?>" style="width:18px;height:18px;object-fit:contain;border-radius:3px;" alt="">
-                    <?php else: ?>
-                    <i class="fas fa-layer-group"></i>
-                    <?php endif; ?>
-                    <span title="Category"><?= htmlspecialchars($t['category_name'] ?? '—') ?></span>
-                    <span class="ml-auto"><i class="fas fa-clock mr-1"></i><?= $t['test_time'] ?> min</span>
-                </div>
-                <a href="take-test.php?id=<?= $t['id'] ?>" class="start-btn">
-                    <i class="fas fa-play-circle mr-1"></i> Start Test
-                </a>
-            </div>
-        </div>
-        <?php endforeach; ?>
-    </div>
-
-    <!-- Pagination -->
-    <?php if ($total_pages > 1): ?>
-    <nav class="mt-2 mb-4">
-        <ul class="pagination pagination-sm justify-content-center">
-            <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
-                <a class="page-link" href="<?= pageUrl($page - 1) ?>"><i class="fas fa-chevron-left"></i></a>
-            </li>
-            <?php
-            $start_p = max(1, $page - 2);
-            $end_p   = min($total_pages, $page + 2);
-            if ($start_p > 1) echo '<li class="page-item disabled"><span class="page-link">…</span></li>';
-            for ($i = $start_p; $i <= $end_p; $i++):
-            ?>
-                <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                    <a class="page-link" href="<?= pageUrl($i) ?>"><?= $i ?></a>
-                </li>
-            <?php endfor;
-            if ($end_p < $total_pages) echo '<li class="page-item disabled"><span class="page-link">…</span></li>'; ?>
-            <li class="page-item <?= $page >= $total_pages ? 'disabled' : '' ?>">
-                <a class="page-link" href="<?= pageUrl($page + 1) ?>"><i class="fas fa-chevron-right"></i></a>
-            </li>
-        </ul>
-        <p class="text-center text-muted mb-0" style="font-size:.8rem;">
-            Showing <?= ($start + 1) ?>–<?= min($start + $limit, $total_results) ?> of <?= $total_results ?> tests
-        </p>
-    </nav>
-    <?php endif; ?>
-    <?php endif; ?>
-
+<div id="loader-overlay">
+    <div class="loader"></div>
 </div>
+
+<section class="content">
+    <div class="container-fluid">
+        
+        <!-- Category Strip -->
+        <?php if (!empty($cats)): ?>
+        <div class="category-strip">
+            <a href="english.php" class="cat-chip <?= !$cat_filter ? 'active' : '' ?>">
+                <i class="fas fa-th-large"></i> All Categories
+            </a>
+            <?php foreach ($cats as $cat): ?>
+                <a href="?category=<?= $cat['id'] ?>" class="cat-chip <?= $cat_filter == $cat['id'] ? 'active' : '' ?>">
+                    <?php if ($cat['logo']): ?>
+                        <img src="../../admin/<?= htmlspecialchars($cat['logo']) ?>" style="width:16px; height:16px; margin-right:6px; object-fit:contain;">
+                    <?php else: ?>
+                        <i class="fas fa-folder"></i>
+                    <?php endif; ?>
+                    <?= htmlspecialchars($cat['name']) ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card cat-card">
+                    <div class="card-header bg-white p-3">
+                        <form method="GET" class="row g-2 align-items-center">
+                            <div class="col-md-3">
+                                <h3 class="card-title" style="font-weight:700; color:#343a40; margin:0;">Available Tests (<?= $total_results ?>)</h3>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" name="search" class="form-control" placeholder="Search test name..." value="<?= htmlspecialchars($search_filter) ?>">
+                                    <button class="btn btn-success" type="submit"><i class="fas fa-search"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="level" class="form-select form-select-sm" onchange="this.form.submit()">
+                                    <option value="">All Levels</option>
+                                    <option value="Easy" <?= ($level_filter == 'Easy') ? 'selected' : '' ?>>Easy</option>
+                                    <option value="Medium" <?= ($level_filter == 'Medium') ? 'selected' : '' ?>>Medium</option>
+                                    <option value="Hard" <?= ($level_filter == 'Hard') ? 'selected' : '' ?>>Hard</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="type" class="form-select form-select-sm" onchange="this.form.submit()">
+                                    <option value="">All Types</option>
+                                    <option value="Typing Test" <?= ($type_filter == 'Typing Test') ? 'selected' : '' ?>>Typing Test</option>
+                                    <option value="Practice Test" <?= ($type_filter == 'Practice Test') ? 'selected' : '' ?>>Practice Test</option>
+                                    <option value="Lesson" <?= ($type_filter == 'Lesson') ? 'selected' : '' ?>>Lesson</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <?php if ($cat_filter || $level_filter || $type_filter || $search_filter): ?>
+                                    <a href="english.php" class="btn btn-sm btn-outline-secondary w-100" title="Clear Filters">
+                                        <i class="fas fa-times mr-1"></i> Clear
+                                    </a>
+                                <?php endif; ?>
+                            </div>
+                            <?php if ($cat_filter): ?>
+                                <input type="hidden" name="category" value="<?= $cat_filter ?>">
+                            <?php endif; ?>
+                        </form>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="bg-light text-muted small text-uppercase">
+                                    <tr>
+                                        <th class="pl-4">Test Information</th>
+                                        <th>Category</th>
+                                        <th>Config</th>
+                                        <th>Time</th>
+                                        <th class="text-right pr-4">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (empty($tests)): ?>
+                                        <tr>
+                                            <td colspan="5" class="text-center py-5 text-muted">
+                                                <i class="fas fa-keyboard fa-3x mb-3 d-block opacity-2"></i>
+                                                No typing tests found matching your criteria.
+                                            </td>
+                                        </tr>
+                                    <?php else: ?>
+                                        <?php foreach ($tests as $t): 
+                                            $lvl = levelColor($t['level']);
+                                        ?>
+                                            <tr>
+                                                <td class="pl-4">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="mr-3 text-center" style="width: 40px; height: 40px; border-radius: 10px; background: #f0fff4; display: flex; align-items: center; justify-content: center; color: #28a745;">
+                                                            <i class="fas fa-file-alt"></i>
+                                                        </div>
+                                                        <div>
+                                                            <span style="font-weight:700; color:#2c3e50; font-size: 15px;"><?= htmlspecialchars($t['title']) ?></span><br>
+                                                            <small class="text-muted d-block text-truncate" style="max-width: 250px;"><?= htmlspecialchars(strip_tags($t['short_description'] ?? '')) ?></small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <?php if ($t['category_logo']): ?>
+                                                            <img src="../../admin/<?= htmlspecialchars($t['category_logo']) ?>" class="cat-logo mr-2">
+                                                        <?php else: ?>
+                                                            <div class="cat-logo mr-2 d-flex align-items-center justify-content-center text-muted small"><i class="fas fa-folder"></i></div>
+                                                        <?php endif; ?>
+                                                        <span class="badge badge-light border" style="font-weight:600;"><?= htmlspecialchars($t['category_name'] ?: 'N/A') ?></span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge" style="background: <?= $lvl['bg'] ?>; color: <?= $lvl['c'] ?>; border-radius: 4px; font-size: 10px; text-transform: uppercase; font-weight: 700;"><?= $t['level'] ?></span><br>
+                                                    <small class="text-muted" style="font-weight: 600;"><i class="fas fa-tag mr-1" style="font-size: 9px;"></i><?= $t['test_type'] ?></small>
+                                                </td>
+                                                <td>
+                                                    <div style="font-weight: 700; color: #495057;"><i class="far fa-clock mr-1 text-success"></i> <?= $t['test_time'] ?> Min</div>
+                                                    <small class="text-muted" style="font-size: 10px;">Created: <?= date('d M Y', strtotime($t['created_at'])) ?></small>
+                                                </td>
+                                                <td class="text-right pr-4">
+                                                    <a href="take-test.php?id=<?= $t['id'] ?>" class="btn btn-success btn-start shadow-sm">
+                                                        <i class="fas fa-play mr-1"></i> Start Test
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <?php if ($total_pages > 1): ?>
+                        <div class="card-footer bg-white border-top-0">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination pagination-sm justify-content-center mb-0">
+                                    <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="<?= pageUrl($page - 1) ?>"><i class="fas fa-chevron-left"></i></a>
+                                    </li>
+                                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                        <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                                            <a class="page-link" href="<?= pageUrl($i) ?>"><?= $i ?></a>
+                                        </li>
+                                    <?php endfor; ?>
+                                    <li class="page-item <?= ($page >= $total_pages) ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="<?= pageUrl($page + 1) ?>"><i class="fas fa-chevron-right"></i></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <?php include '../footer.php'; ?>
