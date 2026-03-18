@@ -62,12 +62,12 @@ $student_name = $student_data['name'] ?? 'Student';
 
         /* Content Areas */
         .text-display-box { 
-            flex: 1; background: #fff; margin: 15px; border-radius: 4px; border: 1px solid #999;
-            padding: 20px; font-family: 'Roboto Mono', monospace; font-size: 20px; line-height: 1.6;
+            flex: 1; background: #fff; margin: 10px 15px; border-radius: 4px; border: 1px solid #999;
+            padding: 15px; font-family: 'Roboto Mono', monospace; font-size: 20px; line-height: 1.6;
             overflow-y: auto; color: #333; position: relative;
         }
         .typing-input-box {
-            height: 350px; background: #fff; margin: 0 15px 15px; border-radius: 4px; border: 1px solid #999;
+            height: 250px; background: #fff; margin: 0 15px 10px; border-radius: 4px; border: 1px solid #999;
             padding: 15px; font-family: 'Roboto Mono', monospace; font-size: 20px; width: calc(100% - 30px);
             resize: none; outline: none; border-top: 5px solid #8e9dbf;
         }
@@ -146,7 +146,7 @@ $student_name = $student_data['name'] ?? 'Student';
         </div>
 
         <!-- Typing Input Area -->
-        <textarea id="typingInput" class="typing-input-box" placeholder="Wait for the timer to load, then start typing here..." disabled></textarea>
+        <textarea id="typingInput" class="typing-input-box" placeholder="Loading typing engine..." disabled></textarea>
         
         <div class="text-center pb-2" style="font-size:10px; color:#555;">
             Select test duration and start typing. Timer will start automatically.
@@ -264,15 +264,28 @@ $student_name = $student_data['name'] ?? 'Student';
     const typingInput = $('#typingInput');
     const timerDisplay = $('#timerDisplay');
     
+    $(document).ready(function() {
+        initTest();
+    });
+    
     function initTest() {
-        textDisplay.empty();
-        words.forEach((word, idx) => {
-            textDisplay.append(`<span class="word" id="word-${idx}">${word}</span> `);
-        });
-        updateHighlight();
-        typingInput.prop('disabled', false).val('');
-        timeLeft = $('#durationSelect').val() * 60;
-        updateTimerDisplay();
+        try {
+            if (!words || words.length === 0) {
+                textDisplay.html('<div class="alert alert-warning">No content found for this test.</div>');
+                return;
+            }
+            textDisplay.empty();
+            words.forEach((word, idx) => {
+                textDisplay.append(`<span class="word" id="word-${idx}">${word}</span> `);
+            });
+            updateHighlight();
+            typingInput.prop('disabled', false).val('').attr('placeholder', 'Start typing the text shown above...');
+            timeLeft = $('#durationSelect').val() * 60;
+            updateTimerDisplay();
+        } catch (e) {
+            console.error("Init Error:", e);
+            textDisplay.html('<div class="alert alert-danger">Error loading test engine.</div>');
+        }
     }
 
     function updateHighlight() {
@@ -490,8 +503,6 @@ $student_name = $student_data['name'] ?? 'Student';
         typingInput.css('font-weight', weight);
     });
 
-    // Initialize
-    initTest();
 
 </script>
 
