@@ -522,40 +522,109 @@ $student_name = $student_data['name'] ?? 'Student';
     }
 
     typingInput.on('input', function() {
-        if (isFinished) return;
+        if (isFinished) {
+            $(this).val( $(this).val() ); 
+            return;
+        }
+        startTimer();
+
+        let rawVal = $(this).val();
+        
+        // Split by standard spaces
+        let typedArr = rawVal.split(' ');
+        currentWordIdx = typedArr.length - 1;
+        
+        // Update typedWords array for finished words (everything except the last incomplete word)
+        typedWords = typedArr.slice(0, currentWordIdx);
+
         const hlMode = $('input[name="highlightOpt"]:checked').val();
         
-        if (hlMode === 'none') {
-            // Do absolutely nothing for highlighting
-        } else if (hlMode === 'wordErr') {
-            const typedVal = $(this).val();
-            const targetWord = words[currentWordIdx];
-            const currentWordEl = $(`#word-${currentWordIdx}`);
+        // Evaluate words up to the current one + ahead to clean up
+        for (let idx = 0; idx <= currentWordIdx + 1; idx++) {
+            const targetWord = words[idx];
+            if (!targetWord) continue;
             
-            let html = '';
-            for (let i = 0; i < targetWord.length; i++) {
-                if (i < typedVal.length) {
-                    if (typedVal[i] === targetWord[i]) {
-                        html += `<span style="color: #2e7d32;">${targetWord[i]}</span>`;
-                    } else {
-                        html += `<span style="color: #c62828;">${targetWord[i]}</span>`;
-                    }
-                } else {
-                    html += targetWord[i];
-                }
+            const wordEl = $(`#word-${idx}`);
+            
+            if (idx < currentWordIdx) {
+                 const typed = typedArr[idx];
+                 wordEl.removeClass('current error-input');
+                 if (hlMode !== 'none') {
+                     if (typed === targetWord) {
+                         wordEl.addClass('correct').removeClass('incorrect');
+                         wordEl.text(targetWord);
+                     } else {
+                         wordEl.addClass('incorrect').removeClass('correct');
+                         if (hlMode === 'wordErr') {
+                              let html = '';
+                              for (let i = 0; i < targetWord.length; i++) {
+                                  if (i < typed.length) {
+                                      if (typed[i] === targetWord[i]) {
+                                          html += `<span style="color: #2e7d32;">${targetWord[i]}</span>`;
+                                      } else {
+                                          html += `<span style="color: #c62828;">${targetWord[i]}</span>`;
+                                      }
+                                  } else {
+                                      html += `<span style="color: #c62828;">${targetWord[i]}</span>`; // Untyped chars in missed word are errors
+                                  }
+                              }
+                              if (typed.length > targetWord.length) {
+                                  let extra = typed.substring(targetWord.length);
+                                  html += `<span style="color: #c62828; text-decoration: underline;">${extra}</span>`;
+                              }
+                              wordEl.html(html);
+                         } else {
+                              wordEl.text(targetWord);
+                         }
+                     }
+                 } else {
+                     wordEl.removeClass('correct incorrect');
+                     wordEl.text(targetWord);
+                 }
+            } 
+            else if (idx === currentWordIdx) {
+                 const typedVal = typedArr[idx];
+                 wordEl.removeClass('correct incorrect');
+                 
+                 if (hlMode === 'none') {
+                     wordEl.text(targetWord);
+                 } else if (hlMode === 'wordErr') {
+                     let html = '';
+                     for (let i = 0; i < targetWord.length; i++) {
+                         if (i < typedVal.length) {
+                             if (typedVal[i] === targetWord[i]) {
+                                 html += `<span style="color: #2e7d32;">${targetWord[i]}</span>`;
+                             } else {
+                                 html += `<span style="color: #c62828;">${targetWord[i]}</span>`;
+                             }
+                         } else {
+                             html += targetWord[i];
+                         }
+                     }
+                     if (typedVal.length > targetWord.length) {
+                         let extra = typedVal.substring(targetWord.length);
+                         html += `<span style="color: #c62828; text-decoration: underline;">${extra}</span>`;
+                     }
+                     wordEl.html(html);
+                 } else if (hlMode === 'word') {
+                     wordEl.text(targetWord);
+                     if (!targetWord.startsWith(typedVal)) {
+                         wordEl.addClass('error-input');
+                     } else {
+                         wordEl.removeClass('error-input');
+                     }
+                 }
             }
-            if (typedVal.length > targetWord.length) {
-                let extra = typedVal.substring(targetWord.length);
-                html += `<span style="color: #c62828; text-decoration: underline;">${extra}</span>`;
+            else {
+                 wordEl.removeClass('correct incorrect current error-input');
+                 wordEl.text(targetWord);
             }
-            currentWordEl.html(html);
-        } else if (hlMode === 'word') {
-            const currentWordEl = $(`#word-${currentWordIdx}`);
-            // Reset to pure text string
-            currentWordEl.text(words[currentWordIdx]);
         }
         
+        updateHighlight();
         calculateStats();
+
+        if (currentWordIdx >= words.length) finishTest();
     });
 
     typingInput.on('keydown', function(e) {
@@ -563,48 +632,48 @@ $student_name = $student_data['name'] ?? 'Student';
         startTimer();
 
         const bsMode = $('input[name="backspaceOpt"]:checked').val();
+        
         if (e.key === 'Backspace') {
             if (bsMode === 'none') { e.preventDefault(); return; }
-            if (bsMode === 'one' && typingInput.val() === '') { e.preventDefault(); return; }
+            if (bsMode === 'one') {
+                const val = typingInput.val();
+                const selStart = this.selectionStart;
+                const selEnd = this.selectionEnd;
+                
+                if (selStart !== selEnd) {
+                    if (val.substring(selStart, selEnd).includes(' ')) {
+                        e.preventDefault(); return;
+                    }
+                } else if (selStart > 0 && val[selStart - 1] === ' ') {
+                    e.preventDefault(); return;
+                }
+            }
         }
 
-        if (e.key === ' ' || e.key === 'Enter') {
-            e.preventDefault();
-            const typed = typingInput.val().trim();
-            if (typed.length > 0 || e.key === ' ') {
-                typedWords[currentWordIdx] = typed;
-                const wordEl = $(`#word-${currentWordIdx}`);
-                const hlMode = $('input[name="highlightOpt"]:checked').val();
-                
-                wordEl.removeClass('error-input');
-                
-                if (hlMode !== 'none') {
-                    if (hlMode === 'wordErr' && typed === words[currentWordIdx]) {
-                        wordEl.addClass('correct').removeClass('incorrect');
-                        wordEl.text(words[currentWordIdx]); // collapse to raw text, styled by class
-                    } else if (hlMode === 'wordErr' && typed !== words[currentWordIdx]) {
-                        // Keep its span-based character coloring!
-                        wordEl.addClass('incorrect').removeClass('correct');
-                    } else {
-                        // hlWord Mode 1
-                        wordEl.text(words[currentWordIdx]); 
-                        if (typed === words[currentWordIdx]) {
-                            wordEl.addClass('correct').removeClass('incorrect');
-                        } else {
-                            wordEl.addClass('incorrect').removeClass('correct');
-                        }
-                    }
-                } else {
-                    // hlNone Mode 3
-                    wordEl.text(words[currentWordIdx]);
-                    wordEl.css('color', 'inherit'); 
-                }
-                
-                currentWordIdx++;
-                typingInput.val('');
-                updateHighlight();
-                if (currentWordIdx >= words.length) finishTest();
+        if (bsMode === 'one' && e.key.length === 1 && this.selectionStart !== this.selectionEnd) {
+            const val = typingInput.val();
+            if (val.substring(this.selectionStart, this.selectionEnd).includes(' ')) {
+                e.preventDefault(); return;
             }
+        }
+
+        if (e.key === ' ') {
+            const val = typingInput.val();
+            if (val === '' || val.endsWith(' ') || (this.selectionStart > 0 && val[this.selectionStart-1] === ' ' && val[this.selectionStart] === ' ')) {
+                e.preventDefault(); return;
+            }
+        }
+
+        if (e.key === 'Enter') {
+            e.preventDefault(); 
+        }
+    });
+
+    typingInput.on('mousedown', function(e) {
+        const bsMode = $('input[name="backspaceOpt"]:checked').val();
+        if (bsMode !== 'full') {
+            e.preventDefault();
+            this.focus(); 
         }
     });
     
