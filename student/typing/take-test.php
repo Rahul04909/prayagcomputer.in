@@ -192,19 +192,19 @@ $student_name = $student_data['name'] ?? 'Student';
             <div style="display: grid; grid-template-columns: 1fr 1fr; background: #fff;">
                 <div class="text-center py-3" style="border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                     <div id="liveWpm" class="stat-val text-success">0</div>
-                    <div class="stat-lbl">Gross WPM</div>
+                    <div id="wpmLbl" class="stat-lbl">Gross WPM</div>
                 </div>
                 <div class="text-center py-3" style="border-bottom: 1px solid #eee;">
                     <div id="liveAccuracy" class="stat-val text-primary">0%</div>
-                    <div class="stat-lbl">Accuracy</div>
+                    <div id="accLbl" class="stat-lbl">Accuracy</div>
                 </div>
                 <div class="text-center py-3" style="border-right: 1px solid #eee;">
                     <div id="liveErrors" class="stat-val text-danger">0</div>
-                    <div class="stat-lbl">Mistakes</div>
+                    <div id="errLbl" class="stat-lbl">Mistakes</div>
                 </div>
                 <div class="text-center py-3">
                     <div id="liveWords" class="stat-val text-info">0</div>
-                    <div class="stat-lbl">Words Typed</div>
+                    <div id="wordsLbl" class="stat-lbl">Words Typed</div>
                 </div>
             </div>
         </div>
@@ -236,15 +236,15 @@ $student_name = $student_data['name'] ?? 'Student';
         <div class="settings-section">
             <div class="settings-title">Visual Aids</div>
             <div class="form-check mb-1">
-                <input class="form-check-input" type="radio" name="highlightOpt" id="hlWord" value="word" checked>
+                <input class="form-check-input highlight-opt" type="radio" name="highlightOpt" id="hlWord" value="word" checked>
                 <label class="form-check-label" for="hlWord">Word Highlight</label>
             </div>
             <div class="form-check mb-1">
-                <input class="form-check-input" type="radio" name="highlightOpt" id="hlWordErr" value="wordErr">
+                <input class="form-check-input highlight-opt" type="radio" name="highlightOpt" id="hlWordErr" value="wordErr">
                 <label class="form-check-label" for="hlWordErr">Word + Error (CPCT)</label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="highlightOpt" id="hlNone" value="none">
+                <input class="form-check-input highlight-opt" type="radio" name="highlightOpt" id="hlNone" value="none">
                 <label class="form-check-label" for="hlNone">No Highlighting</label>
             </div>
         </div>
@@ -318,16 +318,19 @@ $student_name = $student_data['name'] ?? 'Student';
     function updateHighlight() {
         $('.word').removeClass('current error-input');
         if (!isFinished) {
-            const currentWordEl = $(`#word-${currentWordIdx}`);
-            currentWordEl.addClass('current');
-            
-            if ($('#autoScroll').is(':checked')) {
-                const wordEl = currentWordEl[0];
-                if (wordEl) {
-                    const box = textDisplay[0];
-                    const offset = wordEl.offsetTop - box.offsetTop;
-                    if (offset > box.clientHeight / 2) {
-                        box.scrollTop = offset - box.clientHeight / 2;
+            const hlMode = $('input[name="highlightOpt"]:checked').val();
+            if (hlMode !== 'none') {
+                const currentWordEl = $(`#word-${currentWordIdx}`);
+                currentWordEl.addClass('current');
+                
+                if ($('#autoScroll').is(':checked')) {
+                    const wordEl = currentWordEl[0];
+                    if (wordEl) {
+                        const box = textDisplay[0];
+                        const offset = wordEl.offsetTop - box.offsetTop;
+                        if (offset > box.clientHeight / 2) {
+                            box.scrollTop = offset - box.clientHeight / 2;
+                        }
                     }
                 }
             }
@@ -356,28 +359,61 @@ $student_name = $student_data['name'] ?? 'Student';
         if (timeSpentMin <= 0) return;
 
         let totalChars = 0;
+        let totalCorrectChars = 0;
         let errors = 0;
         let correctWords = 0;
 
         typedWords.forEach((typed, idx) => {
-            if (typed === words[idx]) {
+            const target = words[idx];
+            if (typed === target) {
                 correctWords++;
-                totalChars += words[idx].length + 1;
+                totalChars += target.length + 1;
+                totalCorrectChars += target.length + 1;
             } else {
                 errors++;
+                totalChars += Math.max(typed.length, target.length) + 1;
+                for (let i = 0; i < Math.max(typed.length, target.length); i++) {
+                    if (i < typed.length && i < target.length && typed[i] === target[i]) {
+                        totalCorrectChars++;
+                    }
+                }
             }
         });
 
         const currentTyped = typingInput.val().trim();
+        const currentTarget = words[currentWordIdx];
         totalChars += currentTyped.length;
+        if (currentTarget) {
+            for (let i = 0; i < Math.min(currentTyped.length, currentTarget.length); i++) {
+                if (currentTyped[i] === currentTarget[i]) totalCorrectChars++;
+            }
+        }
 
+        const hlMode = $('input[name="highlightOpt"]:checked').val();
         const grossWpm = Math.round((totalChars / 5) / timeSpentMin);
-        const accuracy = typedWords.length > 0 ? Math.round((correctWords / typedWords.length) * 100) : 100;
+        const cpctSpeed = Math.round(totalCorrectChars / timeSpentMin); 
+        const accuracy = Math.round((totalCorrectChars / Math.max(1, totalChars)) * 100);
 
-        $('#liveWpm').text(grossWpm);
-        $('#liveAccuracy').text(accuracy + '%');
-        $('#liveErrors').text(errors);
-        $('#liveWords').text(typedWords.length);
+        if (hlMode === 'none') {
+            $('#liveWpm').text('---');
+            $('#liveAccuracy').text('---');
+            $('#liveErrors').text('---');
+            $('#liveWords').text('---');
+        } else if (hlMode === 'wordErr') {
+            $('#liveWpm').text(cpctSpeed);
+            $('#wpmLbl').text("CPCT Speed");
+            $('#liveAccuracy').text(accuracy + '%');
+            $('#liveErrors').text(errors);
+            $('#liveWords').text(totalCorrectChars);
+            $('#wordsLbl').text("Correct Chars");
+        } else {
+            $('#liveWpm').text(grossWpm);
+            $('#wpmLbl').text("Gross WPM");
+            $('#liveAccuracy').text((typedWords.length > 0 ? Math.round((correctWords / typedWords.length) * 100) : 100) + '%');
+            $('#liveErrors').text(errors);
+            $('#liveWords').text(typedWords.length);
+            $('#wordsLbl').text("Words Typed");
+        }
     }
 
     function finishTest() {
@@ -387,11 +423,55 @@ $student_name = $student_data['name'] ?? 'Student';
         typingInput.prop('disabled', true);
 
         const durSec = ($('#durationSelect').val() * 60) - timeLeft;
-        const wpm = $('#liveWpm').text();
-        const accuracy = $('#liveAccuracy').text().replace('%', '');
-        const errors = $('#liveErrors').text();
+        const timeSpentMin = durSec / 60;
+        
+        let totalChars = 0;
+        let totalCorrectChars = 0;
+        let errorsCount = 0;
+        let correctWordsCount = 0;
+
+        typedWords.forEach((typed, idx) => {
+            const target = words[idx];
+            if (typed === target) {
+                correctWordsCount++;
+                totalChars += target.length + 1;
+                totalCorrectChars += target.length + 1;
+            } else {
+                errorsCount++;
+                totalChars += Math.max(typed.length, target.length) + 1;
+                for (let i = 0; i < Math.max(typed.length, target.length); i++) {
+                    if (i < typed.length && i < target.length && typed[i] === target[i]) {
+                        totalCorrectChars++;
+                    }
+                }
+            }
+        });
+
+        const currentTyped = typingInput.val().trim();
+        const currentTarget = words[currentWordIdx];
+        totalChars += currentTyped.length;
+        if (currentTarget) {
+            for (let i = 0; i < Math.min(currentTyped.length, currentTarget.length); i++) {
+                if (currentTyped[i] === currentTarget[i]) totalCorrectChars++;
+            }
+        }
+
+        const hlMode = $('input[name="highlightOpt"]:checked').val();
+        let finalWpm = 0, finalAccuracy = 100, finalErrors = errorsCount;
+        
+        if (hlMode === 'wordErr') {
+            finalWpm = timeSpentMin > 0 ? Math.round(totalCorrectChars / timeSpentMin) : 0;
+            finalAccuracy = totalChars > 0 ? Math.round((totalCorrectChars / totalChars) * 100) : 100;
+        } else {
+            finalWpm = timeSpentMin > 0 ? Math.round((totalChars / 5) / timeSpentMin) : 0;
+            finalAccuracy = typedWords.length > 0 ? Math.round((correctWordsCount / typedWords.length) * 100) : 100;
+        }
+
+        const wpm = finalWpm;
+        const accuracy = finalAccuracy;
+        const errors = finalErrors;
         const totalWords = typedWords.length;
-        const correctWords = typedWords.filter((tw, i) => tw === words[i]).length;
+        const correctWords = correctWordsCount;
 
         Swal.fire({
             title: 'Processing Results...',
@@ -443,16 +523,37 @@ $student_name = $student_data['name'] ?? 'Student';
     typingInput.on('input', function() {
         if (isFinished) return;
         const hlMode = $('input[name="highlightOpt"]:checked').val();
-        if (hlMode === 'wordErr') {
+        
+        if (hlMode === 'none') {
+            // Do absolutely nothing for highlighting
+        } else if (hlMode === 'wordErr') {
             const typedVal = $(this).val();
             const targetWord = words[currentWordIdx];
             const currentWordEl = $(`#word-${currentWordIdx}`);
-            if (!targetWord.startsWith(typedVal)) {
-                currentWordEl.addClass('error-input');
-            } else {
-                currentWordEl.removeClass('error-input');
+            
+            let html = '';
+            for (let i = 0; i < targetWord.length; i++) {
+                if (i < typedVal.length) {
+                    if (typedVal[i] === targetWord[i]) {
+                        html += `<span style="color: #2e7d32;">${targetWord[i]}</span>`;
+                    } else {
+                        html += `<span style="color: #c62828;">${targetWord[i]}</span>`;
+                    }
+                } else {
+                    html += targetWord[i];
+                }
             }
+            if (typedVal.length > targetWord.length) {
+                let extra = typedVal.substring(targetWord.length);
+                html += `<span style="color: #c62828; text-decoration: underline;">${extra}</span>`;
+            }
+            currentWordEl.html(html);
+        } else if (hlMode === 'word') {
+            const currentWordEl = $(`#word-${currentWordIdx}`);
+            // Reset to pure text string
+            currentWordEl.text(words[currentWordIdx]);
         }
+        
         calculateStats();
     });
 
@@ -472,18 +573,48 @@ $student_name = $student_data['name'] ?? 'Student';
             if (typed.length > 0 || e.key === ' ') {
                 typedWords[currentWordIdx] = typed;
                 const wordEl = $(`#word-${currentWordIdx}`);
+                const hlMode = $('input[name="highlightOpt"]:checked').val();
+                
                 wordEl.removeClass('error-input');
-                if (typed === words[currentWordIdx]) {
-                    wordEl.addClass('correct').removeClass('incorrect');
+                
+                if (hlMode !== 'none') {
+                    if (hlMode === 'wordErr' && typed === words[currentWordIdx]) {
+                        wordEl.addClass('correct').removeClass('incorrect');
+                        wordEl.text(words[currentWordIdx]); // collapse to raw text, styled by class
+                    } else if (hlMode === 'wordErr' && typed !== words[currentWordIdx]) {
+                        // Keep its span-based character coloring!
+                        wordEl.addClass('incorrect').removeClass('correct');
+                    } else {
+                        // hlWord Mode 1
+                        wordEl.text(words[currentWordIdx]); 
+                        if (typed === words[currentWordIdx]) {
+                            wordEl.addClass('correct').removeClass('incorrect');
+                        } else {
+                            wordEl.addClass('incorrect').removeClass('correct');
+                        }
+                    }
                 } else {
-                    wordEl.addClass('incorrect').removeClass('correct');
+                    // hlNone Mode 3
+                    wordEl.text(words[currentWordIdx]);
+                    wordEl.css('color', 'inherit'); 
                 }
+                
                 currentWordIdx++;
                 typingInput.val('');
                 updateHighlight();
                 if (currentWordIdx >= words.length) finishTest();
             }
         }
+    });
+    
+    // Add logic to reset current word display if highlight mode is changed midway
+    $('.highlight-opt').change(function() {
+        const wordEl = $(`#word-${currentWordIdx}`);
+        if(wordEl.length){
+            wordEl.text(words[currentWordIdx]);
+        }
+        updateHighlight();
+        calculateStats();
     });
 
     // Settings listeners
