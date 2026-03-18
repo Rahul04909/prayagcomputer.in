@@ -137,7 +137,7 @@ function pageUrl($p, $extra = []) {
         <!-- Category Strip -->
         <?php if (!empty($cats)): ?>
         <div class="category-strip">
-            <a href="Hindi.php" class="cat-chip <?= !$cat_filter ? 'active' : '' ?>">
+            <a href="hindi.php" class="cat-chip <?= !$cat_filter ? 'active' : '' ?>">
                 <i class="fas fa-th-large"></i> All Categories
             </a>
             <?php foreach ($cats as $cat): ?>
@@ -185,7 +185,7 @@ function pageUrl($p, $extra = []) {
                             </div>
                             <div class="col-md-2 text-end">
                                 <?php if ($cat_filter || $level_filter || $type_filter || $search_filter): ?>
-                                    <a href="Hindi.php" class="btn btn-sm btn-outline-secondary w-100" title="Clear Filters">
+                                    <a href="hindi.php" class="btn btn-sm btn-outline-secondary w-100" title="Clear Filters">
                                         <i class="fas fa-times mr-1"></i> Clear
                                     </a>
                                 <?php endif; ?>

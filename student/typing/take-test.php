@@ -65,7 +65,7 @@ $student_name = $student_data['name'] ?? 'Student';
         /* Content Areas */
         .text-display-box { 
             flex: 1.2; background: #fff; margin: 10px 15px; border-radius: 6px; border: 1px solid #ced4da;
-            padding: 20px 25px; font-family: 'Consolas', 'Roboto Mono', monospace; font-size: 14px; line-height: 1.8;
+            padding: 20px 25px; font-family: 'Consolas', 'Roboto Mono', monospace; font-size: <?= $test['language'] === 'Hindi' ? '24' : '14' ?>px; line-height: 1.8;
             overflow-y: auto; color: #212529; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
             min-height: 150px; letter-spacing: 0.5px; scroll-behavior: smooth;
         }
@@ -96,7 +96,7 @@ $student_name = $student_data['name'] ?? 'Student';
 
         .typing-input-box {
             flex: 1; min-height: 120px; background: #fff; margin: 10px 15px; border-radius: 6px; border: 1px solid #ced4da;
-            padding: 20px 25px; font-family: 'Consolas', 'Roboto Mono', monospace; font-size: 14px; width: calc(100% - 30px);
+            padding: 20px 25px; font-family: 'Consolas', 'Roboto Mono', monospace; font-size: <?= $test['language'] === 'Hindi' ? '24' : '14' ?>px; width: calc(100% - 30px);
             resize: none; outline: none; border-top: 4px solid var(--header-bg); flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
             letter-spacing: 0.5px; line-height: 1.8; color: #0d6efd;
         }
@@ -115,6 +115,17 @@ $student_name = $student_data['name'] ?? 'Student';
         .word.error-input { background: #ffcdd2 !important; color: #c62828 !important; }
         .word.correct { color: #2e7d32; }
         .word.incorrect { color: #c62828; text-decoration: underline; }
+
+        /* Fonts Integration */
+        @font-face {
+            font-family: 'Kruti Dev 010';
+            src: url('../assets/fonts/krutidev-010-hindi-font-download.ttf') format('truetype');
+        }
+        <?php if ($test['language'] === 'Hindi'): ?>
+        .text-display-box, .typing-input-box {
+            font-family: 'Kruti Dev 010', sans-serif !important;
+        }
+        <?php endif; ?>
     </style>
 </head>
 <body>
@@ -155,7 +166,7 @@ $student_name = $student_data['name'] ?? 'Student';
                 <div style="display: flex; flex-direction: row; align-items: center; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px 8px; margin-right: 20px; height: 34px;">
                     <span style="opacity: 0.85; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; font-weight: 700; margin-right: 12px;">Size:</span>
                     <button id="fontDec" title="Decrease Font Size" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; font-weight: bold; padding: 0; line-height: 1; outline: none;">&minus;</button>
-                    <span id="fontSizeDisplay" style="font-weight: 700; width: 28px; text-align: center; display: inline-block; font-size: 14px; margin: 0 4px;">14</span>
+                    <span id="fontSizeDisplay" style="font-weight: 700; width: 28px; text-align: center; display: inline-block; font-size: 14px; margin: 0 4px;"><?= $test['language'] === 'Hindi' ? '24' : '14' ?></span>
                     <button id="fontInc" title="Increase Font Size" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; font-weight: bold; padding: 0; line-height: 1; outline: none;">+</button>
                 </div>
 
