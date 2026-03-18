@@ -9,33 +9,98 @@ if (!is_student_logged_in()) {
 $student = get_current_student_data();
 $currentPage = basename($_SERVER['SCRIPT_NAME']);
 
+// ── Read access levels ────────────────────────────────────────────────────────
+$typing_access    = $student['typing_access']    ?? 'None';   // None | Hindi | English
+$steno_access     = $student['steno_access']     ?? 'None';   // None | Hindi | English
+$punjabi_lms      = !empty($student['punjabi_lms_access']);   // 0 | 1
+
+// ── Build dynamic menu ───────────────────────────────────────────────────────
 $menuItems = [
     [
         "menuTitle" => "Dashboard",
-        "icon" => "fas fa-home",
-        "pages" => [
+        "icon"      => "fas fa-tachometer-alt",
+        "pages"     => [
             ["title" => "Home", "url" => "index.php"]
         ],
     ],
-    [
-        "menuTitle" => "Settings",
-        "icon" => "fas fa-cog",
-        "pages" => [
-            ["title" => "Profile", "url" => "profile.php"]
-        ],
-    ]
 ];
 
+// ── Typing Master ────────────────────────────────────────────────────────────
+if ($typing_access !== 'None') {
+    $typingPages = [];
+    if ($typing_access === 'Hindi' || $typing_access === 'Both') {
+        $typingPages[] = ["title" => "Hindi Typing",   "url" => "typing/hindi.php",   "icon" => "fas fa-keyboard"];
+    }
+    if ($typing_access === 'English' || $typing_access === 'Both') {
+        $typingPages[] = ["title" => "English Typing", "url" => "typing/english.php", "icon" => "fas fa-keyboard"];
+    }
+    // Fallback: if somehow the value is unexpected but not None, show both
+    if (empty($typingPages)) {
+        $typingPages = [
+            ["title" => "Hindi Typing",   "url" => "typing/hindi.php",   "icon" => "fas fa-keyboard"],
+            ["title" => "English Typing", "url" => "typing/english.php", "icon" => "fas fa-keyboard"],
+        ];
+    }
+    $menuItems[] = [
+        "menuTitle" => "Typing Master",
+        "icon"      => "fas fa-keyboard",
+        "pages"     => $typingPages,
+    ];
+}
+
+// ── Steno Software ───────────────────────────────────────────────────────────
+if ($steno_access !== 'None') {
+    $stenoPages = [];
+    if ($steno_access === 'Hindi' || $steno_access === 'Both') {
+        $stenoPages[] = ["title" => "Hindi Steno",   "url" => "steno/hindi.php",   "icon" => "fas fa-pen-nib"];
+    }
+    if ($steno_access === 'English' || $steno_access === 'Both') {
+        $stenoPages[] = ["title" => "English Steno", "url" => "steno/english.php", "icon" => "fas fa-pen-nib"];
+    }
+    if (empty($stenoPages)) {
+        $stenoPages = [
+            ["title" => "Hindi Steno",   "url" => "steno/hindi.php",   "icon" => "fas fa-pen-nib"],
+            ["title" => "English Steno", "url" => "steno/english.php", "icon" => "fas fa-pen-nib"],
+        ];
+    }
+    $menuItems[] = [
+        "menuTitle" => "Steno Software",
+        "icon"      => "fas fa-pen-nib",
+        "pages"     => $stenoPages,
+    ];
+}
+
+// ── Punjabi LMS ──────────────────────────────────────────────────────────────
+if ($punjabi_lms) {
+    $menuItems[] = [
+        "menuTitle" => "Punjabi LMS",
+        "icon"      => "fas fa-book-open",
+        "pages"     => [
+            ["title" => "Punjabi Learning", "url" => "punjabi-lms/index.php", "icon" => "fas fa-language"],
+        ],
+    ];
+}
+
+// ── Settings (always visible) ─────────────────────────────────────────────────
+$menuItems[] = [
+    "menuTitle" => "My Account",
+    "icon"      => "fas fa-user-circle",
+    "pages"     => [
+        ["title" => "Profile & Password", "url" => "profile.php"],
+    ],
+];
+
+// ── Active page detection ────────────────────────────────────────────────────
 $active_pageInfo = null;
 foreach ($menuItems as $menuItem) {
     foreach ($menuItem['pages'] as $page) {
-        if ($currentPage === $page['url']) {
+        if ($currentPage === basename($page['url'])) {
             $active_pageInfo = [
                 "breadcrumb_Items" => [
                     ["title" => $menuItem['menuTitle'], "url" => "#"],
-                    ["title" => $page['title'], "url" => $page['url']]
+                    ["title" => $page['title'],         "url" => $page['url']]
                 ],
-                "page_title" => $page['title'],
+                "page_title"  => $page['title'],
                 "active_menu" => $menuItem,
                 "active_page" => $page
             ];
@@ -45,12 +110,12 @@ foreach ($menuItems as $menuItem) {
 }
 
 $breadcrumb_Items = $active_pageInfo['breadcrumb_Items'] ?? [];
-$page_title = $active_pageInfo['page_title'] ?? 'Student Dashboard';
-$active_menu = $active_pageInfo['active_menu'] ?? null;
-$active_page = $active_pageInfo['active_page'] ?? null;
+$page_title       = $active_pageInfo['page_title']       ?? 'Student Dashboard';
+$active_menu      = $active_pageInfo['active_menu']      ?? null;
+$active_page      = $active_pageInfo['active_page']      ?? null;
 
-// Profile Variables
-$student_name = $student['student_name'] ?? 'Student';
+// ── Profile Variables ────────────────────────────────────────────────────────
+$student_name  = $student['student_name'] ?? 'Student';
 $student_image = !empty($student['image']) ? '../admin/' . $student['image'] : './src/images/user-avtar.png';
 ?>
 
