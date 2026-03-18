@@ -136,11 +136,11 @@ $student_name = $student_data['name'] ?? 'Student';
         </div>
 
         <!-- Info Bar -->
-        <div class="info-bar">
+        <div class="info-bar" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 0 15px; height: 52px; background: #5c6b87; color: #fff; overflow-x: auto; white-space: nowrap; border-top: 1px solid #7a89a8; border-bottom: 2px solid #4a566d; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
             <!-- Left Side: Duration -->
-            <div class="d-flex align-items-center">
-                <span class="mr-2 opacity-75">Duration:</span>
-                <select id="durationSelect" class="form-select form-select-sm" style="background:#ffffff20; color:#fff; border:1px solid #ffffff55; width: auto; font-size: 12px; font-weight:600; cursor:pointer;">
+            <div style="display: flex; flex-direction: row; align-items: center; margin-right: 20px;">
+                <span style="opacity: 0.85; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; font-weight: 700; margin-right: 10px;">Duration:</span>
+                <select id="durationSelect" class="form-control form-control-sm" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); width: auto; font-size: 13px; font-weight: 600; cursor: pointer; height: 32px; padding: 0 10px; border-radius: 4px; box-shadow: none;">
                     <option value="1" style="color:#000;">1 Min</option>
                     <option value="2" style="color:#000;">2 Min</option>
                     <option value="5" style="color:#000;">5 Min</option>
@@ -150,20 +150,21 @@ $student_name = $student_data['name'] ?? 'Student';
             </div>
             
             <!-- Right Side: Tools -->
-            <div class="d-flex align-items-center">
-                <!-- Font Size -->
-                <div class="d-flex align-items-center mr-4" style="gap: 5px;">
-                    <span class="mr-1 opacity-75">Size:</span>
-                    <button class="tool-btn" id="fontDec" title="Decrease Font Size"><i class="fas fa-minus"></i></button>
-                    <span id="fontSizeDisplay" class="font-size-val">14</span>
-                    <button class="tool-btn" id="fontInc" title="Increase Font Size"><i class="fas fa-plus"></i></button>
+            <div style="display: flex; flex-direction: row; align-items: center;">
+                <!-- Font Size Controls -->
+                <div style="display: flex; flex-direction: row; align-items: center; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px 8px; margin-right: 20px; height: 34px;">
+                    <span style="opacity: 0.85; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; font-weight: 700; margin-right: 12px;">Size:</span>
+                    <button id="fontDec" title="Decrease Font Size" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; font-weight: bold; padding: 0; line-height: 1; outline: none;">&minus;</button>
+                    <span id="fontSizeDisplay" style="font-weight: 700; width: 28px; text-align: center; display: inline-block; font-size: 14px; margin: 0 4px;">14</span>
+                    <button id="fontInc" title="Increase Font Size" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; font-weight: bold; padding: 0; line-height: 1; outline: none;">+</button>
                 </div>
 
                 <!-- Bold Toggle -->
-                <div class="d-flex align-items-center">
-                    <span class="mr-2 opacity-75">Bold:</span>
-                    <div class="form-check form-switch m-0 p-0 d-flex align-items-center" style="height: auto;">
-                        <input class="form-check-input m-0" type="checkbox" role="switch" id="boldToggle" style="width: 32px; height: 16px; cursor: pointer; margin-top:0 !important;">
+                <div style="display: flex; flex-direction: row; align-items: center; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px 12px; height: 34px;">
+                    <span style="opacity: 0.85; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; font-weight: 700; margin-right: 10px;">Bold:</span>
+                    <div class="custom-control custom-switch" style="margin: 0; padding-left: 2.25rem;">
+                        <input type="checkbox" class="custom-control-input" id="boldToggle" style="cursor: pointer;">
+                        <label class="custom-control-label" for="boldToggle" style="margin: 0; padding: 0; cursor: pointer; height: 16px;"></label>
                     </div>
                 </div>
             </div>
