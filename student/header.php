@@ -28,17 +28,21 @@ $menuItems = [
 // ── Typing Master ────────────────────────────────────────────────────────────
 if ($typing_access !== 'None') {
     $typingPages = [];
-    if ($typing_access === 'Hindi' || $typing_access === 'Both') {
+    if ($typing_access === 'Hindi' || $typing_access === 'All' || $typing_access === 'Both') {
         $typingPages[] = ["title" => "Hindi Typing",   "url" => "typing/hindi.php",   "icon" => "fas fa-keyboard"];
     }
-    if ($typing_access === 'English' || $typing_access === 'Both') {
+    if ($typing_access === 'English' || $typing_access === 'All' || $typing_access === 'Both') {
         $typingPages[] = ["title" => "English Typing", "url" => "typing/english.php", "icon" => "fas fa-keyboard"];
     }
-    // Fallback: if somehow the value is unexpected but not None, show both
+    if ($typing_access === 'Punjabi' || $typing_access === 'All') {
+        $typingPages[] = ["title" => "Punjabi Typing", "url" => "typing/punjabi.php", "icon" => "fas fa-keyboard"];
+    }
+    // Fallback: if somehow the value is unexpected but not None, show all
     if (empty($typingPages)) {
         $typingPages = [
             ["title" => "Hindi Typing",   "url" => "typing/hindi.php",   "icon" => "fas fa-keyboard"],
             ["title" => "English Typing", "url" => "typing/english.php", "icon" => "fas fa-keyboard"],
+            ["title" => "Punjabi Typing", "url" => "typing/punjabi.php", "icon" => "fas fa-keyboard"],
         ];
     }
     $menuItems[] = [
