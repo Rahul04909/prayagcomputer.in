@@ -229,6 +229,12 @@ try {
                                     
                                     <input type="radio" class="btn-check" name="typing_access" id="t_english" value="English">
                                     <label class="btn btn-outline-success" for="t_english">English</label>
+
+                                    <input type="radio" class="btn-check" name="typing_access" id="t_punjabi" value="Punjabi">
+                                    <label class="btn btn-outline-success" for="t_punjabi">Punjabi</label>
+                                    
+                                    <input type="radio" class="btn-check" name="typing_access" id="t_all" value="All">
+                                    <label class="btn btn-outline-primary" for="t_all">All</label>
                                 </div>
                             </div>
                             <div class="col-md-5">
