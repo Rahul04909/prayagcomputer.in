@@ -5,7 +5,7 @@
 if ($typing_access === 'None') {
     echo '<div class="container-fluid py-5 text-center">
         <i class="fas fa-lock fa-4x text-warning mb-3"></i>
-        <h4 class="text-muted">You do not have access to Hindi Typing.</h4>
+        <h4 class="text-muted">You do not have access to Punjabi Typing.</h4>
         <p class="text-muted">Please contact the admin to enable this module.</p>
     </div>';
     include '../footer.php';
@@ -23,18 +23,18 @@ $type_filter   = isset($_GET['type'])     ? trim($_GET['type'])     : '';
 $search_filter = isset($_GET['search'])   ? trim($_GET['search'])   : '';
 
 try {
-    // Exam categories with Hindi tests
+    // Exam categories with Punjabi tests
     $cats = $pdo->query(
         "SELECT c.*, COUNT(t.id) as test_count
          FROM typing_exam_categories c
-         LEFT JOIN typing_tests t ON t.category_id = c.id AND t.language = 'Hindi' AND t.status = 1
+         LEFT JOIN typing_tests t ON t.category_id = c.id AND t.language = 'Punjabi' AND t.status = 1
          WHERE c.status = 1
          GROUP BY c.id
          ORDER BY c.name ASC"
     )->fetchAll();
 
     // Build WHERE for tests
-    $where  = ["t.language = 'Hindi'", "t.status = 1"];
+    $where  = ["t.language = 'Punjabi'", "t.status = 1"];
     $params = [];
 
     if ($cat_filter) {
@@ -137,7 +137,7 @@ function pageUrl($p, $extra = []) {
         <!-- Category Strip -->
         <?php if (!empty($cats)): ?>
         <div class="category-strip">
-            <a href="hindi.php" class="cat-chip <?= !$cat_filter ? 'active' : '' ?>">
+            <a href="Punjabi.php" class="cat-chip <?= !$cat_filter ? 'active' : '' ?>">
                 <i class="fas fa-th-large"></i> All Categories
             </a>
             <?php foreach ($cats as $cat): ?>
@@ -185,7 +185,7 @@ function pageUrl($p, $extra = []) {
                             </div>
                             <div class="col-md-2 text-end">
                                 <?php if ($cat_filter || $level_filter || $type_filter || $search_filter): ?>
-                                    <a href="hindi.php" class="btn btn-sm btn-outline-secondary w-100" title="Clear Filters">
+                                    <a href="Punjabi.php" class="btn btn-sm btn-outline-secondary w-100" title="Clear Filters">
                                         <i class="fas fa-times mr-1"></i> Clear
                                     </a>
                                 <?php endif; ?>

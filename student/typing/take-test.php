@@ -121,9 +121,18 @@ $student_name = $student_data['name'] ?? 'Student';
             font-family: 'Kruti Dev 010';
             src: url('../assets/fonts/krutidev-010-hindi-font-download.ttf') format('truetype');
         }
+        @font-face {
+            font-family: 'Raavi';
+            src: url('../assets/fonts/raavi.ttf') format('truetype');
+        }
+        
         <?php if ($test['language'] === 'Hindi'): ?>
         .text-display-box, .typing-input-box {
             font-family: 'Kruti Dev 010', sans-serif !important;
+        }
+        <?php elseif ($test['language'] === 'Punjabi'): ?>
+        .text-display-box, .typing-input-box {
+            font-family: 'Raavi', sans-serif !important;
         }
         <?php endif; ?>
     </style>
@@ -166,7 +175,7 @@ $student_name = $student_data['name'] ?? 'Student';
                 <div style="display: flex; flex-direction: row; align-items: center; background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 4px 8px; margin-right: 20px; height: 34px;">
                     <span style="opacity: 0.85; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; font-weight: 700; margin-right: 12px;">Size:</span>
                     <button id="fontDec" title="Decrease Font Size" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; font-weight: bold; padding: 0; line-height: 1; outline: none;">&minus;</button>
-                    <span id="fontSizeDisplay" style="font-weight: 700; width: 28px; text-align: center; display: inline-block; font-size: 14px; margin: 0 4px;"><?= $test['language'] === 'Hindi' ? '24' : '14' ?></span>
+                    <span id="fontSizeDisplay" style="font-weight: 700; width: 28px; text-align: center; display: inline-block; font-size: 14px; margin: 0 4px;"><?= in_array($test['language'], ['Hindi', 'Punjabi']) ? '24' : '14' ?></span>
                     <button id="fontInc" title="Increase Font Size" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; font-weight: bold; padding: 0; line-height: 1; outline: none;">+</button>
                 </div>
 
@@ -317,7 +326,7 @@ $student_name = $student_data['name'] ?? 'Student';
                 textDisplay.append(`<span class="word" id="word-${idx}">${word}</span> `);
             });
             updateHighlight();
-            var placeholderText = <?= $test['language'] === 'Hindi' ? "'ऊपर दिखाए गए पाठ को टाइप करना शुरू करें...'" : "'Start typing the text shown above...'" ?>;
+            var placeholderText = <?= $test['language'] === 'Hindi' ? "'ऊपर दिखाए गए पाठ को टाइप करना शुरू करें...'" : ($test['language'] === 'Punjabi' ? "'ਉੱਪਰ ਦਿਖਾਏ ਗਏ ਟੈਕਸਟ ਨੂੰ ਟਾਈਪ ਕਰਨਾ ਸ਼ੁਰੂ ਕਰੋ...'" : "'Start typing the text shown above...'") ?>;
             typingInput.prop('disabled', false).val('').attr('placeholder', placeholderText);
             timeLeft = $('#durationSelect').val() * 60;
             updateTimerDisplay();
