@@ -295,7 +295,7 @@ $student_name = $student_data['name'] ?? 'Student';
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    const testContent = <?= json_encode(str_replace(["\r", "\n", "\t"], ' ', strip_tags($test['content']))) ?>;
+    const testContent = <?= json_encode(str_replace(["\r", "\n", "\t", "&nbsp;", "\xc2\xa0"], ' ', html_entity_decode(strip_tags($test['content'])))) ?>;
     const defaultTime = <?= (int)$test['test_time'] ?>;
     
     let words = (testContent || '').split(/\s+/).filter(w => w.length > 0);
