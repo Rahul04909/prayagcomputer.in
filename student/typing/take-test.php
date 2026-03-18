@@ -87,8 +87,8 @@ $student_name = $student_data['name'] ?? 'Student';
         .settings-section { background: #fff; border: 1px solid #d1d5db; border-radius: 6px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .settings-title { font-size: 11px; font-weight: 800; color: #555; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
         .form-check-label { font-size: 13px; color: #444; }
-        .stat-val { font-size: 22px; font-weight: 700; color: #28a745; line-height: 1; }
-        .stat-lbl { font-size: 10px; text-transform: uppercase; color: #777; font-weight: 600; margin-top: 4px; }
+        .stat-val { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 6px; font-family: 'Inter', sans-serif; }
+        .stat-lbl { font-size: 11px; text-transform: uppercase; color: #777; font-weight: 700; letter-spacing: 0.5px; margin-top: 0; }
         .timer-val { font-size: 36px; font-weight: 800; color: #c62828; font-family: 'Roboto Mono', monospace; }
 
         /* Words & Highlighting */
@@ -170,22 +170,22 @@ $student_name = $student_data['name'] ?? 'Student';
         </div>
 
         <!-- Stats Panel -->
-        <div class="settings-section" id="statPanel">
-            <div class="row no-gutters text-center">
-                <div class="col-6 border-right border-bottom py-2">
-                    <div id="liveWpm" class="stat-val">0</div>
+        <div class="settings-section p-0 overflow-hidden" id="statPanel">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; background: #fff;">
+                <div class="text-center py-3" style="border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                    <div id="liveWpm" class="stat-val text-success">0</div>
                     <div class="stat-lbl">Gross WPM</div>
                 </div>
-                <div class="col-6 border-bottom py-2">
-                    <div id="liveAccuracy" class="stat-val">0%</div>
+                <div class="text-center py-3" style="border-bottom: 1px solid #eee;">
+                    <div id="liveAccuracy" class="stat-val text-primary">0%</div>
                     <div class="stat-lbl">Accuracy</div>
                 </div>
-                <div class="col-6 border-right py-2">
+                <div class="text-center py-3" style="border-right: 1px solid #eee;">
                     <div id="liveErrors" class="stat-val text-danger">0</div>
                     <div class="stat-lbl">Mistakes</div>
                 </div>
-                <div class="col-6 py-2">
-                    <div id="liveWords" class="stat-val text-primary">0</div>
+                <div class="text-center py-3">
+                    <div id="liveWords" class="stat-val text-info">0</div>
                     <div class="stat-lbl">Words Typed</div>
                 </div>
             </div>
