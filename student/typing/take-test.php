@@ -67,8 +67,10 @@ $student_name = $student_data['name'] ?? 'Student';
             flex: 1.2; background: #fff; margin: 10px 15px; border-radius: 6px; border: 1px solid #ced4da;
             padding: 20px 25px; font-family: 'Consolas', 'Roboto Mono', monospace; font-size: 14px; line-height: 1.8;
             overflow-y: auto; color: #212529; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-            min-height: 150px; letter-spacing: 0.5px;
+            min-height: 150px; letter-spacing: 0.5px; scroll-behavior: smooth;
         }
+        .text-display-box.no-scrollbar::-webkit-scrollbar { display: none; }
+        .text-display-box.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .info-bar { 
             height: 46px; 
             background: #5c6b87; 
@@ -327,9 +329,8 @@ $student_name = $student_data['name'] ?? 'Student';
                     const wordEl = currentWordEl[0];
                     if (wordEl) {
                         const box = textDisplay[0];
-                        const offset = wordEl.offsetTop - box.offsetTop;
-                        if (offset > box.clientHeight / 2) {
-                            box.scrollTop = offset - box.clientHeight / 2;
+                        if (wordEl.offsetTop + wordEl.clientHeight > box.scrollTop + box.clientHeight - 30) {
+                            box.scrollTop = wordEl.offsetTop - (box.clientHeight / 2);
                         }
                     }
                 }
@@ -661,6 +662,18 @@ $student_name = $student_data['name'] ?? 'Student';
         typingInput.css('font-weight', weight);
     });
 
+    $('#showScroll').change(function() {
+        if (this.checked) {
+            textDisplay.removeClass('no-scrollbar');
+        } else {
+            textDisplay.addClass('no-scrollbar');
+        }
+    });
+
+    // Init state for scrollbar
+    if (!$('#showScroll').is(':checked')) {
+        textDisplay.addClass('no-scrollbar');
+    }
 
 </script>
 
