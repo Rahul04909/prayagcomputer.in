@@ -64,18 +64,26 @@ $student_name = $student_data['name'] ?? 'Student';
 
         /* Content Areas */
         .text-display-box { 
-            flex: 1; background: #fff; margin: 10px 15px; border-radius: 4px; border: 1px solid #999;
-            padding: 20px; font-family: 'Roboto Mono', monospace; font-size: 20px; line-height: 1.6;
-            overflow-y: auto; color: #333; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+            flex: 1.2; background: #fff; margin: 10px 15px; border-radius: 6px; border: 1px solid #ced4da;
+            padding: 20px 25px; font-family: 'Consolas', 'Roboto Mono', monospace; font-size: 22px; line-height: 1.8;
+            overflow-y: auto; color: #212529; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            min-height: 150px; letter-spacing: 0.5px;
         }
-        .info-bar { height: 40px; background: var(--header-bg); display: flex; align-items: center; padding: 0 15px; color: #fff; font-size: 13px; font-weight: 600; gap: 20px; flex-shrink: 0; border-top: 2px solid #7a89a8; }
+        .info-bar { height: 40px; background: var(--header-bg); display: flex; align-items: center; padding: 0 15px; color: #fff; font-size: 13px; font-weight: 600; gap: 20px; flex-shrink: 0; border-top: 2px solid #7a89a8; border-bottom: 2px solid #7a89a8; }
         .typing-input-box {
-            height: 220px; background: #fff; margin: 0 15px 10px; border-radius: 4px; border: 1px solid #999;
-            padding: 15px; font-family: 'Roboto Mono', monospace; font-size: 20px; width: calc(100% - 30px);
-            resize: none; outline: none; border-top: 5px solid var(--header-bg); flex-shrink: 0;
+            flex: 1; min-height: 120px; background: #fff; margin: 10px 15px; border-radius: 6px; border: 1px solid #ced4da;
+            padding: 20px 25px; font-family: 'Consolas', 'Roboto Mono', monospace; font-size: 22px; width: calc(100% - 30px);
+            resize: none; outline: none; border-top: 4px solid var(--header-bg); flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            letter-spacing: 0.5px; line-height: 1.8; color: #0d6efd;
         }
 
         /* Sidebar Styling */
+        .sidebar-left { width: 65px; background: #f8f9fa; border-right: 1px solid #e9ecef; display: flex; flex-direction: column; align-items: center; padding: 20px 0; flex-shrink: 0; z-index: 10; }
+        .font-ctrl-btn { width: 34px; height: 34px; border-radius: 6px; border: 1px solid #ddd; background: #fff; color: #555; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-size: 16px; margin: 3px 0; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .font-ctrl-btn:hover { background: #e9ecef; color: #333; }
+        .font-val { font-size: 18px; font-weight: 800; color: #333; margin: 8px 0; }
+        .font-label { font-size: 10px; font-weight: 800; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+
         .settings-section { background: #fff; border: 1px solid #d1d5db; border-radius: 6px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .settings-title { font-size: 11px; font-weight: 800; color: #555; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
         .form-check-label { font-size: 13px; color: #444; }
@@ -96,18 +104,19 @@ $student_name = $student_data['name'] ?? 'Student';
 <div class="test-wrapper">
     <!-- Left Sidebar: Controls -->
     <div class="sidebar-left">
-        <div class="mb-4 text-center">
-            <i class="fas fa-font text-muted mb-2"></i>
-            <div style="font-size:9px; font-weight:bold; text-transform:uppercase;">Size</div>
-            <div class="d-flex flex-column gap-2 mt-2">
-                <button class="btn btn-xs btn-outline-secondary" id="fontInc"><i class="fas fa-plus"></i></button>
-                <span id="fontSizeDisplay" class="font-weight-bold">20</span>
-                <button class="btn btn-xs btn-outline-secondary" id="fontDec"><i class="fas fa-minus"></i></button>
+        <div class="mb-4 text-center w-100 px-2">
+            <div class="font-label">SIZE</div>
+            <div class="d-flex flex-column align-items-center mt-2">
+                <div class="font-ctrl-btn" id="fontInc" title="Increase Font"><i class="fas fa-plus"></i></div>
+                <div id="fontSizeDisplay" class="font-val">20</div>
+                <div class="font-ctrl-btn" id="fontDec" title="Decrease Font"><i class="fas fa-minus"></i></div>
             </div>
         </div>
-        <div class="text-center mt-3">
-             <input type="checkbox" id="boldToggle">
-             <div style="font-size:9px; font-weight:bold; margin-top:3px;">BOLD</div>
+        <div class="text-center mt-4 w-100 px-2 border-top pt-3" style="border-color: #e9ecef !important;">
+            <div class="font-label mb-2">BOLD</div>
+            <div class="form-check form-switch d-flex justify-content-center p-0 m-0">
+                <input class="form-check-input m-0" type="checkbox" role="switch" id="boldToggle" style="width: 36px; height: 18px; cursor: pointer;">
+            </div>
         </div>
     </div>
 
@@ -147,8 +156,8 @@ $student_name = $student_data['name'] ?? 'Student';
         <!-- Typing Input Area -->
         <textarea id="typingInput" class="typing-input-box" placeholder="Loading typing engine..." disabled></textarea>
         
-        <div class="text-center pb-2" style="font-size:11px; color:#666; font-style:italic;">
-            <i class="fas fa-info-circle mr-1"></i> Timer will start automatically when you begin typing.
+        <div class="text-center py-2" style="font-size:12px; color:#555; background: #e0e4ef; font-weight: 500; flex-shrink: 0;">
+            <i class="fas fa-info-circle text-primary mr-1"></i> Timer will start automatically when you begin typing.
         </div>
     </div>
 
