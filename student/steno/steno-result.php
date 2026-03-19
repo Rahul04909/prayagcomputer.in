@@ -65,14 +65,14 @@ $j = 0; // transcribed pointer
 while ($i < count($origArr) || $j < count($tranArr)) {
     if ($i >= count($origArr)) {
         // User added extra words at the end
-        $tranHtml .= "<del class='diff-extra bg-danger text-white rounded px-1 text-decoration-line-through mx-1 mb-1 d-inline-block' title='Extra Word'>{$tranArr[$j]}</del>";
+        $tranHtml .= "<del style='color:#dc3545;' title='Extra Word'>{$tranArr[$j]}</del> ";
         $errors++;
         $j++;
         continue;
     }
     if ($j >= count($tranArr)) {
         // User missed words at the end
-        $origHtml .= "<span class='diff-miss bg-warning text-dark border-bottom border-warning rounded px-1 mx-1 mb-1 d-inline-block' title='Missed Word'>{$origArr[$i]}</span>";
+        $origHtml .= "<u style='color:#fd7e14; text-decoration-style:dotted;' title='Missed Word'>{$origArr[$i]}</u> ";
         $errors++;
         $i++;
         continue;
@@ -80,8 +80,8 @@ while ($i < count($origArr) || $j < count($tranArr)) {
     
     // Strict match or case-insensitive match (steno evaluation is usually strict, but we'll trim)
     if (trim($origArr[$i]) === trim($tranArr[$j])) {
-        $origHtml .= "<span class='text-success mx-1 mb-1 d-inline-block'>{$origArr[$i]}</span>";
-        $tranHtml .= "<span class='text-success mx-1 mb-1 d-inline-block'>{$tranArr[$j]}</span>";
+        $origHtml .= "<span style='color:#28a745;'>{$origArr[$i]}</span> ";
+        $tranHtml .= "<span style='color:#28a745;'>{$tranArr[$j]}</span> ";
         $correct++;
         $i++;
         $j++;
@@ -92,7 +92,7 @@ while ($i < count($origArr) || $j < count($tranArr)) {
             // Did user completely skip 1-6 words?
             if (($i + $lookahead) < count($origArr) && trim($origArr[$i + $lookahead]) === trim($tranArr[$j])) {
                 for ($k = 0; $k < $lookahead; $k++) {
-                    $origHtml .= "<span class='diff-miss bg-warning text-dark border-bottom border-warning rounded px-1 mx-1 mb-1 d-inline-block' title='Missed Word'>{$origArr[$i]}</span>";
+                    $origHtml .= "<u style='color:#fd7e14; text-decoration-style:dotted;' title='Missed Word'>{$origArr[$i]}</u> ";
                     $errors++;
                     $i++;
                 }
@@ -102,7 +102,7 @@ while ($i < count($origArr) || $j < count($tranArr)) {
             // Did user insert 1-6 extra hallucinated words?
             if (($j + $lookahead) < count($tranArr) && trim($origArr[$i]) === trim($tranArr[$j + $lookahead])) {
                 for ($k = 0; $k < $lookahead; $k++) {
-                    $tranHtml .= "<del class='diff-extra bg-danger text-white rounded px-1 text-decoration-line-through mx-1 mb-1 d-inline-block' title='Extra Word'>{$tranArr[$j]}</del>";
+                    $tranHtml .= "<del style='color:#dc3545;' title='Extra Word'>{$tranArr[$j]}</del> ";
                     $errors++;
                     $j++;
                 }
@@ -113,8 +113,8 @@ while ($i < count($origArr) || $j < count($tranArr)) {
         
         if (!$foundMatch) {
             // Misspelled/Incorrectly transcribed word (Replaced)
-            $origHtml .= "<span class='mx-1 mb-1 d-inline-block border-bottom border-danger text-danger' title='Original Word'>{$origArr[$i]}</span>";
-            $tranHtml .= "<span class='diff-wrong bg-danger text-white rounded px-1 mx-1 mb-1 d-inline-block' title='Expected: {$origArr[$i]}'>{$tranArr[$j]}</span>";
+            $origHtml .= "<span style='color:#dc3545;' title='Original Word'>{$origArr[$i]}</span> ";
+            $tranHtml .= "<u style='color:#dc3545;' title='Expected: {$origArr[$i]}'>{$tranArr[$j]}</u> ";
             $errors++;
             $i++;
             $j++;
@@ -238,11 +238,11 @@ $performanceBg = $accuracy >= 90 ? 'bg-success' : ($accuracy >= 75 ? 'bg-warning
                         <h5 class="mb-0 font-weight-bold text-dark"><i class="fas fa-keyboard mr-2 text-primary"></i> Your Transcription</h5>
                         <p class="small text-muted mb-0 mt-1">Mistakes you typed shown below in red block.</p>
                     </div>
-                    <div class="legend-box p-1" style="font-size: 10px;">
-                        <span class="text-success mr-2"><i class="fas fa-check-circle"></i> Correct</span>
-                        <span class="text-white bg-danger px-1 rounded mr-2"><i class="fas fa-times"></i> Spelling</span>
-                        <span class="text-dark bg-warning px-1 rounded mr-2"><i class="fas fa-minus"></i> Omitted</span>
-                        <span class="text-white bg-danger px-1 rounded text-decoration-line-through"><i class="fas fa-plus"></i> Extra</span>
+                    <div class="legend-box p-1" style="font-size: 11px; background: transparent; border: none;">
+                        <span style="color:#28a745; font-weight:700;" class="mr-3"><i class="fas fa-check-circle"></i> Correct</span>
+                        <span style="color:#dc3545; font-weight:700; text-decoration:underline;" class="mr-3"><i class="fas fa-times"></i> Spelling</span>
+                        <span style="color:#fd7e14; font-weight:700; text-decoration:underline; text-decoration-style:dotted;" class="mr-3"><i class="fas fa-minus"></i> Omitted</span>
+                        <span style="color:#dc3545; font-weight:700; text-decoration:line-through;"><i class="fas fa-plus"></i> Extra</span>
                     </div>
                 </div>
                 <div class="card-body bg-light p-4">
