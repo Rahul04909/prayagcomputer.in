@@ -120,8 +120,7 @@ while ($i < count($origArr) || $j < count($tranArr)) {
 }
 
 $total_words = count($origArr);
-$accuracy = $total_words > 0 ? max(0, Math::fromFloat(($correct / $total_words) * 100)) : 0; // We use simple math, but let's do native PHP rounding
-$accuracy = $total_words > 0 ? round(($correct / $total_words) * 100, 2) : 100;
+$accuracy = $total_words > 0 ? max(0, round(($correct / $total_words) * 100, 2)) : 100;
 $time_mins = $time_spent > 0 ? ($time_spent / 60) : ($test['test_duration'] ?? 1); 
 $wpm = $time_mins > 0 ? round($correct / $time_mins) : 0;
 

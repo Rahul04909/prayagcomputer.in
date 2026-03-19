@@ -83,7 +83,7 @@ if (!$access_granted) {
         .top-status-box { 
             background: #fff; margin: 10px 15px; border-radius: 6px; border: 1px solid #ced4da;
             padding: 20px 25px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #212529; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.02); height: 120px; flex-shrink: 0;
+            color: #212529; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.02); min-height: 180px; flex-shrink: 0;
         }
         
         .info-bar { 
@@ -139,8 +139,8 @@ if (!$access_granted) {
             <span class="phase-indicator active-dictation" id="phaseTag"><i class="fas fa-headphones mr-1"></i> Phase 1: Dictation</span>
             <h4 class="mb-3" id="statusMessage" style="font-weight: 700; color: #343a40;">Please listen to the dictation and take your shorthand notes.</h4>
             <?php if (!empty($test['audio_file'])): ?>
-                <audio id="dictationAudio" controls controlsList="nodownload">
-                    <source src="../../admin/steno/uploads/<?= htmlspecialchars($test['audio_file']) ?>" type="audio/mpeg">
+                <audio id="dictationAudio" controls controlsList="nodownload" class="mt-2 w-100" style="max-width: 600px;">
+                    <source src="../../admin/<?= htmlspecialchars($test['audio_file']) ?>" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
             <?php else: ?>
