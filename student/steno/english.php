@@ -96,11 +96,11 @@ function pageUrl($p, $extra = []) {
     .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
     .level-badge { font-size: 10px; text-transform: uppercase; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
     .cat-logo { width: 30px; height: 30px; object-fit: contain; border-radius: 4px; background: #f8f9fa; padding: 2px; border: 1px solid #eee; }
-    .pagination .page-link { color: #0d6efd; border-radius: 5px; margin: 0 2px; }
-    .pagination .page-item.active .page-link { background-color: #0d6efd; border-color: #0d6efd; }
+    .pagination .page-link { color: #28a745; border-radius: 5px; margin: 0 2px; }
+    .pagination .page-item.active .page-link { background-color: #28a745; border-color: #28a745; }
     #loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
     .btn-start { border-radius: 8px; font-weight: 600; font-size: 12px; padding: 6px 15px; transition: all 0.3s; }
-    .btn-start:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(13, 110, 253, 0.2); }
+    .btn-start:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2); }
     .category-strip { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 15px; margin-bottom: 20px; scrollbar-width: thin; }
     .category-strip::-webkit-scrollbar { height: 4px; }
     .category-strip::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
@@ -108,7 +108,7 @@ function pageUrl($p, $extra = []) {
         white-space: nowrap; padding: 8px 16px; border-radius: 20px; background: #fff; border: 1px solid #e0e0e0;
         color: #666; font-size: 13px; font-weight: 600; transition: all 0.2s; cursor: pointer; text-decoration: none !important;
     }
-    .cat-chip:hover, .cat-chip.active { background: #0d6efd; color: #fff; border-color: #0d6efd; }
+    .cat-chip:hover, .cat-chip.active { background: #28a745; color: #fff; border-color: #28a745; }
     .cat-chip i { margin-right: 6px; }
 </style>
 
@@ -128,7 +128,7 @@ function pageUrl($p, $extra = []) {
             <?php foreach ($cats as $cat): ?>
                 <a href="?category=<?= $cat['id'] ?>" class="cat-chip <?= $cat_filter == $cat['id'] ? 'active' : '' ?>">
                     <?php if ($cat['logo']): ?>
-                        <img src="../../admin/<?= htmlspecialchars($cat['logo']) ?>" style="width:16px; height:16px; margin-right:6px; object-fit:contain;">
+                        <img src="../../admin/src/images/<?= htmlspecialchars($cat['logo']) ?>" style="width:16px; height:16px; margin-right:6px; object-fit:contain;">
                     <?php else: ?>
                         <i class="fas fa-folder"></i>
                     <?php endif; ?>
@@ -149,7 +149,7 @@ function pageUrl($p, $extra = []) {
                             <div class="col-md-3">
                                 <div class="input-group input-group-sm">
                                     <input type="text" name="search" class="form-control" placeholder="Search test name..." value="<?= htmlspecialchars($search_filter) ?>">
-                                    <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                                    <button class="btn btn-success" type="submit"><i class="fas fa-search"></i></button>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -199,7 +199,7 @@ function pageUrl($p, $extra = []) {
                                             <tr>
                                                 <td class="pl-4">
                                                     <div class="d-flex align-items-center">
-                                                        <div class="mr-3 text-center" style="width: 40px; height: 40px; border-radius: 10px; background: #e3f2fd; display: flex; align-items: center; justify-content: center; color: #0d6efd;">
+                                                        <div class="mr-3 text-center" style="width: 40px; height: 40px; border-radius: 10px; background: #f0fff4; display: flex; align-items: center; justify-content: center; color: #28a745;">
                                                             <i class="fas fa-headphones-alt"></i>
                                                         </div>
                                                         <div>
@@ -211,7 +211,7 @@ function pageUrl($p, $extra = []) {
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <?php if ($t['category_logo']): ?>
-                                                            <img src="../../admin/<?= htmlspecialchars($t['category_logo']) ?>" class="cat-logo mr-2">
+                                                            <img src="../../admin/src/images/<?= htmlspecialchars($t['category_logo']) ?>" class="cat-logo mr-2">
                                                         <?php else: ?>
                                                             <div class="cat-logo mr-2 d-flex align-items-center justify-content-center text-muted small"><i class="fas fa-folder"></i></div>
                                                         <?php endif; ?>
@@ -223,11 +223,11 @@ function pageUrl($p, $extra = []) {
                                                     <small class="text-muted" style="font-weight: 600;"><i class="fas fa-microphone-alt mr-1" style="font-size: 9px;"></i>Dictation</small>
                                                 </td>
                                                 <td>
-                                                    <div style="font-weight: 700; color: #495057;"><i class="far fa-clock mr-1 text-primary"></i> <?= $t['test_duration'] ?> Min</div>
+                                                    <div style="font-weight: 700; color: #495057;"><i class="far fa-clock mr-1 text-success"></i> <?= $t['test_duration'] ?> Min</div>
                                                     <small class="text-muted" style="font-size: 10px;">Created: <?= date('d M Y', strtotime($t['created_at'])) ?></small>
                                                 </td>
                                                 <td class="text-right pr-4">
-                                                    <a href="take-test.php?id=<?= $t['id'] ?>" class="btn btn-primary btn-start shadow-sm">
+                                                    <a href="take-test.php?id=<?= $t['id'] ?>" class="btn btn-success btn-start shadow-sm">
                                                         <i class="fas fa-play mr-1"></i> Start Test
                                                     </a>
                                                 </td>
