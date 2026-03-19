@@ -54,7 +54,8 @@ $tranArr = explode(' ', $transcribedTxt);
 if(empty($origArr[0]) && count($origArr) === 1) $origArr = [];
 if(empty($tranArr[0]) && count($tranArr) === 1) $tranArr = [];
 
-$htmlDiff = '';
+$origHtml = '';
+$tranHtml = '';
 $errors = 0;
 $correct = 0;
 
@@ -64,14 +65,14 @@ $j = 0; // transcribed pointer
 while ($i < count($origArr) || $j < count($tranArr)) {
     if ($i >= count($origArr)) {
         // User added extra words at the end
-        $htmlDiff .= "<del class='diff-extra bg-danger text-white rounded px-1 text-decoration-line-through mx-1 mb-1 d-inline-block' title='Extra Word'>{$tranArr[$j]}</del>";
+        $tranHtml .= "<del class='diff-extra bg-danger text-white rounded px-1 text-decoration-line-through mx-1 mb-1 d-inline-block' title='Extra Word'>{$tranArr[$j]}</del>";
         $errors++;
         $j++;
         continue;
     }
     if ($j >= count($tranArr)) {
         // User missed words at the end
-        $htmlDiff .= "<ins class='diff-miss bg-warning text-dark border-bottom border-warning rounded px-1 text-decoration-none mx-1 mb-1 d-inline-block' title='Missed Word'>{$origArr[$i]}</ins>";
+        $origHtml .= "<span class='diff-miss bg-warning text-dark border-bottom border-warning rounded px-1 mx-1 mb-1 d-inline-block' title='Missed Word'>{$origArr[$i]}</span>";
         $errors++;
         $i++;
         continue;
@@ -79,7 +80,8 @@ while ($i < count($origArr) || $j < count($tranArr)) {
     
     // Strict match or case-insensitive match (steno evaluation is usually strict, but we'll trim)
     if (trim($origArr[$i]) === trim($tranArr[$j])) {
-        $htmlDiff .= "<span class='text-success mx-1 mb-1 d-inline-block'>{$origArr[$i]}</span>";
+        $origHtml .= "<span class='text-success mx-1 mb-1 d-inline-block'>{$origArr[$i]}</span>";
+        $tranHtml .= "<span class='text-success mx-1 mb-1 d-inline-block'>{$tranArr[$j]}</span>";
         $correct++;
         $i++;
         $j++;
@@ -90,7 +92,7 @@ while ($i < count($origArr) || $j < count($tranArr)) {
             // Did user completely skip 1-6 words?
             if (($i + $lookahead) < count($origArr) && trim($origArr[$i + $lookahead]) === trim($tranArr[$j])) {
                 for ($k = 0; $k < $lookahead; $k++) {
-                    $htmlDiff .= "<ins class='diff-miss bg-warning text-dark border-bottom border-warning rounded px-1 text-decoration-none mx-1 mb-1 d-inline-block' title='Missed Word'>{$origArr[$i]}</ins>";
+                    $origHtml .= "<span class='diff-miss bg-warning text-dark border-bottom border-warning rounded px-1 mx-1 mb-1 d-inline-block' title='Missed Word'>{$origArr[$i]}</span>";
                     $errors++;
                     $i++;
                 }
@@ -100,7 +102,7 @@ while ($i < count($origArr) || $j < count($tranArr)) {
             // Did user insert 1-6 extra hallucinated words?
             if (($j + $lookahead) < count($tranArr) && trim($origArr[$i]) === trim($tranArr[$j + $lookahead])) {
                 for ($k = 0; $k < $lookahead; $k++) {
-                    $htmlDiff .= "<del class='diff-extra bg-danger text-white rounded px-1 text-decoration-line-through mx-1 mb-1 d-inline-block' title='Extra Word'>{$tranArr[$j]}</del>";
+                    $tranHtml .= "<del class='diff-extra bg-danger text-white rounded px-1 text-decoration-line-through mx-1 mb-1 d-inline-block' title='Extra Word'>{$tranArr[$j]}</del>";
                     $errors++;
                     $j++;
                 }
@@ -111,7 +113,8 @@ while ($i < count($origArr) || $j < count($tranArr)) {
         
         if (!$foundMatch) {
             // Misspelled/Incorrectly transcribed word (Replaced)
-            $htmlDiff .= "<span class='diff-wrong bg-danger text-white rounded px-1 mx-1 mb-1 d-inline-block' title='Expected: {$origArr[$i]}'>{$tranArr[$j]}</span>";
+            $origHtml .= "<span class='mx-1 mb-1 d-inline-block border-bottom border-danger text-danger' title='Original Word'>{$origArr[$i]}</span>";
+            $tranHtml .= "<span class='diff-wrong bg-danger text-white rounded px-1 mx-1 mb-1 d-inline-block' title='Expected: {$origArr[$i]}'>{$tranArr[$j]}</span>";
             $errors++;
             $i++;
             $j++;
@@ -214,23 +217,40 @@ $performanceBg = $accuracy >= 90 ? 'bg-success' : ($accuracy >= 75 ? 'bg-warning
     </div>
 
     <!-- Differential Analysis Report -->
-    <div class="card result-card">
-        <div class="card-header bg-white d-flex justify-content-between align-items-center p-3 border-bottom-0">
-            <h5 class="mb-0 font-weight-bold text-dark"><i class="fas fa-glasses mr-2 text-primary"></i> Examiner Transcription Analysis</h5>
-            <div class="legend-box">
-                <span class="text-success"><i class="fas fa-check-circle mr-1"></i> Correct</span>
-                <span class="text-white bg-danger px-2 py-1 rounded"><i class="fas fa-times-circle mr-1"></i> Incorrect Spelling</span>
-                <span class="text-dark bg-warning px-2 py-1 rounded border-bottom border-warning"><i class="fas fa-minus-circle mr-1"></i> Missing / Skipped</span>
-                <span class="text-white bg-danger px-2 py-1 rounded text-decoration-line-through"><i class="fas fa-plus-circle mr-1"></i> Extra Words</span>
+    <div class="row g-4 pb-5">
+        <div class="col-md-6">
+            <div class="card result-card h-100">
+                <div class="card-header bg-white p-3 border-bottom-0">
+                    <h5 class="mb-0 font-weight-bold text-dark"><i class="fas fa-file-alt mr-2 text-primary"></i> Original Content</h5>
+                    <p class="small text-muted mb-0 mt-1">Expected phrases shown with missed words highlighted.</p>
+                </div>
+                <div class="card-body bg-light p-4">
+                    <div class="diff-board shadow-sm h-100">
+                        <?= $origHtml ?>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="card-body bg-light p-4">
-            <div class="diff-board shadow-sm">
-                <?= $htmlDiff ?>
+        <div class="col-md-6">
+            <div class="card result-card h-100">
+                <div class="card-header bg-white p-3 border-bottom-0 d-flex justify-content-between align-items-end">
+                    <div>
+                        <h5 class="mb-0 font-weight-bold text-dark"><i class="fas fa-keyboard mr-2 text-primary"></i> Your Transcription</h5>
+                        <p class="small text-muted mb-0 mt-1">Mistakes you typed shown below in red block.</p>
+                    </div>
+                    <div class="legend-box p-1" style="font-size: 10px;">
+                        <span class="text-success mr-2"><i class="fas fa-check-circle"></i> Correct</span>
+                        <span class="text-white bg-danger px-1 rounded mr-2"><i class="fas fa-times"></i> Spelling</span>
+                        <span class="text-dark bg-warning px-1 rounded mr-2"><i class="fas fa-minus"></i> Omitted</span>
+                        <span class="text-white bg-danger px-1 rounded text-decoration-line-through"><i class="fas fa-plus"></i> Extra</span>
+                    </div>
+                </div>
+                <div class="card-body bg-light p-4">
+                    <div class="diff-board shadow-sm h-100">
+                        <?= $tranHtml ?>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="card-footer bg-white text-muted small text-center py-3 border-top-0">
-            Hover over incorrect words to see the originally expected dictionary word. High volumes of missing words typically indicate transcription latency during dictation playback.
         </div>
     </div>
 
