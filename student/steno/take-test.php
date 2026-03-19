@@ -140,7 +140,7 @@ if (!$access_granted) {
             <h4 class="mb-3" id="statusMessage" style="font-weight: 700; color: #343a40;">Please listen to the dictation and take your shorthand notes.</h4>
             <?php if (!empty($test['audio_file'])): ?>
                 <audio id="dictationAudio" controls controlsList="nodownload" class="mt-2 w-100" style="max-width: 600px;">
-                    <source src="../../admin/<?= htmlspecialchars($test['audio_file']) ?>" type="audio/mpeg">
+                    <source src="../../<?= htmlspecialchars($test['audio_file']) ?>" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
             <?php else: ?>
