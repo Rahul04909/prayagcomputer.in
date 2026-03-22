@@ -122,16 +122,35 @@ while ($i < count($origArr) || $j < count($tranArr)) {
     }
 }
 
+// Calculate WPM and Accuracy
 $total_words = count($origArr);
 $accuracy = $total_words > 0 ? max(0, round(($correct / $total_words) * 100, 2)) : 100;
 $time_mins = $time_spent > 0 ? ($time_spent / 60) : ($test['test_duration'] ?? 1); 
 $wpm = $time_mins > 0 ? round($correct / $time_mins) : 0;
 
+$student_id = $student_data['id'];
+
+try {
+    // Save result to database
+    $stmt = $pdo->prepare("INSERT INTO steno_results (student_id, test_id, wpm, accuracy, errors, total_words, correct_words, transcribed_text, test_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->execute([
+        $student_id, 
+        $id, 
+        $wpm, 
+        $accuracy, 
+        $errors, 
+        $total_words, 
+        $correct, 
+        $raw_transcription, 
+        $time_spent
+    ]);
+    $result_id = $pdo->lastInsertId();
+} catch (PDOException $e) {
+    // Silently fail or log error (for now, just continue showing report)
+}
+
 $performanceColor = $accuracy >= 90 ? 'success' : ($accuracy >= 75 ? 'warning' : 'danger');
 $performanceBg = $accuracy >= 90 ? 'bg-success' : ($accuracy >= 75 ? 'bg-warning' : 'bg-danger');
-
-// Note: Usually we would INSERT INTO steno_results right here tracking their ID, score, etc.
-// Since the schema doesn't describe 'steno_results', we just show the report dynamically.
 ?>
 <!DOCTYPE html>
 <html lang="en">
