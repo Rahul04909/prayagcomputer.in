@@ -190,7 +190,12 @@ $performanceBg = $accuracy >= 90 ? 'bg-success' : ($accuracy >= 75 ? 'bg-warning
             <h2 class="font-weight-bold mb-1"><i class="fas fa-clipboard-check text-<?= $performanceColor ?> mr-2"></i> Steno Transcription Report</h2>
             <p class="text-muted">Test: <strong><?= htmlspecialchars($test['title']) ?></strong> | Participant: <strong><?= htmlspecialchars($student_name) ?></strong></p>
         </div>
-        <a href="<?= strtolower($test['language']) ?>.php" class="btn btn-outline-secondary font-weight-bold"><i class="fas fa-home mr-1"></i> Dashboard</a>
+        <div class="d-flex gap-2">
+            <?php if (isset($result_id)): ?>
+                <a href="download-result.php?id=<?= $result_id ?>" target="_blank" class="btn btn-primary font-weight-bold"><i class="fas fa-file-pdf mr-1"></i> Download PDF</a>
+            <?php endif; ?>
+            <a href="<?= strtolower($test['language']) ?>.php" class="btn btn-outline-secondary font-weight-bold"><i class="fas fa-home mr-1"></i> Dashboard</a>
+        </div>
     </div>
 
     <!-- Stats Row -->

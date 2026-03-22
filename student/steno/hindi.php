@@ -143,8 +143,11 @@ function pageUrl($p, $extra = []) {
                 <div class="card cat-card">
                     <div class="card-header bg-white p-3">
                         <form method="GET" class="row g-2 align-items-center">
-                            <div class="col-md-4">
+                            <div class="col-md-4 d-flex align-items-center">
                                 <h3 class="card-title" style="font-weight:700; color:#343a40; margin:0;">Hindi Steno Tests (<?= $total_results ?>)</h3>
+                                <a href="result-history.php" class="btn btn-sm btn-outline-success ml-3" title="View Result History">
+                                    <i class="fas fa-history"></i> History
+                                </a>
                             </div>
                             <div class="col-md-3">
                                 <div class="input-group input-group-sm">
