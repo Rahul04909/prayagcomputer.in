@@ -15,7 +15,7 @@ if (!$id) {
 try {
     // Fetch result data
     $stmt = $pdo->prepare("SELECT r.*, t.title as test_title, t.content as original_content, t.language, t.level, 
-                                  s.student_name, s.father_name, s.roll_no, s.image as student_image
+                                  s.student_name, s.father_name, s.enrollment_no, s.image as student_image
                            FROM steno_results r
                            JOIN steno_tests t ON r.test_id = t.id
                            JOIN students s ON r.student_id = s.id
@@ -173,7 +173,7 @@ try {
     <table class='info-table'>
         <tr>
             <td class='label'>Student Name:</td><td>" . htmlspecialchars($result['student_name']) . "</td>
-            <td class='label'>Roll No:</td><td>" . htmlspecialchars($result['roll_no']) . "</td>
+            <td class='label'>Enrollment No:</td><td>" . htmlspecialchars($result['enrollment_no']) . "</td>
         </tr>
         <tr>
             <td class='label'>Father's Name:</td><td>" . htmlspecialchars($result['father_name']) . "</td>
