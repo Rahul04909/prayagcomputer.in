@@ -179,10 +179,10 @@ try {
                                                     <?php endif; ?>
                                                 </td>
                                                 <td class="text-right pr-4">
-                                                    <a href="edit-steno-test.php?id=<?= $test['id'] ?>" class="btn btn-sm btn-outline-primary mr-1">
+                                                    <a href="edit-steno-test.php?id=<?= $test['id'] ?>" class="btn btn-sm btn-outline-primary mr-1" title="Edit Test">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <button onclick="deleteTest(<?= $test['id'] ?>, '<?= htmlspecialchars(addslashes($test['title'])) ?>')" class="btn btn-sm btn-outline-danger">
+                                                    <button onclick="deleteTest(<?= $test['id'] ?>, '<?= htmlspecialchars(addslashes($test['title'])) ?>')" class="btn btn-sm btn-outline-danger" title="Delete Test">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
                                                 </td>
