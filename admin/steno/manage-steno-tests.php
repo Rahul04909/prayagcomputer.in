@@ -179,9 +179,9 @@ try {
                                                     <?php endif; ?>
                                                 </td>
                                                 <td class="text-right pr-4">
-                                                    <button onclick="Swal.fire('Info', 'Edit functionality coming soon!', 'info')" class="btn btn-sm btn-outline-primary mr-1">
+                                                    <a href="edit-steno-test.php?id=<?= $test['id'] ?>" class="btn btn-sm btn-outline-primary mr-1">
                                                         <i class="fas fa-edit"></i>
-                                                    </button>
+                                                    </a>
                                                     <button onclick="deleteTest(<?= $test['id'] ?>, '<?= htmlspecialchars(addslashes($test['title'])) ?>')" class="btn btn-sm btn-outline-danger">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>

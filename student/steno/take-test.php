@@ -136,14 +136,22 @@ if (!$access_granted) {
 
         <!-- Top Status Area (Phase dependent display) -->
         <div class="top-status-box" id="statusBox">
-            <span class="phase-indicator active-dictation" id="phaseTag"><i class="fas fa-headphones mr-1"></i> Phase 1: Dictation</span>
-            <h4 class="mb-3" id="statusMessage" style="font-weight: 700; color: #343a40;">Please listen to the dictation and take your shorthand notes.</h4>
-            <?php if (!empty($test['audio_file'])): ?>
+            <span class="phase-indicator active-dictation" id="phaseTag"><i class="fas fa-headphones mr-1"></i> Phase 1: Dictation (Audio/Video)</span>
+            <h4 class="mb-3" id="statusMessage" style="font-weight: 700; color: #343a40;">Please listen/watch the dictation and take your shorthand notes.</h4>
+            <?php if (!empty($test['audio_file'])): 
+                $file_ext = strtolower(pathinfo($test['audio_file'], PATHINFO_EXTENSION));
+                if ($file_ext === 'mp4'):
+            ?>
+                <video id="dictationAudio" controls controlsList="nodownload" class="mt-2 w-100" style="max-width: 600px; max-height: 350px; background: #000; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                    <source src="../../<?= htmlspecialchars($test['audio_file']) ?>" type="video/mp4">
+                    Your browser does not support the video element.
+                </video>
+            <?php else: ?>
                 <audio id="dictationAudio" controls controlsList="nodownload" class="mt-2 w-100" style="max-width: 600px;">
-                    <source src="../../<?= htmlspecialchars($test['audio_file']) ?>" type="audio/mpeg">
+                    <source src="../../<?= htmlspecialchars($test['audio_file']) ?>">
                     Your browser does not support the audio element.
                 </audio>
-            <?php else: ?>
+            <?php endif; ?>
                 <div class="alert alert-danger w-100 text-center">Audio file missing.</div>
             <?php endif; ?>
             <div id="bufferUi" style="display:none; text-align:center;">
@@ -250,7 +258,7 @@ if (!$access_granted) {
         });
         audioEl.addEventListener('play', function() {
             timerDisplay.text('LIVE');
-            timerLabel.text('Audio Playing');
+            timerLabel.text(audioEl.tagName === 'VIDEO' ? 'Video Playing' : 'Audio Playing');
             timerContainer.css('border-color', '#0d6efd');
             timerDisplay.css('color', '#0d6efd');
         });

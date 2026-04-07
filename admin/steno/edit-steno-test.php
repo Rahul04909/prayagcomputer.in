@@ -6,7 +6,7 @@
 
 <style>
     .test-card { border: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-    .test-card .card-header { background: #28a745; color: white; border-radius: 12px 12px 0 0; padding: 15px 20px; font-weight: 600; }
+    .test-card .card-header { background: #17a2b8; color: white; border-radius: 12px 12px 0 0; padding: 15px 20px; font-weight: 600; }
     .form-group label { font-weight: 600; color: #495057; }
     .note-editor { border-radius: 8px; overflow: hidden; }
     #loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
@@ -20,12 +20,30 @@
 <div class="content-header p-0"></div>
 
 <?php
+$id = $_GET['id'] ?? 0;
+
+if (empty($id)) {
+    echo "<script>window.location.href = 'manage-steno-tests.php';</script>";
+    exit();
+}
+
 // Fetch categories for the dropdown
 try {
     $stmt = $pdo->query("SELECT id, name FROM steno_exam_categories WHERE status = 1 ORDER BY name ASC");
     $categories = $stmt->fetchAll();
+
+    // Fetch test details
+    $stmt = $pdo->prepare("SELECT * FROM steno_tests WHERE id = ?");
+    $stmt->execute([$id]);
+    $test = $stmt->fetch();
+
+    if (!$test) {
+        echo "<script>window.location.href = 'manage-steno-tests.php';</script>";
+        exit();
+    }
 } catch (PDOException $e) {
     $categories = [];
+    $test = null;
 }
 ?>
 
@@ -35,29 +53,30 @@ try {
             <div class="col-md-11 mx-auto">
                 <div class="card test-card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <span><i class="fas fa-keyboard mr-2"></i> Create New Steno Test</span>
-                        <a href="manage-steno-tests.php" class="btn btn-sm btn-light border text-success">
+                        <span><i class="fas fa-edit mr-2"></i> Edit Steno Test: <?= htmlspecialchars($test['title']) ?></span>
+                        <a href="manage-steno-tests.php" class="btn btn-sm btn-light border text-info">
                             <i class="fas fa-list mr-1"></i> All Tests
                         </a>
                     </div>
                     <form id="stenoTestForm" enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="<?= $id ?>">
                         <div class="card-body">
                             <div class="row">
                                 <!-- Main Content Area -->
                                 <div class="col-md-8">
                                     <div class="form-group mb-3">
                                         <label for="title">Test Title</label>
-                                        <input type="text" id="title" name="title" class="form-control" placeholder="e.g. SSC CGL Steno Grade D - Set 1" required>
+                                        <input type="text" id="title" name="title" class="form-control" placeholder="e.g. SSC CGL Steno Grade D - Set 1" value="<?= htmlspecialchars($test['title']) ?>" required>
                                     </div>
                                     
                                     <div class="form-group mb-3">
                                         <label for="short_description">Short Description</label>
-                                        <textarea name="short_description" class="form-control" rows="2" placeholder="Briefly describe the test focus..."></textarea>
+                                        <textarea name="short_description" class="form-control" rows="2" placeholder="Briefly describe the test focus..."><?= htmlspecialchars($test['short_description']) ?></textarea>
                                     </div>
 
                                     <div class="form-group mb-3">
                                         <label for="content">Original Content (Transcription Text)</label>
-                                        <textarea id="content" name="content"></textarea>
+                                        <textarea id="content" name="content"><?= $test['content'] ?></textarea>
                                     </div>
                                 </div>
 
@@ -68,7 +87,7 @@ try {
                                         <select name="category_id" id="category_id" class="form-control" required>
                                             <option value="">-- Select Category --</option>
                                             <?php foreach ($categories as $cat): ?>
-                                                <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
+                                                <option value="<?= $cat['id'] ?>" <?= $cat['id'] == $test['category_id'] ? 'selected' : '' ?>><?= htmlspecialchars($cat['name']) ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -78,8 +97,8 @@ try {
                                             <div class="form-group mb-3">
                                                 <label for="language">Language</label>
                                                 <select name="language" id="language" class="form-control" required>
-                                                    <option value="English">English</option>
-                                                    <option value="Hindi">Hindi</option>
+                                                    <option value="English" <?= $test['language'] == 'English' ? 'selected' : '' ?>>English</option>
+                                                    <option value="Hindi" <?= $test['language'] == 'Hindi' ? 'selected' : '' ?>>Hindi</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -87,23 +106,34 @@ try {
                                             <div class="form-group mb-3">
                                                 <label for="level">Test Level</label>
                                                 <select name="level" id="level" class="form-control" required>
-                                                    <option value="Easy">Easy</option>
-                                                    <option value="Medium" selected>Medium</option>
-                                                    <option value="Hard">Hard</option>
+                                                    <option value="Easy" <?= $test['level'] == 'Easy' ? 'selected' : '' ?>>Easy</option>
+                                                    <option value="Medium" <?= $test['level'] == 'Medium' ? 'selected' : '' ?>>Medium</option>
+                                                    <option value="Hard" <?= $test['level'] == 'Hard' ? 'selected' : '' ?>>Hard</option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="form-group mb-3">
-                                        <label>Audio File</label>
+                                        <label>Audio File (Optional)</label>
                                         <div class="custom-file mb-2">
-                                            <input type="file" class="custom-file-input" id="audio_file" name="audio_file" accept=".mp3,.wav,.ogg,.m4a,.aac,.mp4" required>
-                                            <label class="custom-file-label" for="audio_file">Choose audio/video</label>
+                                            <input type="file" class="custom-file-input" id="audio_file" name="audio_file" accept=".mp3,.wav,.ogg,.m4a,.aac,.mp4">
+                                            <label class="custom-file-label" for="audio_file">Change audio/video file...</label>
                                         </div>
-                                        <div id="audioPreviewContainer" class="audio-preview" style="display:none;">
-                                            <p class="small text-muted mb-2"><i class="fas fa-play-circle mr-2"></i> Selected: <span id="fileName"></span></p>
-                                            <div id="mediaPreview"></div>
+                                        <div id="audioPreviewContainer" class="audio-preview">
+                                            <p class="small text-muted mb-2"><i class="fas fa-play-circle mr-2"></i> Current Media: <span id="fileName"><?= basename($test['audio_file']) ?></span></p>
+                                            <div id="mediaPreview">
+                                                <?php 
+                                                    $ext = strtolower(pathinfo($test['audio_file'], PATHINFO_EXTENSION));
+                                                    if ($ext === 'mp4'):
+                                                ?>
+                                                    <video id="mediaPlayer" controls style="width:100%; max-height:200px; background:#000;">
+                                                        <source src="../../<?= $test['audio_file'] ?>" type="video/mp4">
+                                                    </video>
+                                                <?php else: ?>
+                                                    <audio id="mediaPlayer" controls style="width:100%; height:30px;" src="../../<?= $test['audio_file'] ?>"></audio>
+                                                <?php endif; ?>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -111,7 +141,7 @@ try {
                                         <div class="col-6">
                                             <div class="form-group mb-3">
                                                 <label for="test_duration">Test Timing (Min)</label>
-                                                <input type="number" name="test_duration" id="test_duration" class="form-control" value="10" min="1" required>
+                                                <input type="number" name="test_duration" id="test_duration" class="form-control" value="<?= $test['test_duration'] ?>" min="1" required>
                                             </div>
                                         </div>
                                         <div class="col-6">
@@ -119,7 +149,7 @@ try {
                                                 <label for="buffer_time">Start Delay (Min)</label>
                                                 <select name="buffer_time" id="buffer_time" class="form-control">
                                                     <?php for($i=1; $i<=15; $i++): ?>
-                                                        <option value="<?= $i ?>"><?= $i ?> Minutes</option>
+                                                        <option value="<?= $i ?>" <?= $i == $test['buffer_time'] ? 'selected' : '' ?>><?= $i ?> Minutes</option>
                                                     <?php endfor; ?>
                                                 </select>
                                             </div>
@@ -129,16 +159,16 @@ try {
                                     <div class="form-group mb-3">
                                         <label>Status</label>
                                         <select name="status" class="form-control">
-                                            <option value="1">Active / Published</option>
-                                            <option value="0">Inactive / Draft</option>
+                                            <option value="1" <?= $test['status'] == 1 ? 'selected' : '' ?>>Active / Published</option>
+                                            <option value="0" <?= $test['status'] == 0 ? 'selected' : '' ?>>Inactive / Draft</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="card-footer bg-white text-right">
-                            <button type="submit" class="btn btn-success btn-lg px-5 shadow-sm">
-                                <i class="fas fa-save mr-2"></i> Create Steno Test
+                            <button type="submit" class="btn btn-info btn-lg px-5 shadow-sm">
+                                <i class="fas fa-save mr-2"></i> Update Steno Test
                             </button>
                         </div>
                     </form>
@@ -194,7 +224,7 @@ $(document).ready(function() {
     $('#stenoTestForm').on('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
-        formData.append('action', 'add_steno_test');
+        formData.append('action', 'update_steno_test');
         
         $('#loader-overlay').css('display', 'flex');
 
@@ -210,7 +240,7 @@ $(document).ready(function() {
                 if (response.status === 'success') {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Test Created!',
+                        title: 'Test Updated!',
                         text: response.message
                     }).then(() => {
                         window.location.href = 'manage-steno-tests.php';
