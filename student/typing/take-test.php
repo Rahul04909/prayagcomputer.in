@@ -437,9 +437,10 @@ if (!$access_granted) {
             }
         }
 
+        const effectiveTimeMin = Math.max(timeSpentMin, 3 / 60); // Smooth out initial spikes
         const hlMode = $('input[name="highlightOpt"]:checked').val();
-        const grossWpm = Math.round((totalChars / 5) / timeSpentMin);
-        const cpctSpeed = Math.round(totalCorrectChars / timeSpentMin); 
+        const grossWpm = Math.round((totalChars / 5) / effectiveTimeMin);
+        const cpctSpeed = Math.round(totalCorrectChars / effectiveTimeMin); 
         const accuracy = Math.round((totalCorrectChars / Math.max(1, totalChars)) * 100);
 
         if (hlMode === 'none') {
@@ -537,7 +538,8 @@ if (!$access_granted) {
                 errors: errors,
                 total_words: totalWords,
                 correct_words: correctWords,
-                test_time: durSec
+                test_time: durSec,
+                typed_text: typingInput.val()
             })
         })
         .then(res => res.json())
@@ -570,10 +572,14 @@ if (!$access_granted) {
                         </div>
                     `,
                     icon: 'success',
-                    confirmButtonText: 'Back to Dashboard',
+                    confirmButtonText: 'View Detailed Report',
                     allowOutsideClick: false
                 }).then(() => {
-                    window.location.href = 'english.php';
+                    if (data.result_id) {
+                        window.location.href = 'typing-report.php?id=' + data.result_id;
+                    } else {
+                        window.location.href = 'english.php';
+                    }
                 });
             } else {
                 Swal.fire('Error', data.message || 'Failed to save result', 'error');
