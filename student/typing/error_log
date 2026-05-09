@@ -1,0 +1,4 @@
+[16-Apr-2026 09:11:50 Europe/Paris] PHP Warning:  Undefined array key "name" in /home/jhdindus/prayagcomputer.in/student/typing/typing-report.php on line 82
+[16-Apr-2026 09:11:50 Europe/Paris] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/jhdindus/prayagcomputer.in/student/typing/typing-report.php on line 82
+[16-Apr-2026 09:11:50 Europe/Paris] PHP Warning:  Undefined array key "name" in /home/jhdindus/prayagcomputer.in/student/typing/typing-report.php on line 158
+[16-Apr-2026 09:11:50 Europe/Paris] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/jhdindus/prayagcomputer.in/student/typing/typing-report.php on line 158
