@@ -1,8 +1,8 @@
 <?php
 // Database configuration
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'jhdindus_prayag_computer');
-define('DB_USER', 'jhdindus_prayag_computer');
+define('DB_NAME', 'jghfrodu_prayag_computer');
+define('DB_USER', 'jghfrodu_prayag_computer');
 define('DB_PASS', 'Rd14072003@./');
 
 try {
