@@ -1,6 +1,6 @@
 <?php
 
-define('DB_HOST', '127.0.0.1');
+define('DB_HOST', 'shareddb-y.hosting.stackcp.net');
 define('DB_NAME', 'prayag_computer-313539bc21');
 define('DB_USER', 'prayag');
 define('DB_PASS', 'Rd14072003@./');
@@ -16,9 +16,6 @@ try {
             PDO::ATTR_EMULATE_PREPARES => false
         ]
     );
-
-    echo "Database connected successfully!";
-
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());
 }
