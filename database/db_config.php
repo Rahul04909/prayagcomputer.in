@@ -2,7 +2,7 @@
 
 define('DB_HOST', 'shareddb-y.hosting.stackcp.net');
 define('DB_NAME', 'prayag_computer-313539bc21');
-define('DB_USER', 'prayag');
+define('DB_USER', 'prayag_computer-313539bc21');
 define('DB_PASS', 'Rd14072003@./');
 
 try {
