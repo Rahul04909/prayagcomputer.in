@@ -1,0 +1,133 @@
+/* About Us Section Styles */
+.about-section {
+    padding: 6rem 2rem;
+    background-color: #ffffff;
+}
+
+.about-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+}
+
+.about-image {
+    flex: 1;
+    position: relative;
+}
+
+.about-image img {
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+.about-image::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 100px;
+    height: 100px;
+    border-top: 5px solid #2563eb;
+    border-left: 5px solid #2563eb;
+    border-radius: 10px 0 0 0;
+    z-index: -1;
+}
+
+.about-content {
+    flex: 1;
+}
+
+.about-tag {
+    display: inline-block;
+    color: #2563eb;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+}
+
+.about-content h2 {
+    font-size: 2.5rem;
+    color: #0f172a;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    font-weight: 800;
+}
+
+.about-content p {
+    color: #64748b;
+    font-size: 1.125rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
+
+.about-features {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #0f172a;
+    font-weight: 600;
+    font-size: 0.9375rem;
+}
+
+.feature-item i {
+    color: #2563eb;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.btn-about {
+    display: inline-block;
+    background-color: #0f172a;
+    color: #ffffff;
+    padding: 1rem 2.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.btn-about:hover {
+    background-color: #2563eb;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+}
+
+/* Responsive Overrides */
+@media (max-width: 1024px) {
+    .about-container {
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    .about-section {
+        padding: 4rem 1.25rem;
+    }
+
+    .about-image,
+    .about-content {
+        width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .about-features {
+        grid-template-columns: 1fr;
+    }
+
+    .about-content h2 {
+        font-size: 2rem;
+    }
+}

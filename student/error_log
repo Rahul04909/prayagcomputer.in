@@ -1,0 +1,1 @@
+[16-Apr-2026 09:10:21 Europe/Paris] PHP Deprecated:  setcookie(): Passing null to parameter #5 ($domain) of type string is deprecated in /home/jhdindus/prayagcomputer.in/student/login.php on line 20
