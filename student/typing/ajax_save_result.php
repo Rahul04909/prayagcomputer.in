@@ -27,9 +27,18 @@ $correct_words = (int)$data['correct_words'];
 $test_time = (int)$data['test_time']; // in seconds
 $typed_text = $data['typed_text'] ?? '';
 
-// Calculate Net WPM (Gross WPM - Errors/Time)
-// Standard formula: (Total Characters / 5) / Minutes - (Errors / Minutes)
-$net_wpm = ($wpm > 0) ? max(0, $wpm - ($errors / ($test_time / 60))) : 0;
+// User's formula:
+// Net WPM = Correctly typed words / elapsed time in minutes
+// Gross WPM = Total typed words / elapsed time in minutes
+// Accuracy = Correctly typed words / total evaluated words * 100
+$time_min = ($test_time > 0) ? ($test_time / 60) : 1;
+$net_wpm = ($time_min > 0) ? round($correct_words / $time_min) : 0;
+$gross_wpm = ($time_min > 0) ? round($total_words / $time_min) : 0;
+if ($total_words > 0) {
+    $accuracy = round(($correct_words / $total_words) * 100, 1);
+}
+// Store Gross WPM in wpm if gross_wpm > 0, otherwise keep sent wpm
+$wpm = ($gross_wpm > 0) ? $gross_wpm : $wpm;
 
 try {
     // Ensure table exists (fail-safe if previous script didn't run via CLI)

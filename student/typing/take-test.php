@@ -180,12 +180,13 @@ if (!$access_granted) {
             <!-- Left Side: Duration -->
             <div style="display: flex; flex-direction: row; align-items: center; margin-right: 20px;">
                 <span style="opacity: 0.85; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; font-weight: 700; margin-right: 10px;">Duration:</span>
+                <?php $defaultDuration = !empty($test['test_time']) ? (int)$test['test_time'] : 10; ?>
                 <select id="durationSelect" class="form-control form-control-sm" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); width: auto; font-size: 13px; font-weight: 600; cursor: pointer; height: 32px; padding: 0 10px; border-radius: 4px; box-shadow: none;">
-                    <option value="1" style="color:#000;">1 Min</option>
-                    <option value="2" style="color:#000;">2 Min</option>
-                    <option value="5" style="color:#000;">5 Min</option>
-                    <option value="10" selected style="color:#000;">10 Min</option>
-                    <option value="15" style="color:#000;">15 Min</option>
+                    <option value="1" style="color:#000;" <?= $defaultDuration === 1 ? 'selected' : '' ?>>1 Min</option>
+                    <option value="2" style="color:#000;" <?= $defaultDuration === 2 ? 'selected' : '' ?>>2 Min</option>
+                    <option value="5" style="color:#000;" <?= $defaultDuration === 5 ? 'selected' : '' ?>>5 Min</option>
+                    <option value="10" style="color:#000;" <?= $defaultDuration === 10 ? 'selected' : '' ?>>10 Min</option>
+                    <option value="15" style="color:#000;" <?= $defaultDuration === 15 ? 'selected' : '' ?>>15 Min</option>
                 </select>
             </div>
             
@@ -237,7 +238,7 @@ if (!$access_granted) {
             <div style="display: grid; grid-template-columns: 1fr 1fr; background: #fff;">
                 <div class="text-center py-3" style="border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                     <div id="liveWpm" class="stat-val text-success">0</div>
-                    <div id="wpmLbl" class="stat-lbl">Gross WPM</div>
+                    <div id="wpmLbl" class="stat-lbl">WPM</div>
                 </div>
                 <div class="text-center py-3" style="border-bottom: 1px solid #eee;">
                     <div id="liveAccuracy" class="stat-val text-primary">0%</div>
@@ -308,9 +309,14 @@ if (!$access_granted) {
             </div>
         </div>
 
-        <button class="btn btn-block btn-outline-danger btn-sm font-weight-bold" onclick="window.location.reload();">
-            <i class="fas fa-sync-alt mr-1"></i> RESTART EXERCISE
-        </button>
+        <div style="display: flex; gap: 8px;">
+            <button class="btn btn-outline-danger btn-sm font-weight-bold" style="flex:1;" onclick="window.location.reload();">
+                <i class="fas fa-sync-alt mr-1"></i> RESTART
+            </button>
+            <button id="sidebarSubmitBtn" class="btn btn-danger btn-sm font-weight-bold" style="flex:1;" disabled>
+                <i class="fas fa-paper-plane mr-1"></i> SUBMIT
+            </button>
+        </div>
     </div>
 </div>
 
@@ -402,6 +408,7 @@ if (!$access_granted) {
         startTime = new Date();
         hasStartedTyping = true;
         $('#submitTestBtn').prop('disabled', false);
+        $('#sidebarSubmitBtn').prop('disabled', false);
         timerInterval = setInterval(() => {
             timeLeft--;
             updateTimerDisplay();
@@ -410,11 +417,17 @@ if (!$access_granted) {
         }, 1000);
     }
 
-    function calculateStats() {
-        const timeSpentMin = (new Date() - startTime) / 60000;
-        if (timeSpentMin <= 0) return;
+    let lastWpm = 0;
+    let lastCpct = 0;
 
-        let totalCharsTyped = 0;      // All characters typed (for gross WPM)
+    function calculateStats(forceSpeedRecalc = false) {
+        if (!hasStartedTyping) return;
+
+        const totalDurationSec = parseInt($('#durationSelect').val(), 10) * 60;
+        const elapsedSec = Math.max(0, totalDurationSec - timeLeft);
+        const elapsedMin = elapsedSec / 60;
+
+        let totalCharsTyped = 0;      // All characters typed
         let totalCorrectChars = 0;    // Correctly matched characters (for CPCT/accuracy)
         let totalComparedChars = 0;   // Total characters compared (for char-level accuracy)
         let errors = 0;               // Word-level error count
@@ -458,17 +471,24 @@ if (!$access_granted) {
             }
         }
 
-        const effectiveTimeMin = Math.max(timeSpentMin, 0.05); // Min 3 seconds to smooth spikes
+        // Typing Master Pro / Sony Typing Tutor style:
+        // Update speed every 5 seconds (at 5s, 10s, 15s, 20s...) or when forceSpeedRecalc is true
+        if (elapsedSec >= 5 && (elapsedSec % 5 === 0 || forceSpeedRecalc || lastWpm === 0)) {
+            if (elapsedMin > 0) {
+                lastWpm = Math.round(correctWords / elapsedMin);
+                lastCpct = Math.round(totalCorrectChars / elapsedMin);
+            }
+        } else if (elapsedSec < 5) {
+            lastWpm = 0;
+            lastCpct = 0;
+        }
+
         const hlMode = $('input[name="highlightOpt"]:checked').val();
-        
-        // Standard Gross WPM = (Total Keystrokes / 5) / Minutes
-        const grossWpm = Math.round((totalCharsTyped / 5) / effectiveTimeMin);
-        // CPCT Speed = Correct Characters Per Minute
-        const cpctSpeed = Math.round(totalCorrectChars / effectiveTimeMin); 
-        // Character-level accuracy
+        const totalEvaluated = typedWords.length;
+        // Accuracy = Correctly typed words ÷ total evaluated words × 100
+        const wordAccuracy = totalEvaluated > 0 ? Math.round((correctWords / totalEvaluated) * 100) : 100;
+        // Character-level accuracy for CPCT mode
         const charAccuracy = totalComparedChars > 0 ? Math.round((totalCorrectChars / totalComparedChars) * 100) : 100;
-        // Word-level accuracy
-        const wordAccuracy = typedWords.length > 0 ? Math.round((correctWords / typedWords.length) * 100) : 100;
 
         if (hlMode === 'none') {
             $('#liveWpm').text('---');
@@ -476,15 +496,15 @@ if (!$access_granted) {
             $('#liveErrors').text('---');
             $('#liveWords').text('---');
         } else if (hlMode === 'wordErr') {
-            $('#liveWpm').text(cpctSpeed);
+            $('#liveWpm').text(lastCpct);
             $('#wpmLbl').text("CPCT Speed");
             $('#liveAccuracy').text(charAccuracy + '%');
             $('#liveErrors').text(errors);
             $('#liveWords').text(totalCorrectChars);
             $('#wordsLbl').text("Correct Chars");
         } else {
-            $('#liveWpm').text(grossWpm);
-            $('#wpmLbl').text("Gross WPM");
+            $('#liveWpm').text(lastWpm);
+            $('#wpmLbl').text("WPM");
             $('#liveAccuracy').text(wordAccuracy + '%');
             $('#liveErrors').text(errors);
             $('#liveWords').text(typedWords.length);
@@ -508,6 +528,7 @@ if (!$access_granted) {
         clearInterval(timerInterval);
         typingInput.prop('disabled', true);
         $('#submitTestBtn').prop('disabled', true);
+        $('#sidebarSubmitBtn').prop('disabled', true);
 
         // Finalize: include the last partially typed word if any
         const lastWord = getCurrentTypedWord();
@@ -515,7 +536,7 @@ if (!$access_granted) {
             typedWords.push(lastWord);
         }
 
-        const durSec = ($('#durationSelect').val() * 60) - timeLeft;
+        const durSec = Math.max(1, ($('#durationSelect').val() * 60) - timeLeft);
         const timeSpentMin = durSec / 60;
         
         let totalCharsTyped = 0;
@@ -552,12 +573,13 @@ if (!$access_granted) {
         let finalWpm = 0, finalAccuracy = 100, finalErrors = errorsCount;
         
         if (hlMode === 'wordErr') {
-            // CPCT mode: characters per minute
+            // CPCT mode: correct characters per minute
             finalWpm = timeSpentMin > 0 ? Math.round(totalCorrectChars / timeSpentMin) : 0;
             finalAccuracy = totalComparedChars > 0 ? Math.round((totalCorrectChars / totalComparedChars) * 100) : 100;
         } else {
-            // Standard mode: Gross WPM = (Total Keystrokes / 5) / Minutes
-            finalWpm = timeSpentMin > 0 ? Math.round((totalCharsTyped / 5) / timeSpentMin) : 0;
+            // WPM = Correctly typed words ÷ elapsed time in minutes
+            finalWpm = timeSpentMin > 0 ? Math.round(correctWordsCount / timeSpentMin) : 0;
+            // Accuracy = Correctly typed words ÷ total evaluated words × 100
             finalAccuracy = typedWords.length > 0 ? Math.round((correctWordsCount / typedWords.length) * 100) : 100;
         }
 
@@ -602,8 +624,8 @@ if (!$access_granted) {
                 } else {
                     statsHtml = `
                         <div class="row pt-3">
-                            <div class="col-4"><h5>${wpm}</h5><p class="small text-muted">GROSS WPM</p></div>
-                            <div class="col-4"><h5>${data.net_wpm}</h5><p class="small text-muted">NET WPM</p></div>
+                            <div class="col-4"><h5>${wpm}</h5><p class="small text-muted">WPM</p></div>
+                            <div class="col-4"><h5>${correctWords}/${totalWords}</h5><p class="small text-muted">CORRECT/TOTAL</p></div>
                             <div class="col-4"><h5>${accuracy}%</h5><p class="small text-muted">ACCURACY</p></div>
                         </div>
                     `;
@@ -633,8 +655,8 @@ if (!$access_granted) {
         .catch(err => Swal.fire('Error', 'Connection error: ' + err, 'error'));
     }
 
-    // Submit Test Button Handler
-    $('#submitTestBtn').on('click', function() {
+    // Submit Test Button Handler (both bottom bar and sidebar)
+    $('#submitTestBtn, #sidebarSubmitBtn').on('click', function() {
         if (!hasStartedTyping || isFinished) return;
         Swal.fire({
             title: 'Submit Test?',
