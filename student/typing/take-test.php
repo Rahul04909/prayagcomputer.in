@@ -334,48 +334,267 @@ if (!$access_granted) {
 <?php endif; ?>
 
 <script>
+    // =========================================================================
+    // PRAYAG COMPUTER TYPING ENGINE (Complete Clean Rewrite)
+    // Formulas:
+    //   - WPM = Correctly typed words / elapsed minutes
+    //   - Gross WPM = Total typed words / elapsed minutes
+    //   - Accuracy = (Correctly typed words / Total typed words) * 100
+    //   - Live Speed Refresh: Every 5 seconds (Typing Master / Sony Typing Tutor style)
+    // =========================================================================
+
     const testContent = <?= json_encode(str_replace(["\r", "\n", "\t", "&nbsp;", "\xc2\xa0"], ' ', html_entity_decode(strip_tags($test['content'])))) ?>;
+    const testWords = (testContent || '').trim().split(/\s+/).filter(w => w.length > 0);
+    const words = testWords;
     const defaultTime = <?= (int)$test['test_time'] ?>;
-    
-    let words = (testContent || '').split(/\s+/).filter(w => w.length > 0);
+
+    // State Variables
     let currentWordIdx = 0;
-    let typedWords = [];       // Array of finalized typed words (space-confirmed)
-    let startTime = null;
+    let typedWords = [];              // Space-confirmed typed words array
+    let currentTypingWord = '';       // Word currently being typed (before space)
+    let totalDurationSec = 600;       // Total seconds for current test
+    let timeLeft = 600;               // Remaining seconds countdown
     let timerInterval = null;
-    let timeLeft = defaultTime * 60;
+    let hasStartedTyping = false;
     let isFinished = false;
-    let hasStartedTyping = false;  // Track if user has started for submit button
+    let displayWpm = 0;               // Live displayed WPM (refreshed every 5s)
 
     // UI Elements
     const textDisplay = $('#textDisplay');
     const typingInput = $('#typingInput');
     const timerDisplay = $('#timerDisplay');
-    
+
     $(document).ready(function() {
         initTest();
     });
-    
+
+    // ── 1. Initialize / Reset Test ──
     function initTest() {
         try {
-            if (!words || words.length === 0) {
+            if (!testWords || testWords.length === 0) {
                 textDisplay.html('<div class="alert alert-warning">No content found for this test.</div>');
                 return;
             }
+
+            // Reset state
+            currentWordIdx = 0;
+            typedWords = [];
+            currentTypingWord = '';
+            hasStartedTyping = false;
+            isFinished = false;
+            displayWpm = 0;
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = null;
+
+            // Render reference words
             textDisplay.empty();
-            words.forEach((word, idx) => {
+            testWords.forEach((word, idx) => {
                 textDisplay.append(`<span class="word" id="word-${idx}">${word}</span> `);
             });
-            updateHighlight();
-            var placeholderText = <?= $test['language'] === 'Hindi' ? "'ऊपर दिखाए गए पाठ को टाइप करना शुरू करें...'" : ($test['language'] === 'Punjabi' ? "'ਉੱਪਰ ਦਿਖਾਏ ਗਏ ਟੈਕਸਟ ਨੂੰ ਟਾਈਪ ਕਰਨਾ ਸ਼ੁਰੂ ਕਰੋ...'" : "'Start typing the text shown above...'") ?>;
-            typingInput.prop('disabled', false).val('').attr('placeholder', placeholderText);
-            timeLeft = $('#durationSelect').val() * 60;
+
+            // Set duration
+            const selectedDuration = parseInt($('#durationSelect').val(), 10) || 10;
+            totalDurationSec = selectedDuration * 60;
+            timeLeft = totalDurationSec;
+
             updateTimerDisplay();
+            updateHighlight();
+
+            // Reset stats panel
+            $('#liveWpm').text('0');
+            $('#liveAccuracy').text('100%');
+            $('#liveErrors').text('0');
+            $('#liveWords').text('0');
+
+            // Reset buttons & textarea
+            $('#submitTestBtn, #sidebarSubmitBtn').prop('disabled', true);
+            const placeholderText = <?= $test['language'] === 'Hindi' ? "'ऊपर दिखाए गए पाठ को टाइप करना शुरू करें...'" : ($test['language'] === 'Punjabi' ? "'ਉੱਪਰ ਦਿਖਾਏ ਗਏ ਟੈਕਸਟ ਨੂੰ ਟਾਈਪ ਕਰਨਾ ਸ਼ੁਰੂ ਕਰੋ...'" : "'Start typing the text shown above...'") ?>;
+            typingInput.prop('disabled', false).val('').attr('placeholder', placeholderText);
+
         } catch (e) {
             console.error("Init Error:", e);
             textDisplay.html('<div class="alert alert-danger">Error loading test engine.</div>');
         }
     }
 
+    // ── 2. Timer Controls ──
+    function updateTimerDisplay() {
+        const m = Math.floor(timeLeft / 60);
+        const s = timeLeft % 60;
+        timerDisplay.text(`${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`);
+    }
+
+    function startTimer() {
+        if (hasStartedTyping || isFinished) return;
+        hasStartedTyping = true;
+
+        // Enable manual submit buttons as soon as typing begins
+        $('#submitTestBtn, #sidebarSubmitBtn').prop('disabled', false);
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay();
+            updateLiveStats(false);
+
+            if (timeLeft <= 0) {
+                finishTest();
+            }
+        }, 1000);
+    }
+
+    // ── 3. Word Evaluation Function ──
+    function evaluateCurrentWords() {
+        let correctCount = 0;
+        let wrongCount = 0;
+        const totalEvaluated = typedWords.length;
+
+        for (let i = 0; i < totalEvaluated; i++) {
+            if (i < testWords.length && typedWords[i] === testWords[i]) {
+                correctCount++;
+            } else {
+                wrongCount++;
+            }
+        }
+
+        return {
+            total: totalEvaluated,
+            correct: correctCount,
+            mistakes: wrongCount,
+            accuracy: totalEvaluated > 0 ? Math.round((correctCount / totalEvaluated) * 100) : 100
+        };
+    }
+
+    // ── 4. Live Stats Update (Typing Master / Sony 5-Sec Interval) ──
+    function updateLiveStats(forceSpeedUpdate = false) {
+        if (!hasStartedTyping || isFinished) return;
+
+        const elapsedSec = Math.max(0, totalDurationSec - timeLeft);
+        const elapsedMin = elapsedSec / 60;
+        const evalResult = evaluateCurrentWords();
+
+        // Speed update: Every 5 seconds (5s, 10s, 15s, 20s...) or forced
+        // First 5 seconds displays 0 to prevent erratic initial spikes
+        if (elapsedSec >= 5 && (elapsedSec % 5 === 0 || forceSpeedUpdate || displayWpm === 0)) {
+            if (elapsedMin > 0) {
+                // Exact formula: Correct words / Elapsed minutes
+                displayWpm = Math.round(evalResult.correct / elapsedMin);
+            }
+        } else if (elapsedSec < 5) {
+            displayWpm = 0;
+        }
+
+        const hlMode = $('input[name="highlightOpt"]:checked').val();
+        if (hlMode === 'none') {
+            $('#liveWpm').text('---');
+            $('#liveAccuracy').text('---');
+            $('#liveErrors').text('---');
+            $('#liveWords').text('---');
+        } else {
+            $('#liveWpm').text(displayWpm);
+            $('#liveAccuracy').text(evalResult.accuracy + '%');
+            $('#liveErrors').text(evalResult.mistakes);
+            $('#liveWords').text(evalResult.total);
+    }
+    const calculateStats = updateLiveStats;
+
+    // ── 5. Helper: Current Word Being Typed ──
+    function getCurrentTypedWord() {
+        const val = typingInput.val();
+        if (!val) return '';
+        const lastSpace = val.lastIndexOf(' ');
+        if (lastSpace === -1) return val;
+        return val.substring(lastSpace + 1);
+    }
+
+    // ── 6. Finish & Save Test ──
+    function finishTest() {
+        if (isFinished) return;
+        isFinished = true;
+
+        if (timerInterval) clearInterval(timerInterval);
+        typingInput.prop('disabled', true);
+        $('#submitTestBtn, #sidebarSubmitBtn').prop('disabled', true);
+
+        // Include last word if user didn't press space at the very end
+        const lastWord = getCurrentTypedWord().trim();
+        if (lastWord.length > 0 && currentWordIdx < testWords.length) {
+            typedWords.push(lastWord);
+        }
+
+        // Exact elapsed time in seconds and minutes
+        const finalElapsedSec = Math.max(1, totalDurationSec - timeLeft);
+        const finalElapsedMin = finalElapsedSec / 60;
+
+        // Final evaluation
+        const evalResult = evaluateCurrentWords();
+        const totalWords = evalResult.total;
+        const correctWords = evalResult.correct;
+        const errors = evalResult.mistakes;
+        const accuracy = evalResult.accuracy;
+
+        // Final exact speeds
+        // WPM = Correct Words / Minutes
+        const finalWpm = finalElapsedMin > 0 ? Math.round(correctWords / finalElapsedMin) : 0;
+        // Gross WPM = Total Words / Minutes
+        const finalGrossWpm = finalElapsedMin > 0 ? Math.round(totalWords / finalElapsedMin) : 0;
+
+        Swal.fire({
+            title: 'Processing Results...',
+            didOpen: () => { Swal.showLoading(); },
+            allowOutsideClick: false
+        });
+
+        fetch('ajax_save_result.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                test_id: <?= $id ?>,
+                wpm: finalGrossWpm,
+                net_wpm: finalWpm,
+                accuracy: accuracy,
+                errors: errors,
+                total_words: totalWords,
+                correct_words: correctWords,
+                test_time: finalElapsedSec,
+                typed_text: typingInput.val()
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const statsHtml = `
+                    <div class="row pt-3">
+                        <div class="col-4"><h5>${finalWpm}</h5><p class="small text-muted">WPM SPEED</p></div>
+                        <div class="col-4"><h5>${correctWords}/${totalWords}</h5><p class="small text-muted">CORRECT/TOTAL</p></div>
+                        <div class="col-4"><h5>${accuracy}%</h5><p class="small text-muted">ACCURACY</p></div>
+                    </div>
+                `;
+
+                Swal.fire({
+                    title: '<span style="color:#28a745">Test Completed!</span>',
+                    html: statsHtml + `
+                        <div class="alert alert-light border mt-2">
+                            Errors: <b>${errors}</b> | Words: <b>${totalWords}</b> | Time: <b>${Math.floor(finalElapsedSec/60)}m ${finalElapsedSec%60}s</b>
+                        </div>
+                    `,
+                    icon: 'success',
+                    confirmButtonText: 'View Detailed Report',
+                    allowOutsideClick: false
+                }).then(() => {
+                    if (data.result_id) {
+                        window.location.href = 'typing-report.php?id=' + data.result_id;
+                    } else {
+                        window.location.href = 'english.php';
+                    }
+                });
+            } else {
+                Swal.fire('Error', data.message || 'Failed to save result', 'error');
+            }
+        })
+        .catch(err => Swal.fire('Error', 'Connection error: ' + err, 'error'));
+    }
+
+    // ── 7. Update Active Word Highlighting ──
     function updateHighlight() {
         $('.word').removeClass('current error-input');
         if (!isFinished) {
@@ -396,258 +615,6 @@ if (!$access_granted) {
             }
         }
     }
-
-    function updateTimerDisplay() {
-        const m = Math.floor(timeLeft / 60);
-        const s = timeLeft % 60;
-        timerDisplay.text(`${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`);
-    }
-
-    function startTimer() {
-        if (startTime) return;
-        startTime = new Date();
-        hasStartedTyping = true;
-        $('#submitTestBtn').prop('disabled', false);
-        $('#sidebarSubmitBtn').prop('disabled', false);
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            updateTimerDisplay();
-            calculateStats();
-            if (timeLeft <= 0) finishTest();
-        }, 1000);
-    }
-
-    let lastWpm = 0;
-    let lastCpct = 0;
-
-    function calculateStats(forceSpeedRecalc = false) {
-        if (!hasStartedTyping) return;
-
-        const totalDurationSec = parseInt($('#durationSelect').val(), 10) * 60;
-        const elapsedSec = Math.max(0, totalDurationSec - timeLeft);
-        const elapsedMin = elapsedSec / 60;
-
-        let totalCharsTyped = 0;      // All characters typed
-        let totalCorrectChars = 0;    // Correctly matched characters (for CPCT/accuracy)
-        let totalComparedChars = 0;   // Total characters compared (for char-level accuracy)
-        let errors = 0;               // Word-level error count
-        let correctWords = 0;         // Word-level correct count
-
-        // Evaluate all finalized (space-confirmed) words
-        typedWords.forEach((typed, idx) => {
-            const target = words[idx];
-            if (!target) return; // Safety: skip if beyond reference text
-            
-            const typedLen = typed.length;
-            const targetLen = target.length;
-            const maxLen = Math.max(typedLen, targetLen);
-            
-            totalCharsTyped += typedLen + 1; // +1 for the space that confirmed this word
-            totalComparedChars += maxLen;
-            
-            if (typed === target) {
-                correctWords++;
-                totalCorrectChars += targetLen;
-            } else {
-                errors++;
-                // Count char-by-char correct matches
-                for (let i = 0; i < maxLen; i++) {
-                    if (i < typedLen && i < targetLen && typed[i] === target[i]) {
-                        totalCorrectChars++;
-                    }
-                }
-            }
-        });
-
-        // Include the current (in-progress) word for live display
-        const currentTyped = getCurrentTypedWord();
-        const currentTarget = words[currentWordIdx];
-        if (currentTyped.length > 0 && currentTarget) {
-            totalCharsTyped += currentTyped.length;
-            const curMaxLen = Math.max(currentTyped.length, currentTarget.length);
-            totalComparedChars += curMaxLen;
-            for (let i = 0; i < Math.min(currentTyped.length, currentTarget.length); i++) {
-                if (currentTyped[i] === currentTarget[i]) totalCorrectChars++;
-            }
-        }
-
-        // Typing Master Pro / Sony Typing Tutor style:
-        // Update speed every 5 seconds (at 5s, 10s, 15s, 20s...) or when forceSpeedRecalc is true
-        if (elapsedSec >= 5 && (elapsedSec % 5 === 0 || forceSpeedRecalc || lastWpm === 0)) {
-            if (elapsedMin > 0) {
-                lastWpm = Math.round(correctWords / elapsedMin);
-                lastCpct = Math.round(totalCorrectChars / elapsedMin);
-            }
-        } else if (elapsedSec < 5) {
-            lastWpm = 0;
-            lastCpct = 0;
-        }
-
-        const hlMode = $('input[name="highlightOpt"]:checked').val();
-        const totalEvaluated = typedWords.length;
-        // Accuracy = Correctly typed words ÷ total evaluated words × 100
-        const wordAccuracy = totalEvaluated > 0 ? Math.round((correctWords / totalEvaluated) * 100) : 100;
-        // Character-level accuracy for CPCT mode
-        const charAccuracy = totalComparedChars > 0 ? Math.round((totalCorrectChars / totalComparedChars) * 100) : 100;
-
-        if (hlMode === 'none') {
-            $('#liveWpm').text('---');
-            $('#liveAccuracy').text('---');
-            $('#liveErrors').text('---');
-            $('#liveWords').text('---');
-        } else if (hlMode === 'wordErr') {
-            $('#liveWpm').text(lastCpct);
-            $('#wpmLbl').text("CPCT Speed");
-            $('#liveAccuracy').text(charAccuracy + '%');
-            $('#liveErrors').text(errors);
-            $('#liveWords').text(totalCorrectChars);
-            $('#wordsLbl').text("Correct Chars");
-        } else {
-            $('#liveWpm').text(lastWpm);
-            $('#wpmLbl').text("WPM");
-            $('#liveAccuracy').text(wordAccuracy + '%');
-            $('#liveErrors').text(errors);
-            $('#liveWords').text(typedWords.length);
-            $('#wordsLbl').text("Words Typed");
-        }
-    }
-
-    // Helper: Get the current word being typed (not yet space-confirmed)
-    function getCurrentTypedWord() {
-        const val = typingInput.val();
-        if (!val) return '';
-        // Everything after the last space is the current word
-        const lastSpaceIdx = val.lastIndexOf(' ');
-        if (lastSpaceIdx === -1) return val;
-        return val.substring(lastSpaceIdx + 1);
-    }
-
-    function finishTest() {
-        if (isFinished) return;
-        isFinished = true;
-        clearInterval(timerInterval);
-        typingInput.prop('disabled', true);
-        $('#submitTestBtn').prop('disabled', true);
-        $('#sidebarSubmitBtn').prop('disabled', true);
-
-        // Finalize: include the last partially typed word if any
-        const lastWord = getCurrentTypedWord();
-        if (lastWord.length > 0 && currentWordIdx < words.length) {
-            typedWords.push(lastWord);
-        }
-
-        const durSec = Math.max(1, ($('#durationSelect').val() * 60) - timeLeft);
-        const timeSpentMin = durSec / 60;
-        
-        let totalCharsTyped = 0;
-        let totalCorrectChars = 0;
-        let totalComparedChars = 0;
-        let errorsCount = 0;
-        let correctWordsCount = 0;
-
-        typedWords.forEach((typed, idx) => {
-            const target = words[idx];
-            if (!target) return;
-            
-            const typedLen = typed.length;
-            const targetLen = target.length;
-            const maxLen = Math.max(typedLen, targetLen);
-            
-            totalCharsTyped += typedLen + 1; // +1 for space separator
-            totalComparedChars += maxLen;
-            
-            if (typed === target) {
-                correctWordsCount++;
-                totalCorrectChars += targetLen;
-            } else {
-                errorsCount++;
-                for (let i = 0; i < maxLen; i++) {
-                    if (i < typedLen && i < targetLen && typed[i] === target[i]) {
-                        totalCorrectChars++;
-                    }
-                }
-            }
-        });
-
-        const hlMode = $('input[name="highlightOpt"]:checked').val();
-        let finalWpm = 0, finalAccuracy = 100, finalErrors = errorsCount;
-        
-        if (hlMode === 'wordErr') {
-            // CPCT mode: correct characters per minute
-            finalWpm = timeSpentMin > 0 ? Math.round(totalCorrectChars / timeSpentMin) : 0;
-            finalAccuracy = totalComparedChars > 0 ? Math.round((totalCorrectChars / totalComparedChars) * 100) : 100;
-        } else {
-            // WPM = Correctly typed words ÷ elapsed time in minutes
-            finalWpm = timeSpentMin > 0 ? Math.round(correctWordsCount / timeSpentMin) : 0;
-            // Accuracy = Correctly typed words ÷ total evaluated words × 100
-            finalAccuracy = typedWords.length > 0 ? Math.round((correctWordsCount / typedWords.length) * 100) : 100;
-        }
-
-        const wpm = finalWpm;
-        const accuracy = finalAccuracy;
-        const errors = finalErrors;
-        const totalWords = typedWords.length;
-        const correctWords = correctWordsCount;
-
-        Swal.fire({
-            title: 'Processing Results...',
-            didOpen: () => { Swal.showLoading(); },
-            allowOutsideClick: false
-        });
-
-        fetch('ajax_save_result.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                test_id: <?= $id ?>,
-                wpm: wpm,
-                accuracy: accuracy,
-                errors: errors,
-                total_words: totalWords,
-                correct_words: correctWords,
-                test_time: durSec,
-                typed_text: typingInput.val()
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                let statsHtml = '';
-                if (hlMode === 'wordErr') {
-                    statsHtml = `
-                        <div class="row pt-3">
-                            <div class="col-4"><h5>${wpm}</h5><p class="small text-muted">CPCT SPEED<br><small>(CPM)</small></p></div>
-                            <div class="col-4"><h5>${totalCorrectChars}</h5><p class="small text-muted">CORRECT<br>CHARS</p></div>
-                            <div class="col-4"><h5>${accuracy}%</h5><p class="small text-muted">ACCURACY</p></div>
-                        </div>
-                    `;
-                } else {
-                    statsHtml = `
-                        <div class="row pt-3">
-                            <div class="col-4"><h5>${wpm}</h5><p class="small text-muted">WPM</p></div>
-                            <div class="col-4"><h5>${correctWords}/${totalWords}</h5><p class="small text-muted">CORRECT/TOTAL</p></div>
-                            <div class="col-4"><h5>${accuracy}%</h5><p class="small text-muted">ACCURACY</p></div>
-                        </div>
-                    `;
-                }
-
-                Swal.fire({
-                    title: '<span style="color:#28a745">Test Completed!</span>',
-                    html: statsHtml + `
-                        <div class="alert alert-light border mt-2">
-                            Errors: <b>${errors}</b> | Words: <b>${totalWords}</b> | Time: <b>${Math.floor(durSec/60)}m ${durSec%60}s</b>
-                        </div>
-                    `,
-                    icon: 'success',
-                    confirmButtonText: 'View Detailed Report',
-                    allowOutsideClick: false
-                }).then(() => {
-                    if (data.result_id) {
-                        window.location.href = 'typing-report.php?id=' + data.result_id;
-                    } else {
-                        window.location.href = 'english.php';
-                    }
-                });
             } else {
                 Swal.fire('Error', data.message || 'Failed to save result', 'error');
             }
