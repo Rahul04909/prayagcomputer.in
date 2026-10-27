@@ -214,8 +214,13 @@ if (!$access_granted) {
         <!-- Typing Input Area -->
         <textarea id="typingInput" class="typing-input-box" placeholder="Loading typing engine..." disabled></textarea>
         
-        <div class="text-center py-2" style="font-size:12px; color:#555; background: #e0e4ef; font-weight: 500; flex-shrink: 0;">
-            <i class="fas fa-info-circle text-primary mr-1"></i> Timer will start automatically when you begin typing.
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 15px; background: #e0e4ef; flex-shrink: 0;">
+            <div style="font-size:12px; color:#555; font-weight: 500;">
+                <i class="fas fa-info-circle text-primary mr-1"></i> Timer will start automatically when you begin typing.
+            </div>
+            <button id="submitTestBtn" class="btn btn-danger btn-sm font-weight-bold" style="padding: 5px 20px; font-size: 13px; letter-spacing: 0.5px; border-radius: 4px; box-shadow: 0 2px 6px rgba(198,40,40,0.3);" disabled>
+                <i class="fas fa-paper-plane mr-1"></i> SUBMIT TEST
+            </button>
         </div>
     </div>
 
@@ -328,11 +333,12 @@ if (!$access_granted) {
     
     let words = (testContent || '').split(/\s+/).filter(w => w.length > 0);
     let currentWordIdx = 0;
-    let typedWords = [];
+    let typedWords = [];       // Array of finalized typed words (space-confirmed)
     let startTime = null;
     let timerInterval = null;
     let timeLeft = defaultTime * 60;
     let isFinished = false;
+    let hasStartedTyping = false;  // Track if user has started for submit button
 
     // UI Elements
     const textDisplay = $('#textDisplay');
@@ -394,6 +400,8 @@ if (!$access_granted) {
     function startTimer() {
         if (startTime) return;
         startTime = new Date();
+        hasStartedTyping = true;
+        $('#submitTestBtn').prop('disabled', false);
         timerInterval = setInterval(() => {
             timeLeft--;
             updateTimerDisplay();
@@ -406,42 +414,61 @@ if (!$access_granted) {
         const timeSpentMin = (new Date() - startTime) / 60000;
         if (timeSpentMin <= 0) return;
 
-        let totalChars = 0;
-        let totalCorrectChars = 0;
-        let errors = 0;
-        let correctWords = 0;
+        let totalCharsTyped = 0;      // All characters typed (for gross WPM)
+        let totalCorrectChars = 0;    // Correctly matched characters (for CPCT/accuracy)
+        let totalComparedChars = 0;   // Total characters compared (for char-level accuracy)
+        let errors = 0;               // Word-level error count
+        let correctWords = 0;         // Word-level correct count
 
+        // Evaluate all finalized (space-confirmed) words
         typedWords.forEach((typed, idx) => {
             const target = words[idx];
+            if (!target) return; // Safety: skip if beyond reference text
+            
+            const typedLen = typed.length;
+            const targetLen = target.length;
+            const maxLen = Math.max(typedLen, targetLen);
+            
+            totalCharsTyped += typedLen + 1; // +1 for the space that confirmed this word
+            totalComparedChars += maxLen;
+            
             if (typed === target) {
                 correctWords++;
-                totalChars += target.length + 1;
-                totalCorrectChars += target.length + 1;
+                totalCorrectChars += targetLen;
             } else {
                 errors++;
-                totalChars += Math.max(typed.length, target.length) + 1;
-                for (let i = 0; i < Math.max(typed.length, target.length); i++) {
-                    if (i < typed.length && i < target.length && typed[i] === target[i]) {
+                // Count char-by-char correct matches
+                for (let i = 0; i < maxLen; i++) {
+                    if (i < typedLen && i < targetLen && typed[i] === target[i]) {
                         totalCorrectChars++;
                     }
                 }
             }
         });
 
-        const currentTyped = typingInput.val().trim();
+        // Include the current (in-progress) word for live display
+        const currentTyped = getCurrentTypedWord();
         const currentTarget = words[currentWordIdx];
-        totalChars += currentTyped.length;
-        if (currentTarget) {
+        if (currentTyped.length > 0 && currentTarget) {
+            totalCharsTyped += currentTyped.length;
+            const curMaxLen = Math.max(currentTyped.length, currentTarget.length);
+            totalComparedChars += curMaxLen;
             for (let i = 0; i < Math.min(currentTyped.length, currentTarget.length); i++) {
                 if (currentTyped[i] === currentTarget[i]) totalCorrectChars++;
             }
         }
 
-        const effectiveTimeMin = Math.max(timeSpentMin, 3 / 60); // Smooth out initial spikes
+        const effectiveTimeMin = Math.max(timeSpentMin, 0.05); // Min 3 seconds to smooth spikes
         const hlMode = $('input[name="highlightOpt"]:checked').val();
-        const grossWpm = Math.round((totalChars / 5) / effectiveTimeMin);
+        
+        // Standard Gross WPM = (Total Keystrokes / 5) / Minutes
+        const grossWpm = Math.round((totalCharsTyped / 5) / effectiveTimeMin);
+        // CPCT Speed = Correct Characters Per Minute
         const cpctSpeed = Math.round(totalCorrectChars / effectiveTimeMin); 
-        const accuracy = Math.round((totalCorrectChars / Math.max(1, totalChars)) * 100);
+        // Character-level accuracy
+        const charAccuracy = totalComparedChars > 0 ? Math.round((totalCorrectChars / totalComparedChars) * 100) : 100;
+        // Word-level accuracy
+        const wordAccuracy = typedWords.length > 0 ? Math.round((correctWords / typedWords.length) * 100) : 100;
 
         if (hlMode === 'none') {
             $('#liveWpm').text('---');
@@ -451,18 +478,28 @@ if (!$access_granted) {
         } else if (hlMode === 'wordErr') {
             $('#liveWpm').text(cpctSpeed);
             $('#wpmLbl').text("CPCT Speed");
-            $('#liveAccuracy').text(accuracy + '%');
+            $('#liveAccuracy').text(charAccuracy + '%');
             $('#liveErrors').text(errors);
             $('#liveWords').text(totalCorrectChars);
             $('#wordsLbl').text("Correct Chars");
         } else {
             $('#liveWpm').text(grossWpm);
             $('#wpmLbl').text("Gross WPM");
-            $('#liveAccuracy').text((typedWords.length > 0 ? Math.round((correctWords / typedWords.length) * 100) : 100) + '%');
+            $('#liveAccuracy').text(wordAccuracy + '%');
             $('#liveErrors').text(errors);
             $('#liveWords').text(typedWords.length);
             $('#wordsLbl').text("Words Typed");
         }
+    }
+
+    // Helper: Get the current word being typed (not yet space-confirmed)
+    function getCurrentTypedWord() {
+        const val = typingInput.val();
+        if (!val) return '';
+        // Everything after the last space is the current word
+        const lastSpaceIdx = val.lastIndexOf(' ');
+        if (lastSpaceIdx === -1) return val;
+        return val.substring(lastSpaceIdx + 1);
     }
 
     function finishTest() {
@@ -470,49 +507,57 @@ if (!$access_granted) {
         isFinished = true;
         clearInterval(timerInterval);
         typingInput.prop('disabled', true);
+        $('#submitTestBtn').prop('disabled', true);
+
+        // Finalize: include the last partially typed word if any
+        const lastWord = getCurrentTypedWord();
+        if (lastWord.length > 0 && currentWordIdx < words.length) {
+            typedWords.push(lastWord);
+        }
 
         const durSec = ($('#durationSelect').val() * 60) - timeLeft;
         const timeSpentMin = durSec / 60;
         
-        let totalChars = 0;
+        let totalCharsTyped = 0;
         let totalCorrectChars = 0;
+        let totalComparedChars = 0;
         let errorsCount = 0;
         let correctWordsCount = 0;
 
         typedWords.forEach((typed, idx) => {
             const target = words[idx];
+            if (!target) return;
+            
+            const typedLen = typed.length;
+            const targetLen = target.length;
+            const maxLen = Math.max(typedLen, targetLen);
+            
+            totalCharsTyped += typedLen + 1; // +1 for space separator
+            totalComparedChars += maxLen;
+            
             if (typed === target) {
                 correctWordsCount++;
-                totalChars += target.length + 1;
-                totalCorrectChars += target.length + 1;
+                totalCorrectChars += targetLen;
             } else {
                 errorsCount++;
-                totalChars += Math.max(typed.length, target.length) + 1;
-                for (let i = 0; i < Math.max(typed.length, target.length); i++) {
-                    if (i < typed.length && i < target.length && typed[i] === target[i]) {
+                for (let i = 0; i < maxLen; i++) {
+                    if (i < typedLen && i < targetLen && typed[i] === target[i]) {
                         totalCorrectChars++;
                     }
                 }
             }
         });
 
-        const currentTyped = typingInput.val().trim();
-        const currentTarget = words[currentWordIdx];
-        totalChars += currentTyped.length;
-        if (currentTarget) {
-            for (let i = 0; i < Math.min(currentTyped.length, currentTarget.length); i++) {
-                if (currentTyped[i] === currentTarget[i]) totalCorrectChars++;
-            }
-        }
-
         const hlMode = $('input[name="highlightOpt"]:checked').val();
         let finalWpm = 0, finalAccuracy = 100, finalErrors = errorsCount;
         
         if (hlMode === 'wordErr') {
+            // CPCT mode: characters per minute
             finalWpm = timeSpentMin > 0 ? Math.round(totalCorrectChars / timeSpentMin) : 0;
-            finalAccuracy = totalChars > 0 ? Math.round((totalCorrectChars / totalChars) * 100) : 100;
+            finalAccuracy = totalComparedChars > 0 ? Math.round((totalCorrectChars / totalComparedChars) * 100) : 100;
         } else {
-            finalWpm = timeSpentMin > 0 ? Math.round((totalChars / 5) / timeSpentMin) : 0;
+            // Standard mode: Gross WPM = (Total Keystrokes / 5) / Minutes
+            finalWpm = timeSpentMin > 0 ? Math.round((totalCharsTyped / 5) / timeSpentMin) : 0;
             finalAccuracy = typedWords.length > 0 ? Math.round((correctWordsCount / typedWords.length) * 100) : 100;
         }
 
@@ -568,7 +613,7 @@ if (!$access_granted) {
                     title: '<span style="color:#28a745">Test Completed!</span>',
                     html: statsHtml + `
                         <div class="alert alert-light border mt-2">
-                            Errors: <b>${errors}</b> | Time Spent: <b>${Math.floor(durSec/60)}m ${durSec%60}s</b>
+                            Errors: <b>${errors}</b> | Words: <b>${totalWords}</b> | Time: <b>${Math.floor(durSec/60)}m ${durSec%60}s</b>
                         </div>
                     `,
                     icon: 'success',
@@ -585,36 +630,88 @@ if (!$access_granted) {
                 Swal.fire('Error', data.message || 'Failed to save result', 'error');
             }
         })
-        .catch(err => Swal.fire('Error', 'Connection error' + err, 'error'));
+        .catch(err => Swal.fire('Error', 'Connection error: ' + err, 'error'));
     }
+
+    // Submit Test Button Handler
+    $('#submitTestBtn').on('click', function() {
+        if (!hasStartedTyping || isFinished) return;
+        Swal.fire({
+            title: 'Submit Test?',
+            html: '<p>Are you sure you want to submit your test?</p><p class="text-muted small">Your current progress will be saved and the test will end.</p>',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#c62828',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="fas fa-paper-plane mr-1"></i> Yes, Submit',
+            cancelButtonText: 'Continue Typing'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                finishTest();
+            } else {
+                typingInput.focus();
+            }
+        });
+    });
 
     typingInput.on('input', function() {
         if (isFinished) {
-            $(this).val( $(this).val() ); 
             return;
         }
         startTimer();
 
         let rawVal = $(this).val();
         
-        // Split by standard spaces
-        let typedArr = rawVal.split(' ');
-        currentWordIdx = typedArr.length - 1;
+        // === CORE FIX: Robust word splitting ===
+        // We track words by splitting on spaces, but we must handle:
+        // 1. Multiple consecutive spaces (collapse them)
+        // 2. Trailing space = word is finalized
+        // 3. No trailing space = last segment is still being typed
         
-        // Update typedWords array for finished words (everything except the last incomplete word)
-        typedWords = typedArr.slice(0, currentWordIdx);
+        // Normalize: collapse multiple spaces into single space
+        // But preserve trailing space (it means the user pressed space to move to next word)
+        const hasTrailingSpace = rawVal.endsWith(' ');
+        const normalizedVal = rawVal.replace(/\s+/g, ' ');
+        
+        // Update the textarea if normalization changed the value (prevent double-spaces)
+        if (normalizedVal !== rawVal) {
+            const cursorPos = this.selectionStart - (rawVal.length - normalizedVal.length);
+            $(this).val(normalizedVal);
+            this.selectionStart = this.selectionEnd = Math.max(0, cursorPos);
+            rawVal = normalizedVal;
+        }
+        
+        // Split into segments
+        let segments = rawVal.split(' ');
+        
+        // If trailing space exists, the last segment is empty string — means previous word is done
+        // Finalized words = all segments except the last one (which is being typed or empty)
+        let finalizedSegments = segments.slice(0, -1); // All space-confirmed words
+        let currentSegment = segments[segments.length - 1]; // Currently being typed
+        
+        // Filter out any remaining empty entries from finalized words
+        finalizedSegments = finalizedSegments.filter(w => w.length > 0);
+        
+        // Update global tracking
+        typedWords = finalizedSegments;
+        currentWordIdx = typedWords.length; // The word user is currently typing
 
         const hlMode = $('input[name="highlightOpt"]:checked').val();
         
-        // Evaluate words up to the current one + ahead to clean up
-        for (let idx = 0; idx <= currentWordIdx + 1; idx++) {
+        // Update display for all words that need visual update
+        const updateUpTo = Math.min(currentWordIdx + 2, words.length);
+        for (let idx = 0; idx < updateUpTo; idx++) {
             const targetWord = words[idx];
             if (!targetWord) continue;
             
             const wordEl = $(`#word-${idx}`);
+            if (!wordEl.length) continue;
             
             if (idx < currentWordIdx) {
-                 const typed = typedArr[idx];
+                 // === Finalized word: compare typed vs target ===
+                 const typed = typedWords[idx];
+                 if (!typed) continue;
+                 
                  wordEl.removeClass('current error-input');
                  if (hlMode !== 'none') {
                      if (typed === targetWord) {
@@ -632,7 +729,7 @@ if (!$access_granted) {
                                           html += `<span style="color: #c62828;">${targetWord[i]}</span>`;
                                       }
                                   } else {
-                                      html += `<span style="color: #c62828;">${targetWord[i]}</span>`; // Untyped chars in missed word are errors
+                                      html += `<span style="color: #c62828;">${targetWord[i]}</span>`;
                                   }
                               }
                               if (typed.length > targetWord.length) {
@@ -650,7 +747,8 @@ if (!$access_granted) {
                  }
             } 
             else if (idx === currentWordIdx) {
-                 const typedVal = typedArr[idx];
+                 // === Currently being typed ===
+                 const typedVal = currentSegment;
                  wordEl.removeClass('correct incorrect');
                  
                  if (hlMode === 'none') {
@@ -675,7 +773,7 @@ if (!$access_granted) {
                      wordEl.html(html);
                  } else if (hlMode === 'word') {
                      wordEl.text(targetWord);
-                     if (!targetWord.startsWith(typedVal)) {
+                     if (typedVal.length > 0 && !targetWord.startsWith(typedVal)) {
                          wordEl.addClass('error-input');
                      } else {
                          wordEl.removeClass('error-input');
@@ -683,6 +781,7 @@ if (!$access_granted) {
                  }
             }
             else {
+                 // === Future words: reset to clean state ===
                  wordEl.removeClass('correct incorrect current error-input');
                  wordEl.text(targetWord);
             }
@@ -691,6 +790,7 @@ if (!$access_granted) {
         updateHighlight();
         calculateStats();
 
+        // Auto-finish if all words are typed
         if (currentWordIdx >= words.length) finishTest();
     });
 
@@ -755,7 +855,24 @@ if (!$access_granted) {
     });
 
     // Settings listeners
-    $('#durationSelect').change(() => initTest());
+    $('#durationSelect').change(function() {
+        if (hasStartedTyping) {
+            Swal.fire({
+                title: 'Change Duration?',
+                text: 'This will restart the test. All current progress will be lost.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#c62828',
+                confirmButtonText: 'Yes, Restart'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.reload();
+                }
+            });
+        } else {
+            initTest();
+        }
+    });
     $('#examMode').change(function() {
         if (this.checked) $('#statPanel').css('visibility', 'hidden');
         else $('#statPanel').css('visibility', 'visible');
